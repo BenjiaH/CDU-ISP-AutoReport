@@ -20,12 +20,12 @@ A tool which helps you to report your physical condition during COVID19 automati
 
 ### 生成`sckey`
 
-- [打开Server酱](http://sc.ftqq.com/3.version)
+- [打开Server酱](http://sc.ftqq.com/3.version)。
 - 申请一个`sckey`，并记录下来。
 
 ### 修改`config.ini`文件
 
-- 重命名`config_template.ini`文件为`config.ini`
+- 重命名`config_template.ini`文件为`config.ini`。
 - 分别填写刚才记录的`cookie`, `id`和`sckey`(无需引号)。
 
 ### 运行脚本
