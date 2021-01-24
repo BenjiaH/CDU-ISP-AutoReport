@@ -29,7 +29,13 @@ def register():
         logger.info("register GET request successfully.Status code:{code}".format(code=res.status_code))
     else:
         logger.error("register GET request failed.Status code:{code}".format(code=res.status_code))
-    return res.text
+    if  "已存在" in res.text:
+        logger.info("Register is alread existed.")
+        return True, res.text
+    else:
+        logger.info("Register is not existed.")
+        return False, res.text
+    # return res.text
 
 
 def send_wechat(title, message):
@@ -53,30 +59,32 @@ def get_date_url():
     return date_url
 
 
-def is_register():
-    result = register()
-    return True
+def is_register_success():
+    result = register()[1]
+    # return True
     if  "已存在" in result:
-        logger.info("Register is alread existed.")
+        logger.info("Register successfully.")
         return True
     else:
-        logger.info("Register is not existed.")
+        logger.info("Register failed.")
         return False
 
 
 def main():
-    # register()
-    sleep(2)
-    if is_register():
-        logger.info("Register successfully.")
+    if register()[0] == False:
+        sleep(2)
+        if is_register_success():
+            if global_config.getRaw('messenger', 'enable') == 'true':
+                message = "{time}打卡成功".format(time=datetime.datetime.now())
+                send_wechat("打卡成功", message)
+        else:
+            if global_config.getRaw('messenger', 'enable') == 'true':
+                message = "{time}打卡失败".format(time=datetime.datetime.now())
+                send_wechat("打卡失败", message)
+    elif register()[0] == True:
         if global_config.getRaw('messenger', 'enable') == 'true':
-            message = "{time}打卡成功".format(time=datetime.datetime.now())
-            send_wechat("打卡成功", message)
-    else:
-        logger.error("Register failed.")
-        if global_config.getRaw('messenger', 'enable') == 'true':
-            message = "{time}打卡失败".format(time=datetime.datetime.now())
-            send_wechat("打卡失败", message)
+                message = "{time}打卡已存在".format(time=datetime.datetime.now())
+                send_wechat("打卡已存在", message)
 
 
 if  __name__ == '__main__':
