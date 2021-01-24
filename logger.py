@@ -3,7 +3,7 @@ import logging.handlers
 '''
 日志模块
 '''
-LOG_FILENAME = 'COVID19_auto_register.log'
+LOG_FILENAME = 'log.log'
 logger = logging.getLogger()
 
 
