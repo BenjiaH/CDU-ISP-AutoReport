@@ -128,8 +128,8 @@ def main():
                                                              studentID=global_config.getRaw('config', 'studentID'))
                 send_wechat("打卡成功!", message)
         else:
-            logger.error(logger.info(
-                "Report failed. ID:{studentID}".format(studentID=global_config.getRaw('config', 'studentID'))))
+            logger.error(
+                "Report failed. ID:{studentID}".format(studentID=global_config.getRaw('config', 'studentID')))
             if global_config.getRaw('messenger', 'enable') == 'true':
                 message = "{time}打卡失败,请手动打卡!学号：{studentID}".format(time=datetime.datetime.now(),
                                                              studentID=global_config.getRaw('config', 'studentID'))
