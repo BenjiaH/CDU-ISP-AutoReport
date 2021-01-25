@@ -53,8 +53,6 @@ def get_id():
         id = re.findall(r"(?<=id=).*?(?=\">我的事务<)", res.text)[0]
     except Exception as e:
         logger.error("Regular expression match failed.[{e}]".format(e=e))
-    with open("leftpage.html", "w", encoding="utf-8") as fp:
-        fp.write(res.text)
     return id
 
 
@@ -133,7 +131,7 @@ def main():
             logger.error(logger.info(
                 "Report failed. ID:{studentID}".format(studentID=global_config.getRaw('config', 'studentID'))))
             if global_config.getRaw('messenger', 'enable') == 'true':
-                message = "{time}打卡失败!学号：{studentID}".format(time=datetime.datetime.now(),
+                message = "{time}打卡失败,请手动打卡!学号：{studentID}".format(time=datetime.datetime.now(),
                                                              studentID=global_config.getRaw('config', 'studentID'))
                 send_wechat("打卡失败!", message)
     else:
