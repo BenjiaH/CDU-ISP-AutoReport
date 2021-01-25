@@ -2,7 +2,7 @@ import datetime
 
 from logger import logger
 from config import global_config
-from COVID19_auto_register import main as CAR_main
+from auto_report import main as CAR_main
 from time import sleep
 
 
