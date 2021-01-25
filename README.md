@@ -10,7 +10,7 @@ A tool which helps you to report your physical condition during COVID19 automati
 
 ### 使用Chrome浏览器(推荐)
 
-### [登录 CDU-ISP](https://xsswzx.cdu.edu.cn/ispstu1-2/com_user/webindex.asp)
+### [登录 CDU-ISP](https://benjiah.gitee.io/redirect/cduisp1-2)
 
 ### 打开疫情信息登记栏并获取`id`和`cookie`
 
@@ -20,7 +20,7 @@ A tool which helps you to report your physical condition during COVID19 automati
 
 ### 生成`sckey`
 
-- [打开Server酱](http://sc.ftqq.com/3.version)。
+- [打开Server酱](https://benjiah.gitee.io/redirect/serversauce)。
 - 申请一个`sckey`，并记录下来。
 
 ### 修改`config.ini`文件
