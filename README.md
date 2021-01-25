@@ -25,5 +25,5 @@ A tool which helps you to report your physical condition during COVID19 automati
 ## TODO
 
 - [X] Wechat推送更多内容
-- [ ] 定时执行
+- [X] 定时执行
 - [ ] 支持多账户
