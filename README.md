@@ -15,8 +15,8 @@ A tool which helps you to report your physical condition during COVID19 automati
 ### 打开疫情信息登记栏并获取`id`和`cookie`
 
 - 打开开发人员工具(<kbd>F12</kbd>),选择网络选项卡(Network)，并勾选保存日志(Preserve log)。
-- 打开疫情信息登记页面，在开发人员工具种找到`project.asp?id=XXXXXXXXXXX`这条日志。记录此处`id=XXXXXX`(只需记录等于后面的内容)。
-- 单击此条日志。在标头(Headers)中找到`Cookie`。记录此处`Cookie: XXXX`(只需记录等于后面的内容)。
+- 打开疫情信息登记页面，在开发人员工具种找到`project.asp?id=XXXXXXXXXXX`这条日志。记录此处`id=XXXXXX`(只需记录等号后面的内容)。
+- 单击此条日志。在标头(Headers)中找到`Cookie`。记录此处`Cookie: XXXX`(只需记录冒号后面的内容)。
 
 ### 生成`sckey`
 
