@@ -1,4 +1,4 @@
-# CDU-ISP_auto_report
+# CDU-ISP-AutoReport
 
 A tool which helps you to report your physical condition on CDU-ISP during COVID19 automatically.
 
