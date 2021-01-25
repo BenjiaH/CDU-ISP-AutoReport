@@ -16,8 +16,8 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 ### 填写`config.ini`
 
 - 重命名`config_template.ini`文件为`config.ini`。
-- 填写`studentID`为学号(无需引号)。
-- 填写`password`为CDU-ISP登录密码(无需引号。**为保证账号安全，建议提前修改登录密码！！！**)。
+- 填写`studentID`为学号。
+- 填写`password`为CDU-ISP登录密码(**为保证账号安全，建议提前修改登录密码！！！**)。
 - 填写`sckey`。
 
 ### 运行脚本
