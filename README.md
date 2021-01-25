@@ -1,6 +1,6 @@
-# COVID19_auto_register
+# CDU-ISP_auto_report
 
-A tool which helps you to report your physical condition during COVID19 automatically.
+A tool which helps you to report your physical condition on CDU-ISP during COVID19 automatically.
 
 ## 安装第三方库
 
