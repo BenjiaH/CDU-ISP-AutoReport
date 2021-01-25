@@ -1,2 +1,2 @@
-python COVID19_auto_register.py
+python main.py
 pause
