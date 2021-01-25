@@ -17,8 +17,8 @@ def get_captcha_code():
     url = "https://xsswzx.cdu.edu.cn/ispstu1-2/com_user/weblogin.asp"
     res = session.get(url=url, headers=headers)
     res.encoding = "utf-8"
-    get_captcha_index = res.text.find('placeholder="验证码"')
-    return (res.text[get_captcha_index + 30: get_captcha_index + 34])
+    captcha_index = res.text.find('placeholder="验证码"')
+    return (res.text[captcha_index + 30: captcha_index + 34])
 
 
 def login(code):
