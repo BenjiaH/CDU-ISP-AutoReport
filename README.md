@@ -26,5 +26,5 @@ A tool which helps you to report your physical condition during COVID19 automati
 
 - [X] Wechat推送更多内容
 - [ ] 定时执行
-- [ ] 打卡失败，自动切换cookie
+- [ ] 打卡失败，自动二次执行
 - [ ] 支持多账户
