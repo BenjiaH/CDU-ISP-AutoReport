@@ -1,4 +1,5 @@
 test/
 __pycache__/
+data/
 *.log
 config.ini
