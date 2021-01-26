@@ -50,6 +50,3 @@ class Account(object):
 
 
 global_account = Account()
-print(global_account.studentID)
-print(global_account.password)
-print(global_account.sckey)
