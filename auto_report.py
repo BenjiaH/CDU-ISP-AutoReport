@@ -49,13 +49,11 @@ def get_id():
     else:
         logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
     res.encoding = "utf-8"
-    with open("left.html", "w", encoding="utf-8") as fp:
-        fp.write(res.text)
     try:
         id = re.findall(r"(?<=id=).*?(?=\">我的事务<)", res.text)[0]
+        return id
     except Exception as e:
         logger.error("Regular expression match failed.[{e}]".format(e=e))
-    return id
 
 
 def report(id):
@@ -123,22 +121,16 @@ def main(studentID, password, sckey):
     if not is_reported(id):
         report(id)
         if is_reported(id):
-            logger.info(
-                "Report successfully. ID:{studentID}".format(studentID=global_config.getRaw('account', 'studentID')))
+            logger.info("Report successfully. ID:{studentID}".format(studentID=studentID))
             if global_config.getRaw('messenger', 'enable') == 'true':
-                message = "{time}打卡成功!学号：{studentID}".format(time=datetime.datetime.now(),
-                                                             studentID=global_config.getRaw('account', 'studentID'))
+                message = "{time}打卡成功!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
                 send_wechat("打卡成功!", message, sckey)
         else:
-            logger.error(
-                "Report failed. ID:{studentID}".format(studentID=global_config.getRaw('account', 'studentID')))
+            logger.error("Report failed. ID:{studentID}".format(studentID=global_config.getRaw('account', 'studentID')))
             if global_config.getRaw('messenger', 'enable') == 'true':
-                message = "{time}打卡失败,请手动打卡!学号：{studentID}".format(time=datetime.datetime.now(),
-                                                                   studentID=global_config.getRaw('account',
-                                                                                                  'studentID'))
+                message = "{time}打卡失败,请手动打卡!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
                 send_wechat("打卡失败!", message, sckey)
     else:
         if global_config.getRaw('messenger', 'enable') == 'true':
-            message = "{time}打卡已存在!学号：{studentID}".format(time=datetime.datetime.now(),
-                                                          studentID=global_config.getRaw('account', 'studentID'))
+            message = "{time}打卡已存在!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
             send_wechat("打卡已存在!", message, sckey)
