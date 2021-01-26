@@ -9,8 +9,10 @@ from time import sleep
 
 def main():
     if global_config.getRaw('timer', 'enable') != 'true':
+        logger.info("Set time mode disable.")
         report_task()
     else:
+        logger.info("Set time mode enable.")
         while True:
             now_time = datetime.datetime.now()
             str_now_time = "{h}.{m}".format(h=now_time.hour, m=now_time.minute)
@@ -30,15 +32,19 @@ def single_mode():
 
 
 def multiple_mode():
-    for i in range(global_account.len):
+    n = global_account.len
+    for i in range(n):
+        logger.info("{i}/{n} Reporting...".format(i=i + 1, n=n))
         ar_main(global_account.studentID[i], global_account.password[i], global_account.sckey[i])
         sleep(1)
 
 
 def report_task():
     if global_config.getRaw('account', 'multiple_enable') != 'true':
+        logger.info("Single account mode.")
         single_mode()
     else:
+        logger.info("Multiple account mode.")
         multiple_mode()
 
 
