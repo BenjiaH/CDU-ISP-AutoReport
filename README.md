@@ -39,7 +39,7 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 - 重命名`account_template.csv`文件为`account.csv`。
 - 填写内容。
 - 目前尚不支持邮件推送，`method`和`email`可随意填写。
-- **注意：如果使用MS Excel打卡CSV文件时，`studentID`极有可能被MS Excel自动更改格式，导致软件运行错误。推荐使用文本编辑软件进行填写。**
+- **注意：如果使用MS Excel打开CSV文件时，`studentID`极有可能被MS Excel自动更改格式，导致软件运行错误。推荐使用文本编辑软件进行填写。**
 
 ### 4.4.运行脚本
 
