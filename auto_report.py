@@ -21,11 +21,11 @@ def get_captcha_code():
     return (res.text[captcha_index + 30: captcha_index + 34])
 
 
-def login(code):
+def login(studentID, password, code):
     url = "https://xsswzx.cdu.edu.cn/ispstu1-2/com_user/weblogin.asp"
     data = {
-        "username": global_config.getRaw('config', 'studentID'),
-        "userpwd": global_config.getRaw('config', 'password'),
+        "username": studentID,
+        "userpwd": password,
         "code": code,
         "login": "login",
         "checkcode": "1",
@@ -49,6 +49,8 @@ def get_id():
     else:
         logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
     res.encoding = "utf-8"
+    with open("left.html", "w", encoding="utf-8") as fp:
+        fp.write(res.text)
     try:
         id = re.findall(r"(?<=id=).*?(?=\">我的事务<)", res.text)[0]
     except Exception as e:
@@ -67,8 +69,8 @@ def report(id):
     return res.text
 
 
-def send_wechat(title, message):
-    url = 'http://sc.ftqq.com/{}.send'.format(global_config.getRaw('messenger', 'sckey'))
+def send_wechat(title, message, sckey):
+    url = 'http://sc.ftqq.com/{}.send'.format(sckey)
     payload = {
         "text": title,
         "desp": message
@@ -114,32 +116,29 @@ def is_reported(id):
         return False
 
 
-def main():
+def main(studentID, password, sckey):
     captcha_code = get_captcha_code()
-    login(captcha_code)
+    login(studentID, password, captcha_code)
     id = get_id()
     if not is_reported(id):
         report(id)
         if is_reported(id):
             logger.info(
-                "Report successfully. ID:{studentID}".format(studentID=global_config.getRaw('config', 'studentID')))
+                "Report successfully. ID:{studentID}".format(studentID=global_config.getRaw('account', 'studentID')))
             if global_config.getRaw('messenger', 'enable') == 'true':
                 message = "{time}打卡成功!学号：{studentID}".format(time=datetime.datetime.now(),
-                                                             studentID=global_config.getRaw('config', 'studentID'))
-                send_wechat("打卡成功!", message)
+                                                             studentID=global_config.getRaw('account', 'studentID'))
+                send_wechat("打卡成功!", message, sckey)
         else:
             logger.error(
-                "Report failed. ID:{studentID}".format(studentID=global_config.getRaw('config', 'studentID')))
+                "Report failed. ID:{studentID}".format(studentID=global_config.getRaw('account', 'studentID')))
             if global_config.getRaw('messenger', 'enable') == 'true':
                 message = "{time}打卡失败,请手动打卡!学号：{studentID}".format(time=datetime.datetime.now(),
-                                                             studentID=global_config.getRaw('config', 'studentID'))
-                send_wechat("打卡失败!", message)
+                                                                   studentID=global_config.getRaw('account',
+                                                                                                  'studentID'))
+                send_wechat("打卡失败!", message, sckey)
     else:
         if global_config.getRaw('messenger', 'enable') == 'true':
             message = "{time}打卡已存在!学号：{studentID}".format(time=datetime.datetime.now(),
-                                                          studentID=global_config.getRaw('config', 'studentID'))
-            send_wechat("打卡已存在!", message)
-
-
-if __name__ == '__main__':
-    main()
+                                                          studentID=global_config.getRaw('account', 'studentID'))
+            send_wechat("打卡已存在!", message, sckey)
