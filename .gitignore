@@ -1,6 +1,7 @@
 test/
 __pycache__/
 data/
+.idea/
 *.log
 config.ini
 account.csv
