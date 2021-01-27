@@ -131,6 +131,7 @@ def main(studentID, password, sckey):
                 message = "{time}打卡失败,请手动打卡!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
                 send_wechat("打卡失败!", message, sckey)
     else:
+        logger.info("Report is alread existed. ID:{studentID}".format(studentID=studentID))
         if global_config.getRaw('messenger', 'enable') == 'true':
             message = "{time}打卡已存在!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
             send_wechat("打卡已存在!", message, sckey)
