@@ -12,12 +12,12 @@ def main():
         logger.info("Set time mode disable.")
         report_task()
     else:
-        logger.info("Set time mode enable.")
+        str_set_time = global_config.getRaw('config', 'set_time')
+        logger.info("Set time mode enable. Set time:{set_time}.".format(set_time=str_set_time))
         logger.info("Waiting...")
         while True:
             now_time = datetime.datetime.now()
             str_now_time = "{h}.{m}".format(h=now_time.hour, m=now_time.minute)
-            str_set_time = global_config.getRaw('config', 'set_time')
             if str_now_time == str_set_time:
                 logger.info("Time arrived. Start to report.")
                 report_task()
