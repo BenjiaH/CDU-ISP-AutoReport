@@ -37,7 +37,7 @@ def multiple_mode():
     for i in range(n):
         logger.info("{i}/{n} Reporting... ID:{studentID}.".format(i=i + 1, n=n, studentID=global_account.studentID[i]))
         ar_main(global_account.studentID[i], global_account.password[i], global_account.sckey[i])
-        sleep(1)
+        sleep(1.5)
 
 
 def report_task():
