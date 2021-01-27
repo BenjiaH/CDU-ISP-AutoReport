@@ -8,7 +8,7 @@ from time import sleep
 
 
 def main():
-    if global_config.getRaw('timer', 'enable') != 'true':
+    if global_config.getRaw('config', 'timer_enable') != 'true':
         logger.info("Set time mode disable.")
         report_task()
     else:
@@ -17,7 +17,7 @@ def main():
         while True:
             now_time = datetime.datetime.now()
             str_now_time = "{h}.{m}".format(h=now_time.hour, m=now_time.minute)
-            str_set_time = global_config.getRaw('timer', 'set_time')
+            str_set_time = global_config.getRaw('config', 'set_time')
             if str_now_time == str_set_time:
                 logger.info("Time arrived. Start to report.")
                 report_task()
@@ -42,7 +42,7 @@ def multiple_mode():
 
 
 def report_task():
-    if global_config.getRaw('account', 'multiple_enable') != 'true':
+    if global_config.getRaw('config', 'multiple_enable') != 'true':
         logger.info("Single account mode.")
         single_mode()
     else:

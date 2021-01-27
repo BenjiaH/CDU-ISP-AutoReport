@@ -122,16 +122,16 @@ def main(studentID, password, sckey):
         report(id)
         if is_reported(id):
             logger.info("Report successfully. ID:{studentID}".format(studentID=studentID))
-            if global_config.getRaw('messenger', 'enable') == 'true':
+            if global_config.getRaw('config', 'wechat_enable') == 'true':
                 message = "{time}打卡成功!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
                 send_wechat("打卡成功!", message, sckey)
         else:
             logger.error("Report failed. ID:{studentID}".format(studentID=global_config.getRaw('account', 'studentID')))
-            if global_config.getRaw('messenger', 'enable') == 'true':
+            if global_config.getRaw('config', 'wechat_enable') == 'true':
                 message = "{time}打卡失败,请手动打卡!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
                 send_wechat("打卡失败!", message, sckey)
     else:
         logger.info("Report is alread existed. ID:{studentID}".format(studentID=studentID))
-        if global_config.getRaw('messenger', 'enable') == 'true':
+        if global_config.getRaw('config', 'wechat_enable') == 'true':
             message = "{time}打卡已存在!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
             send_wechat("打卡已存在!", message, sckey)
