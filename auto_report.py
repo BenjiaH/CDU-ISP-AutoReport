@@ -1,17 +1,16 @@
 import requests
 import datetime
 import re
+import security
 
 from urllib import parse
 from time import sleep
 from config import global_config
 from logger import logger
 
-session = requests.Session()
-host = "https://xsswzx.cdu.edu.cn/ispstu2"
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36 Edg/88.0.705.50",
-}
+session = 0
+host = 0
+headers = 0
 
 
 def get_captcha_code():
@@ -117,6 +116,12 @@ def is_reported(id):
 
 
 def main(studentID, password, sckey):
+    global session, host, headers
+    session = requests.Session()
+    host = security.get_random_host()
+    headers = {
+        "User-Agent": security.get_random_useragent()
+    }
     captcha_code = get_captcha_code()
     login(studentID, password, captcha_code)
     id = get_id(studentID)
