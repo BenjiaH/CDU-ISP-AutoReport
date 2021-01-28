@@ -38,10 +38,9 @@ def login(studentID, password, code):
         logger.info("POST request successfully. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
     else:
         logger.error("POST request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
-    return res.text
 
 
-def get_id():
+def get_id(studentID):
     url = "https://xsswzx.cdu.edu.cn/ispstu1-2/com_user/left.asp"
     res = session.get(url=url, headers=headers)
     if res.status_code == 200:
@@ -51,9 +50,11 @@ def get_id():
     res.encoding = "utf-8"
     try:
         id = re.findall(r"(?<=id=).*?(?=\">我的事务<)", res.text)[0]
+        logger.info("Login successfully. ID:{id}.".format(id=studentID))
         return id
     except Exception as e:
         logger.error("Regular expression match failed.[{e}]".format(e=e))
+        logger.error("Login failed. ID:{id}.".format(id=studentID))
 
 
 def report(id):
@@ -117,7 +118,7 @@ def is_reported(id):
 def main(studentID, password, sckey):
     captcha_code = get_captcha_code()
     login(studentID, password, captcha_code)
-    id = get_id()
+    id = get_id(studentID)
     if not is_reported(id):
         report(id)
         if is_reported(id):
