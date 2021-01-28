@@ -15,6 +15,10 @@ class Config(object):
         self._configRaw = configparser.RawConfigParser()
         self._configRaw.read(self._path, encoding='utf-8-sig')
 
+    def refresh(self):
+        self._config.read(self._path, encoding='utf-8-sig')
+        self._configRaw.read(self._path, encoding='utf-8-sig')
+
     def get(self, section, name):
         return self._config.get(section, name)
 

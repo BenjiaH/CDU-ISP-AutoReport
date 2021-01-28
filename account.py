@@ -15,6 +15,12 @@ class Account(object):
         self._all_info = self.get_info()
         self._len = len(self._all_info[0])
 
+    def refresh(self):
+        self._csv_file = open(self._path, encoding='utf-8')
+        self._account = csv.reader(self._csv_file)
+        self._all_info = self.get_info()
+        self._len = len(self._all_info[0])
+
     def get_info(self):
         ret = [[], [], [], [], []]
         for item in self._account:
