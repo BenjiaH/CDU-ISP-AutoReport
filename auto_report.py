@@ -8,13 +8,14 @@ from config import global_config
 from logger import logger
 
 session = requests.Session()
+host = "https://xsswzx.cdu.edu.cn/ispstu2"
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36 Edg/88.0.705.50",
 }
 
 
 def get_captcha_code():
-    url = "https://xsswzx.cdu.edu.cn/ispstu1-2/com_user/weblogin.asp"
+    url = "{host}/com_user/weblogin.asp".format(host=host)
     res = session.get(url=url, headers=headers)
     res.encoding = "utf-8"
     captcha_index = res.text.find('placeholder="验证码"')
@@ -22,7 +23,7 @@ def get_captcha_code():
 
 
 def login(studentID, password, code):
-    url = "https://xsswzx.cdu.edu.cn/ispstu1-2/com_user/weblogin.asp"
+    url = "{host}/com_user/weblogin.asp".format(host=host)
     data = {
         "username": studentID,
         "userpwd": password,
@@ -41,7 +42,7 @@ def login(studentID, password, code):
 
 
 def get_id(studentID):
-    url = "https://xsswzx.cdu.edu.cn/ispstu1-2/com_user/left.asp"
+    url = "{host}/com_user/left.asp".format(host=host)
     res = session.get(url=url, headers=headers)
     if res.status_code == 200:
         logger.info("GET request successfully. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
@@ -58,8 +59,8 @@ def get_id(studentID):
 
 
 def report(id):
-    url = "https://xsswzx.cdu.edu.cn/ispstu1-2/com_user/project_addx.asp?id={id}&id2={id2}".format(
-        id=id, id2=get_date_url())
+    url = "{host}/com_user/project_addx.asp?id={id}&id2={id2}".format(
+        host=host, id=id, id2=get_date_url())
     res = session.get(url=url, headers=headers)
     if res.status_code == 200:
         logger.info("GET request successfully. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
@@ -92,8 +93,8 @@ def get_date_url():
 
 
 def is_reported(id):
-    url = "https://xsswzx.cdu.edu.cn/ispstu1-2/com_user/project.asp?id={id}".format(
-        id=id)
+    url = "{host}/com_user/project.asp?id={id}".format(
+        host=host, id=id)
     res = session.get(url=url, headers=headers)
     if res.status_code == 200:
         logger.info("GET request successfully. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
