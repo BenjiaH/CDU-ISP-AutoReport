@@ -9,6 +9,7 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 - 定时执行
 - 多账户
 - 实时刷新配置文件
+- 高安全性：随机主机、随机`User-Agent`
 
 ## 2.TODO
 
@@ -16,7 +17,7 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 - [X] 定时执行
 - [X] 多账户
 - [ ] 邮件推送
-- [ ] 增加安全性：随机主机、随机`User-Agent`
+- [X] 增加安全性：随机主机、随机`User-Agent`
 
 ## 3.安装第三方库
 
