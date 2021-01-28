@@ -8,6 +8,7 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 - Wechat推送结果
 - 定时执行
 - 多账户
+- 实时刷新配置文件
 
 ## 2.TODO
 
@@ -15,6 +16,7 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 - [X] 定时执行
 - [X] 多账户
 - [ ] 邮件推送
+- [ ] 增加安全性：随机主机、随机`User-Agent`
 
 ## 3.安装第三方库
 
@@ -45,9 +47,7 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 
 `python main.py`
 
-或
-
-运行`run.bat`
+- 在`Windows`平台下，你还可以直接运行`run.bat`
 
 ## 5.托管
 
