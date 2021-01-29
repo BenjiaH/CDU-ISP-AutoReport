@@ -7,6 +7,7 @@ from urllib import parse
 from time import sleep
 from config import global_config
 from logger import logger
+from bot_email import email
 
 session = 0
 host = 0
@@ -115,7 +116,7 @@ def is_reported(id):
         return False
 
 
-def main(studentID, password, sckey):
+def main(studentID, password, wechat_push, email_push ,sckey="", email_rever=""):
     global session, host, headers
     session = requests.Session()
     host = security.get_random_host()
@@ -129,16 +130,22 @@ def main(studentID, password, sckey):
         report(id)
         if is_reported(id):
             logger.info("Report successfully. ID:{studentID}".format(studentID=studentID))
-            if global_config.getRaw('config', 'wechat_enable') == 'true':
-                message = "{time}打卡成功!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
+            message = "{time}打卡成功!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
+            if wechat_push == "1" or wechat_push == "true":
                 send_wechat("打卡成功!", message, sckey)
+            if email_push == "1" or email_push == "true":
+                email.send("打卡成功!", message, [global_config.getRaw('messenger', 'email')])
         else:
             logger.error("Report failed. ID:{studentID}".format(studentID=global_config.getRaw('account', 'studentID')))
-            if global_config.getRaw('config', 'wechat_enable') == 'true':
-                message = "{time}打卡失败,请手动打卡!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
+            message = "{time}打卡失败,请手动打卡!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
+            if wechat_push == "1" or wechat_push == "true":
                 send_wechat("打卡失败!", message, sckey)
+            if email_push == "1" or email_push == "true":
+                email.send("打卡失败!", message, [global_config.getRaw('messenger', 'email')])
     else:
         logger.info("Report is alread existed. ID:{studentID}".format(studentID=studentID))
-        if global_config.getRaw('config', 'wechat_enable') == 'true':
-            message = "{time}打卡已存在!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
+        message = "{time}打卡已存在!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
+        if wechat_push == "1" or wechat_push == "true":
             send_wechat("打卡已存在!", message, sckey)
+        if email_push == "1" or email_push == "true":
+            email.send("打卡已存在!", message, [email_rever])

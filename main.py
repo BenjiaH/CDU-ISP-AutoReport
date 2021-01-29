@@ -1,10 +1,11 @@
 import datetime
 
 from logger import logger
+logger.info("Software started.")
 from config import global_config
+from time import sleep, time
 from account import global_account
 from auto_report import main as ar_main
-from time import sleep, time
 
 
 def main():
@@ -39,16 +40,19 @@ def main():
 
 
 def single_mode():
-    ar_main(global_config.getRaw('account', 'studentID'), global_config.getRaw('account', 'password'),
-            global_config.getRaw('messenger', 'sckey'))
+    ar_main(studentID=global_config.getRaw('account', 'studentID'), password=global_config.getRaw('account', 'password'),
+            wechat_push=global_config.getRaw('config', 'wechat_enable'), email_push=global_config.getRaw('config', 'email_enable'), 
+            sckey=global_config.getRaw('messenger', 'sckey'),email_rever=global_config.getRaw('messenger', 'email'))
 
 
 def multiple_mode():
     global_account.refresh()
-    n = global_account.len
+    n = global_account.row
     for i in range(n):
         logger.info("{i}/{n} Reporting... ID:{studentID}.".format(i=i + 1, n=n, studentID=global_account.studentID[i]))
-        ar_main(global_account.studentID[i], global_account.password[i], global_account.sckey[i])
+        ar_main(studentID = global_account.studentID[i], password=global_account.password[i],
+                wechat_push=global_account.wechat_push[i], email_push=global_account.email_push[i],
+                sckey=global_account.sckey[i],email_rever=global_account.email[i])
         sleep(1.5)
 
 
@@ -65,5 +69,4 @@ def report_task():
 
 
 if __name__ == '__main__':
-    logger.info("Software started.")
     main()
