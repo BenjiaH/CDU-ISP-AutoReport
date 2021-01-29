@@ -18,12 +18,14 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 
 - 以任何方式查看此项目的人或直接或间接使用`CDU-ISP-AutoReport`项目的任何脚本的使用者都应仔细阅读此声明。本仓库拥有者保留随时更改或补充此免责声明的权利。一旦使用并复制了任何相关脚本或`CDU-ISP-AutoReport`项目，则视为您已接受此免责声明。
   
-- 您必须在下载后的24小时内从计算机或手机中完全删除以上内容。  
+- 您必须在下载后的24小时内从计算机或手机中完全删除以上内容。
+
+- 本项目遵循[`GPL-3.0 License`](LICENSE)协议，如果本特别声明与`GPL-3.0 License`协议有冲突之处，以本特别声明为准。
 
 ## 1.Features
 
 - 自动打卡
-- Wechat推送结果
+- Wechat、邮件推送结果
 - 定时执行
 - 多账户
 - 实时刷新配置文件
@@ -34,7 +36,7 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 - [X] Wechat推送更多内容
 - [X] 定时执行
 - [X] 多账户
-- [ ] 邮件推送
+- [X] 邮件推送
 - [X] 增加安全性：随机主机、随机`User-Agent`
 
 ## 3.安装第三方库
@@ -58,8 +60,8 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 ### 4.3.填写`account.csv`(可选)
 
 - 重命名`account_template.csv`文件为`account.csv`。
-- 填写内容。
-- 目前尚不支持邮件推送，`method`和`email`可随意填写。
+- 仿照示例填写内容。
+- `wechat_push`值为`1`则代表当前账户选择微信推送，`email_push`同理。
 - **注意：如果使用MS Excel打开CSV文件时，`studentID`极有可能被MS Excel自动更改格式，导致软件运行错误。推荐使用文本编辑软件进行填写。**
 
 ### 4.4.运行脚本
