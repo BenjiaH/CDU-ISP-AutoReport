@@ -5,4 +5,5 @@ data/
 *.log
 config.ini
 account.csv
-*副本.csv
+*副本*.csv
+info.csv
