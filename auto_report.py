@@ -134,18 +134,22 @@ def main(studentID, password, wechat_push, email_push ,sckey="", email_rever="")
             if wechat_push == "1" or wechat_push == "true":
                 send_wechat("打卡成功!", message, sckey)
             if email_push == "1" or email_push == "true":
-                email.send("打卡成功!", message, [global_config.getRaw('messenger', 'email')])
+                email.send("打卡成功!", message, [email_rever])
         else:
-            logger.error("Report failed. ID:{studentID}".format(studentID=global_config.getRaw('account', 'studentID')))
+            logger.error("Report failed. ID:{studentID}".format(studentID=studentID))
             message = "{time}打卡失败,请手动打卡!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
-            if wechat_push == "1" or wechat_push == "true":
-                send_wechat("打卡失败!", message, sckey)
-            if email_push == "1" or email_push == "true":
-                email.send("打卡失败!", message, [global_config.getRaw('messenger', 'email')])
+            if global_config.getRaw('config', 'wechat_enable') == "true":
+                if wechat_push == "1" or wechat_push == "true":
+                    send_wechat("打卡失败!", message, sckey)
+            if global_config.getRaw('config', 'email_enable') == "true":
+                if email_push == "1" or email_push == "true":
+                    email.send("打卡失败!", message, [email_rever])
     else:
         logger.info("Report is alread existed. ID:{studentID}".format(studentID=studentID))
         message = "{time}打卡已存在!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
-        if wechat_push == "1" or wechat_push == "true":
-            send_wechat("打卡已存在!", message, sckey)
-        if email_push == "1" or email_push == "true":
-            email.send("打卡已存在!", message, [email_rever])
+        if global_config.getRaw('config', 'wechat_enable') == "true":
+            if wechat_push == "1" or wechat_push == "true":
+                send_wechat("打卡已存在!", message, sckey)
+        if global_config.getRaw('config', 'email_enable') == "true":
+            if email_push == "1" or email_push == "true":
+                email.send("打卡已存在!", message, [email_rever])
