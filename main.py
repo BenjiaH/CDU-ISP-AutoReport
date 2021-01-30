@@ -17,7 +17,10 @@ def main():
         while True:
             global_config.refresh()
             str_set_time = global_config.getRaw('config', 'set_time')
-            logger.info("Set time mode enable. Set time:{set_time}.".format(set_time=str_set_time))
+            now_time = datetime.datetime.now()
+            str_now_time = "{h}.{m}".format(h=now_time.hour, m=now_time.minute)
+            logger.info("Set time mode enable. Now_time:{now_time}. Set time:{set_time}."
+                        .format(now_time=str_now_time, set_time=str_set_time))
             logger.info("Waiting...")
             while True:
                 global_config.refresh()
