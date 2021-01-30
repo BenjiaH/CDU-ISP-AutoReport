@@ -7,7 +7,7 @@ from urllib import parse
 from time import sleep
 from config import global_config
 from logger import logger
-from bot_email import email
+from push import global_push
 
 session = 0
 host = 0
@@ -69,22 +69,6 @@ def report(id):
     return res.text
 
 
-def send_wechat(title, message, sckey):
-    url = 'http://sc.ftqq.com/{}.send'.format(sckey)
-    payload = {
-        "text": title,
-        "desp": message
-    }
-    res = requests.get(url=url, params=payload)
-    if res.status_code == 200:
-        logger.info(
-            "Message send to Wechat successfully. Payload:{payload}. Status code:{code}.".format(payload=payload,
-                                                                                                 code=res.status_code))
-    else:
-        logger.error("Message send to Wechat failed. Payload:{payload}. Status code:{code}.".format(payload=payload,
-                                                                                                    code=res.status_code))
-
-
 def get_date_url():
     today = datetime.datetime.now()
     date_ZH = "{y}年{m}月{d}日".format(y=today.year, m=today.month, d=today.day)
@@ -130,26 +114,31 @@ def main(studentID, password, wechat_push, email_push ,sckey="", email_rever="")
         report(id)
         if is_reported(id):
             logger.info("Report successfully. ID:{studentID}".format(studentID=studentID))
+            title = "打卡成功!"
             message = "{time}打卡成功!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
-            if wechat_push == "1" or wechat_push == "true":
-                send_wechat("打卡成功!", message, sckey)
-            if email_push == "1" or email_push == "true":
-                email.send("打卡成功!", message, [email_rever])
+            if global_config.getRaw('config', 'wechat_enable') == "true":
+                if wechat_push == "1" or wechat_push == "true":
+                    global_push.wechat(title, message, sckey)
+            if global_config.getRaw('config', 'email_enable') == "true":
+                if email_push == "1" or email_push == "true":
+                    global_push.bot_email.send(title, message, [email_rever])
         else:
             logger.error("Report failed. ID:{studentID}".format(studentID=studentID))
+            title = "打卡失败!"
             message = "{time}打卡失败,请手动打卡!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
             if global_config.getRaw('config', 'wechat_enable') == "true":
                 if wechat_push == "1" or wechat_push == "true":
-                    send_wechat("打卡失败!", message, sckey)
+                    global_push.wechat(title, message, sckey)
             if global_config.getRaw('config', 'email_enable') == "true":
                 if email_push == "1" or email_push == "true":
-                    email.send("打卡失败!", message, [email_rever])
+                    global_push.bot_email.send(title, message, [email_rever])
     else:
         logger.info("Report is alread existed. ID:{studentID}".format(studentID=studentID))
+        title = "打卡已存在!"
         message = "{time}打卡已存在!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
         if global_config.getRaw('config', 'wechat_enable') == "true":
             if wechat_push == "1" or wechat_push == "true":
-                send_wechat("打卡已存在!", message, sckey)
+                global_push.wechat(title, message, sckey)
         if global_config.getRaw('config', 'email_enable') == "true":
             if email_push == "1" or email_push == "true":
-                email.send("打卡已存在!", message, [email_rever])
+                global_push.bot_email.send(title, message, [email_rever])

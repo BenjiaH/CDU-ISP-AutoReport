@@ -1,13 +1,13 @@
 import smtplib
+import requests
 
 from email.mime.text import MIMEText
 from config import global_config
 from logger import logger
 
 
-class Email():
-
-    def __init__(self, mail_user, mail_host, mail_pwd, ):
+class Email:
+    def __init__(self, mail_user, mail_host, mail_pwd):
         if global_config.getRaw('config', 'email_enable') == 'false':
             return
 
@@ -57,8 +57,27 @@ class Email():
                 logger.error("Email not login.")
 
 
-email = Email(
-    mail_user=global_config.getRaw('bot_email', 'email_user'),
-    mail_host=global_config.getRaw('bot_email', 'email_host'),
-    mail_pwd=global_config.getRaw('bot_email', 'email_pwd'),
-)
+class Push():
+    def __init__(self):
+        if global_config.getRaw('config', 'email_enable') == 'true':
+            self._bot_email_user = global_config.getRaw('bot_email', 'email_user')
+            self._bot_email_host = global_config.getRaw('bot_email', 'email_host')
+            self._bot_email_pwd = global_config.getRaw('bot_email', 'email_pwd')
+            self.bot_email = Email(self._bot_email_user, self._bot_email_host, self._bot_email_pwd)
+
+    def wechat(self, title, message, sckey):
+        url = 'http://sc.ftqq.com/{}.send'.format(sckey)
+        payload = {
+            "text": title,
+            "desp": message
+        }
+        res = requests.get(url=url, params=payload)
+        if res.status_code == 200:
+            logger.info("Message send to Wechat successfully. Payload:{payload}. Status code:{code}."
+                        .format(payload=payload, code=res.status_code))
+        else:
+            logger.error("Message send to Wechat failed. Payload:{payload}. Status code:{code}."
+                         .format(payload=payload, code=res.status_code))
+
+
+global_push = Push()
