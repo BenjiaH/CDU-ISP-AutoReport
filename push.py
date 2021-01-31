@@ -37,9 +37,9 @@ class Email:
         self.smtpObj = smtpObj
 
     def send(self, title, msg, receiver: list):
+        logger.info("Receiver:{receiver}.".format(receiver=receiver[0]))
         while True:
             if self.is_login:
-                logger.info("Receiver:{receiver}.".format(receiver=receiver[0]))
                 message = MIMEText(msg, "plain", "utf-8")
                 message['Subject'] = title
                 message['From'] = self.mail_user
@@ -50,7 +50,8 @@ class Email:
                     break
                 except Exception as e:
                     logger.error("Email send failed.[{e}]".format(e=e))
-                    if str(e) == "please run connect() first":
+                    error_msg = ["please run connect() first", "Connection unexpectedly closed"]
+                    if str(e) in error_msg:
                         self.is_login = False
                         self.relogin()
             else:
