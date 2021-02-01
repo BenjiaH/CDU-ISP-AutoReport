@@ -86,6 +86,10 @@ def is_reported(id):
         logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         return
     res.encoding = "utf-8"
+    # host refreshes records every months(1st day of this month)
+    if "还没有登记记录" in res.text:
+        logger.info("Report is not existed.")
+        return False
     try:
         latest_date = re.findall(r"(?<=<td class=\"tdmenu\"><div align=\"center\">).*?(?=</div></td>)", res.text)[0]
     except Exception as e:
