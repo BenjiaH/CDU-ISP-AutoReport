@@ -59,6 +59,8 @@ def get_id(studentID):
 
 
 def report(id):
+    if id == None:
+        return
     url = "{host}/com_user/project_addx.asp?id={id}&id2={id2}".format(
         host=host, id=id, id2=get_date_url())
     res = session.get(url=url, headers=headers)
@@ -77,6 +79,8 @@ def get_date_url():
 
 
 def is_reported(id):
+    if id == None:
+        return
     url = "{host}/com_user/project.asp?id={id}".format(
         host=host, id=id)
     res = session.get(url=url, headers=headers)
