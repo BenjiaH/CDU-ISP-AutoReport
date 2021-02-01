@@ -1,4 +1,5 @@
 import datetime
+import security
 
 from logger import logger
 logger.info("Software started.")
@@ -61,6 +62,7 @@ def multiple_mode():
 
 def report_task():
     start_time = time()
+    security.refresh_hosts()
     if global_config.getRaw('config', 'multiple_enable') != 'true':
         logger.info("Single account mode.")
         single_mode()

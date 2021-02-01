@@ -1,4 +1,8 @@
 import random
+import requests
+import copy
+
+from logger import logger
 
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
@@ -54,6 +58,7 @@ USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.14 (KHTML, like Gecko) Chrome/24.0.1292.0 Safari/537.14"
     ]
 
+
 HOST = [
     "https://xsswzx.cdu.edu.cn/ispstu",
     "https://xsswzx.cdu.edu.cn/ispstu1-1",
@@ -66,12 +71,37 @@ HOST = [
     "https://xsswzx.cdu.edu.cn/ispstu3-2",
     "https://xsswzx.cdu.edu.cn/ispstu4",
     "https://xsswzx.cdu.edu.cn/ispstu4-1",
-    "https://xsswzx.cdu.edu.cn/ispstu4-3",
+    "https://xsswzx.cdu.edu.cn/ispstu4-3"
 ]
+
+# deep copy
+host = copy.deepcopy(HOST)
+
+
+def get_host_status(host):
+    url = "{host}/com_user/weblogin.asp".format(host=host)
+    res = requests.get(url=url)
+    res.encoding = "utf-8"
+    if "updatenow.asp" in res.text:
+        return False
+    else:
+        return True
+
+
+def refresh_hosts():
+    global host
+    # deep copy
+    host = copy.deepcopy(HOST)
+    for i in host:
+        if not get_host_status(i):
+            host.remove(i)
+    logger.info("Hosts refreshed.")
+    return host
 
 
 def get_random_useragent():
     return random.choice(USER_AGENTS)
 
+
 def get_random_host():
-    return random.choice(HOST)
+    return random.choice(host)
