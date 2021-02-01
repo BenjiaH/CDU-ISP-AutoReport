@@ -90,6 +90,7 @@ def get_host_status(host):
 
 def refresh_hosts():
     global host
+    logger.info("Hosts refreshing...")
     # deep copy
     host = copy.deepcopy(HOST)
     for i in host:
