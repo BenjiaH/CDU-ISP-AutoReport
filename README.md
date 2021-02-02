@@ -33,15 +33,17 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 
 ## 2.TODO
 
-- [X] Wechat推送更多内容
-- [X] 定时执行
-- [X] 多账户
-- [X] 邮件推送
-- [X] 增加安全性：随机主机、随机`User-Agent`
+- [X] ~~Wechat推送更多内容~~
+- [X] ~~定时执行~~
+- [X] ~~多账户~~
+- [X] ~~邮件推送~~
+- [X] ~~增加安全性：随机主机、随机`User-Agent`~~
 
-## 3.安装第三方库
+## 3.安装依赖
 
-`pip install -r requirements.txt`
+```bash
+pip install -r requirements.txt
+```
 
 ## 4.使用方法
 
@@ -66,10 +68,22 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 
 ### 4.4.运行脚本
 
-`python main.py`
+```bash
+python main.py
+```
 
-- 在`Windows`平台下，你可以直接运行[`run.bat`](run.bat)
-- 在`Linux`平台下，你可以直接运行[`run.sh`](run.sh)
+- 在`Windows`平台下，你可以运行[`run.bat`](run.bat)
+
+```bash
+.\run.bat
+```
+
+- 在`Linux`平台下，你可以运行[`run.sh`](run.sh)
+
+```bash
+chmod 777 run.sh
+.\run.sh
+```
 
 ## 5.托管
 
