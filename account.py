@@ -8,8 +8,8 @@ class Account(object):
     def __init__(self, csv_file="account.csv"):
         self._path = os.path.join(os.getcwd(), csv_file)
         if not os.path.exists(self._path):
-            logger.error("No such file: {file}".format(file=csv_file))
-            raise FileNotFoundError("No such file: account.csv")
+            logger.error("No such file:{file}".format(file=csv_file))
+            raise FileNotFoundError("No such file:{file}".format(file=csv_file))
         self._csv_file = open(self._path, encoding='utf-8')
         self._account = csv.reader(self._csv_file)
         self._row = sum(1 for line in open(self._path, encoding='utf-8')) - 1
@@ -66,4 +66,4 @@ class Account(object):
         return self._col
 
 
-global_account = Account()
+global_account = Account("account.csv")
