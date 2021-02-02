@@ -44,6 +44,7 @@ def main():
 
 
 def single_mode():
+    logger.info("Reporting... ID:{studentID}.".format(studentID=global_config.getRaw('account', 'studentID')))
     ar_main(studentID=global_config.getRaw('account', 'studentID'), password=global_config.getRaw('account', 'password'),
             wechat_push=global_config.getRaw('config', 'wechat_enable'), email_push=global_config.getRaw('config', 'email_enable'), 
             sckey=global_config.getRaw('messenger', 'sckey'),email_rever=global_config.getRaw('messenger', 'email'))
