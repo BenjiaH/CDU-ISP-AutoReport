@@ -2,10 +2,14 @@ import os
 import csv
 
 from logger import logger
+from config import global_config
 
 
 class Account(object):
     def __init__(self, csv_file="account.csv"):
+        if global_config.getRaw('config', 'multiple_enable') == 'false':
+            return
+        
         self._path = os.path.join(os.getcwd(), csv_file)
         if not os.path.exists(self._path):
             logger.error("No such file:{file}".format(file=csv_file))
@@ -64,6 +68,5 @@ class Account(object):
     @property
     def col(self):
         return self._col
-
 
 global_account = Account("account.csv")
