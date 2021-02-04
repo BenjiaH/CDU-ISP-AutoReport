@@ -19,13 +19,13 @@ def get_captcha_code():
     res = session.get(url=url, headers=headers)
     res.encoding = "utf-8"
     captcha_index = res.text.find('placeholder="验证码"')
-    return (res.text[captcha_index + 30: captcha_index + 34])
+    return res.text[captcha_index + 30: captcha_index + 34]
 
 
-def login(studentID, password, code):
+def login(uid, password, code):
     url = "{host}/com_user/weblogin.asp".format(host=host)
     data = {
-        "username": studentID,
+        "username": uid,
         "userpwd": password,
         "code": code,
         "login": "login",
@@ -35,58 +35,53 @@ def login(studentID, password, code):
         "m5": "1",
     }
     res = session.post(url=url, headers=headers, data=data)
-    if res.status_code == 200:
-        logger.info("POST request successfully. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
-    else:
+    if res.status_code != 200:
         logger.error("POST request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
 
 
-def get_id(studentID):
+def get_id():
     url = "{host}/com_user/left.asp".format(host=host)
     res = session.get(url=url, headers=headers)
-    if res.status_code == 200:
-        logger.info("GET request successfully. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
-    else:
+    if res.status_code != 200:
         logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
     res.encoding = "utf-8"
     try:
         id = re.findall(r"(?<=id=).*?(?=\">我的事务<)", res.text)[0]
-        logger.info("Login successfully. ID:{id}.".format(id=studentID))
+        logger.info("Login successfully.")
+        logger.info("Get id:{id}.".format(id=id))
         return id
     except Exception as e:
+        id = 0
         logger.error("Regular expression match failed.[{e}]".format(e=e))
-        logger.error("Login failed. ID:{id}.".format(id=studentID))
+        logger.error("Login failed.")
+        return id
 
 
 def report(id):
-    if id == None:
+    if id == 0:
         return
     url = "{host}/com_user/project_addx.asp?id={id}&id2={id2}".format(
         host=host, id=id, id2=get_date_url())
     res = session.get(url=url, headers=headers)
-    if res.status_code == 200:
-        logger.info("GET request successfully. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
-    else:
+    if res.status_code != 200:
         logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
-    return res.text
 
 
 def get_date_url():
     today = datetime.datetime.now()
     date_ZH = "{y}年{m}月{d}日".format(y=today.year, m=today.month, d=today.day)
     date_url = parse.quote(date_ZH)
+    logger.info("Get id2:{id2}.".format(id2=date_url))
     return date_url
 
 
 def is_reported(id):
-    if id == None:
+    if id == 0:
         return
     url = "{host}/com_user/project.asp?id={id}".format(
         host=host, id=id)
     res = session.get(url=url, headers=headers)
-    if res.status_code == 200:
-        logger.info("GET request successfully. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
-    else:
+    if res.status_code != 200:
         logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         return
     res.encoding = "utf-8"
@@ -98,17 +93,18 @@ def is_reported(id):
         latest_date = re.findall(r"(?<=<td class=\"tdmenu\"><div align=\"center\">).*?(?=</div></td>)", res.text)[0]
     except Exception as e:
         logger.error("Regular expression match failed.[{e}]".format(e=e))
+        return
     today = datetime.datetime.now()
-    date_ZH = "{y}年{m}月{d}日".format(y=today.year, m=today.month, d=today.day)
-    if latest_date == date_ZH:
-        logger.info("Report is alread existed.")
+    today_date = "{y}年{m}月{d}日".format(y=today.year, m=today.month, d=today.day)
+    if latest_date == today_date:
+        logger.info("Report is existed.")
         return True
     else:
         logger.info("Report is not existed.")
         return False
 
 
-def main(studentID, password, wechat_push, email_push ,sckey="", email_rever=""):
+def main(uid, password):
     global session, host, headers
     session = requests.Session()
     host = security.get_random_host()
@@ -116,37 +112,16 @@ def main(studentID, password, wechat_push, email_push ,sckey="", email_rever="")
         "User-Agent": security.get_random_useragent()
     }
     captcha_code = get_captcha_code()
-    login(studentID, password, captcha_code)
-    id = get_id(studentID)
-    if not is_reported(id):
+    login(uid, password, captcha_code)
+    id = get_id()
+    if is_reported(id):
+        logger.info("Report is already existed. ID:{uid}".format(uid=uid))
+        return 0
+    elif not is_reported(id):
         report(id)
         if is_reported(id):
-            logger.info("Report successfully. ID:{studentID}".format(studentID=studentID))
-            title = "打卡成功!"
-            message = "{time}打卡成功!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
-            if global_config.getRaw('config', 'wechat_enable') == "true":
-                if wechat_push == "1" or wechat_push == "true":
-                    global_push.wechat(title, message, sckey)
-            if global_config.getRaw('config', 'email_enable') == "true":
-                if email_push == "1" or email_push == "true":
-                    global_push.bot_email.send(title, message, [email_rever])
-        else:
-            logger.error("Report failed. ID:{studentID}".format(studentID=studentID))
-            title = "打卡失败!"
-            message = "{time}打卡失败,请手动打卡!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
-            if global_config.getRaw('config', 'wechat_enable') == "true":
-                if wechat_push == "1" or wechat_push == "true":
-                    global_push.wechat(title, message, sckey)
-            if global_config.getRaw('config', 'email_enable') == "true":
-                if email_push == "1" or email_push == "true":
-                    global_push.bot_email.send(title, message, [email_rever])
-    else:
-        logger.info("Report is alread existed. ID:{studentID}".format(studentID=studentID))
-        title = "打卡已存在!"
-        message = "{time}打卡已存在!学号：{studentID}".format(time=datetime.datetime.now(), studentID=studentID)
-        if global_config.getRaw('config', 'wechat_enable') == "true":
-            if wechat_push == "1" or wechat_push == "true":
-                global_push.wechat(title, message, sckey)
-        if global_config.getRaw('config', 'email_enable') == "true":
-            if email_push == "1" or email_push == "true":
-                global_push.bot_email.send(title, message, [email_rever])
+            logger.info("Report successfully. ID:{uid}".format(uid=uid))
+            return 1
+        elif not is_reported(id):
+            logger.error("Report failed. ID:{uid}".format(uid=uid))
+            return 2
