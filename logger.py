@@ -18,3 +18,4 @@ def set_logger():
 
 
 set_logger()
+logger.info("Logger started.")
