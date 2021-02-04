@@ -37,7 +37,7 @@ class Email:
         self.smtpObj = smtpObj
 
     def send(self, title, msg, receiver: list):
-        logger.info("Receiver:{receiver}.".format(receiver=receiver[0]))
+        logger.info("Email receiver:{receiver}.".format(receiver=receiver[0]))
         while True:
             if self.is_login:
                 message = MIMEText(msg, "plain", "utf-8")
@@ -74,10 +74,10 @@ class Push():
         }
         res = requests.get(url=url, params=payload)
         if res.status_code == 200:
-            logger.info("Message send to Wechat successfully. Payload:{payload}. Status code:{code}."
+            logger.info("Wechat push successfully. Status code:{code}."
                         .format(payload=payload, code=res.status_code))
         else:
-            logger.error("Message send to Wechat failed. Payload:{payload}. Status code:{code}."
+            logger.error("Wechat push failed. Status code:{code}."
                          .format(payload=payload, code=res.status_code))
 
 
