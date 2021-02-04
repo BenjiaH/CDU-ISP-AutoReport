@@ -105,4 +105,6 @@ def get_random_useragent():
 
 
 def get_random_host():
-    return random.choice(host)
+    ret_host = random.choice(host)
+    logger.info("Random host:{ret_host}.".format(ret_host=ret_host))
+    return ret_host
