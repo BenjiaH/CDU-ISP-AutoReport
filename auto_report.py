@@ -4,10 +4,8 @@ import re
 import security
 
 from urllib import parse
-from time import sleep
-from config import global_config
 from logger import logger
-from push import global_push
+
 
 session = 0
 host = 0
