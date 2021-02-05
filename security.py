@@ -60,18 +60,18 @@ USER_AGENTS = [
 
 
 HOST = [
-    "https://xsswzx.cdu.edu.cn/ispstu",
-    "https://xsswzx.cdu.edu.cn/ispstu1-1",
-    "https://xsswzx.cdu.edu.cn/ispstu1-2",
-    "https://xsswzx.cdu.edu.cn/ispstu2",
-    "https://xsswzx.cdu.edu.cn/ispstu2-1",
-    "https://xsswzx.cdu.edu.cn/ispstu2-2",
-    "https://xsswzx.cdu.edu.cn/ispstu3",
-    "https://xsswzx.cdu.edu.cn/ispstu3-1",
-    "https://xsswzx.cdu.edu.cn/ispstu3-2",
-    "https://xsswzx.cdu.edu.cn/ispstu4",
-    "https://xsswzx.cdu.edu.cn/ispstu4-1",
-    "https://xsswzx.cdu.edu.cn/ispstu4-3"
+    "ispstu",
+    "ispstu1-1",
+    "ispstu1-2",
+    "ispstu2",
+    "ispstu2-1",
+    "ispstu2-2",
+    "ispstu3",
+    "ispstu3-1",
+    "ispstu3-2",
+    "ispstu4",
+    "ispstu4-1",
+    "ispstu4-3"
 ]
 
 # deep copy
@@ -79,7 +79,7 @@ host = copy.deepcopy(HOST)
 
 
 def get_host_status(host):
-    url = "{host}/com_user/weblogin.asp".format(host=host)
+    url = "https://xsswzx.cdu.edu.cn/{host}/com_user/weblogin.asp".format(host=host)
     res = requests.get(url=url)
     res.encoding = "utf-8"
     if "updatenow.asp" in res.text:
@@ -97,6 +97,7 @@ def refresh_hosts():
         if not get_host_status(i):
             host.remove(i)
     logger.info("Hosts refreshed.")
+    logger.info("Available host:{host}.".format(host=host))
     return host
 
 
