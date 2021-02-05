@@ -1,12 +1,12 @@
 import os
 import csv
 
-from logger import logger
-from config import global_config
+from common.logger import logger
+from common.config import global_config
 
 
 class Account(object):
-    def __init__(self, csv_file="account.csv"):
+    def __init__(self, csv_file="config/account.csv"):
         if global_config.getRaw('config', 'multiple_enable') == 'false':
             return
 
@@ -70,4 +70,4 @@ class Account(object):
         return self._col
 
 
-global_account = Account("account.csv")
+global_account = Account("config/account.csv")

@@ -1,10 +1,10 @@
 import requests
 import datetime
 import re
-import security
 
+from common import security
 from urllib import parse
-from logger import logger
+from common.logger import logger
 
 session = 0
 host = 0

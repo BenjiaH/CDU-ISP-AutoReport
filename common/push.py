@@ -2,8 +2,8 @@ import smtplib
 import requests
 
 from email.mime.text import MIMEText
-from config import global_config
-from logger import logger
+from common.config import global_config
+from common.logger import logger
 
 
 class Email:
