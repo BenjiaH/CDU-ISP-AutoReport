@@ -105,7 +105,7 @@ def is_reported(id):
 def main(uid, password):
     global session, host, headers
     session = requests.Session()
-    host = security.get_random_host()
+    host = "https://xsswzx.cdu.edu.cn/" + security.get_random_host()
     headers = {
         "User-Agent": security.get_random_useragent()
     }
@@ -115,11 +115,11 @@ def main(uid, password):
     if is_reported(id):
         logger.info("Report is already existed. ID:{uid}".format(uid=uid))
         return 0
-    elif not is_reported(id):
-        report(id)
+    else:
+        # report(id)
         if is_reported(id):
             logger.info("Report successfully. ID:{uid}".format(uid=uid))
             return 1
-        elif not is_reported(id):
+        else:
             logger.error("Report failed. ID:{uid}".format(uid=uid))
             return 2
