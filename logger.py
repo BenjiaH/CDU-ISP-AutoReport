@@ -7,7 +7,7 @@ logger = logging.getLogger()
 
 def set_logger():
     logger.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(filename)s[line:%(lineno)d]: %(message)s')
+    formatter = logging.Formatter('%(asctime)s [%(levelname)5s] %(filename)s[line:%(lineno)d]: %(message)s')
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
