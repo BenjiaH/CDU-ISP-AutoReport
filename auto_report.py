@@ -6,7 +6,6 @@ import security
 from urllib import parse
 from logger import logger
 
-
 session = 0
 host = 0
 headers = 0
@@ -116,7 +115,7 @@ def main(uid, password):
         logger.info("Report is already existed. ID:{uid}".format(uid=uid))
         return 0
     else:
-        # report(id)
+        report(id)
         if is_reported(id):
             logger.info("Report successfully. ID:{uid}".format(uid=uid))
             return 1
