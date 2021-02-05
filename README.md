@@ -73,13 +73,13 @@ pip install -r requirements.txt
 python main.py
 ```
 
-- 在`Windows`平台下，你可以运行[`run.bat`](run.bat)
+- 在`Windows`平台下，你可以运行[`run.bat`](scripts/run.bat)
 
 ```bash
 .\run.bat
 ```
 
-- 在`Linux`平台下，你可以运行[`run.sh`](run.sh)
+- 在`Linux`平台下，你可以运行[`run.sh`](scripts/run.sh)
 
 ```bash
 chmod 777 run.sh
