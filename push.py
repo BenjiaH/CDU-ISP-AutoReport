@@ -58,7 +58,7 @@ class Email:
                 logger.error("Email not login.")
 
 
-class Push():
+class Push:
     def __init__(self):
         if global_config.getRaw('config', 'email_enable') == 'true':
             self._bot_email_user = global_config.getRaw('bot_email', 'email_user')
@@ -66,7 +66,8 @@ class Push():
             self._bot_email_pwd = global_config.getRaw('bot_email', 'email_pwd')
             self.bot_email = Email(self._bot_email_user, self._bot_email_host, self._bot_email_pwd)
 
-    def wechat(self, title, message, sckey):
+    @staticmethod
+    def wechat(title, message, sckey):
         url = 'http://sc.ftqq.com/{}.send'.format(sckey)
         payload = {
             "text": title,
@@ -74,11 +75,9 @@ class Push():
         }
         res = requests.get(url=url, params=payload)
         if res.status_code == 200:
-            logger.info("Wechat push successfully. Status code:{code}."
-                        .format(payload=payload, code=res.status_code))
+            logger.info("Wechat push successfully.")
         else:
-            logger.error("Wechat push failed. Status code:{code}."
-                         .format(payload=payload, code=res.status_code))
+            logger.error("Wechat push failed. Status code:{code}.".format(code=res.status_code))
 
 
 global_push = Push()
