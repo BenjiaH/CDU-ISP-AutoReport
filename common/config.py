@@ -1,12 +1,11 @@
 import os
 import configparser
-
 from common.logger import logger
 
 
 class Config(object):
     def __init__(self, config_file="config/config.ini"):
-        self._path = os.path.join(os.getcwd(), config_file)
+        self._path = os.path.join(__file__[:-16], config_file)
         if not os.path.exists(self._path):
             logger.error("No such file:{file}".format(file=config_file))
             raise FileNotFoundError("No such file:{file}".format(file=config_file))

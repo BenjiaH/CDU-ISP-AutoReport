@@ -10,7 +10,7 @@ class Account(object):
         if global_config.getRaw('config', 'multiple_enable') == 'false':
             return
 
-        self._path = os.path.join(os.getcwd(), csv_file)
+        self._path = os.path.join(__file__[:-17], csv_file)
         if not os.path.exists(self._path):
             logger.error("No such file:{file}".format(file=csv_file))
             raise FileNotFoundError("No such file:{file}".format(file=csv_file))
