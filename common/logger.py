@@ -1,10 +1,8 @@
-import sys
 import os
 import logging
 import logging.handlers
 
-sys.path.append('..')
-LOG_FILENAME = 'log.log'
+LOG_FILENAME = __file__[:-16] + 'log.log'
 logger = logging.getLogger()
 
 
@@ -22,5 +20,5 @@ def set_logger():
 
 set_logger()
 logger.info("Logger started.")
-version = (os.popen('git rev-parse --short HEAD').read()).replace("\n","")
+version = (os.popen('git rev-parse --short HEAD').read()).replace("\n", "")
 logger.info("Version:{version}".format(version=version))
