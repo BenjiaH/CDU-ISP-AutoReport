@@ -97,7 +97,8 @@ def refresh_hosts():
         if not get_host_status(i):
             host.remove(i)
     logger.info("Hosts refreshed.")
-    logger.info("Available host:{host}.".format(host=host))
+    if len(host) != len(HOST):
+        logger.info("Available host:{host}.".format(host=host))
     return host
 
 
