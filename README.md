@@ -76,14 +76,16 @@ python main.py
 - 在`Windows`平台下，你可以运行[`scripts/run.bat`](scripts/run.bat)
 
 ```bash
-.\scripts\run.bat
+cd .\CDU-ISP-AutoReport\
+.\scripts\run.bat 
 ```
 
 - 在`Linux`平台下，你可以运行[`scripts/run.sh`](scripts/run.sh)
 
 ```bash
-chmod 777 run.sh
-.\scripts\run.sh
+cd CDU-ISP-AutoReport\
+chmod 777 scripts/run.sh
+./scripts/run.sh
 ```
 
 ## 5.托管
