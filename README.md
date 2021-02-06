@@ -49,18 +49,18 @@ pip install -r requirements.txt
 
 ### 4.1.生成`sckey`
 
-- **此功能有一定概率下线，请勿依赖。[服务号订阅通知灰度测试](https://developers.weixin.qq.com/community/develop/doc/000a4e1df800d82acb9b7fb5e5b001)**
+- **此功能有一定概率下线，请勿依赖。[(服务号订阅通知灰度测试)](https://developers.weixin.qq.com/community/develop/doc/000a4e1df800d82acb9b7fb5e5b001)**
 - 打开[Server酱](https://benjiah.gitee.io/redirect/serversauce)。
 - 申请一个`sckey`，并记录下来。
 
-### 4.2.填写[`config.ini`](config/config_template.ini)
+### 4.2.填写[`config/config.ini`](config/config_template.ini)
 
 - 重命名`config_template.ini`文件为`config.ini`。
 - 填写`studentID`为学号。
 - 填写`password`为CDU-ISP登录密码(**为保证账号安全，建议提前修改登录密码！！！**)。
 - 填写`sckey`。
 
-### 4.3.填写[`account.csv`](config/account_template.csv)(可选)
+### 4.3.填写[`config/account.csv`](config/account_template.csv)(可选)
 
 - 重命名`account_template.csv`文件为`account.csv`。
 - 仿照示例填写内容。
@@ -73,17 +73,17 @@ pip install -r requirements.txt
 python main.py
 ```
 
-- 在`Windows`平台下，你可以运行[`run.bat`](scripts/run.bat)
+- 在`Windows`平台下，你可以运行[`scripts/run.bat`](scripts/run.bat)
 
 ```bash
-.\run.bat
+.\scripts\run.bat
 ```
 
-- 在`Linux`平台下，你可以运行[`run.sh`](scripts/run.sh)
+- 在`Linux`平台下，你可以运行[`scripts/run.sh`](scripts/run.sh)
 
 ```bash
 chmod 777 run.sh
-.\run.sh
+.\scripts\run.sh
 ```
 
 ## 5.托管
