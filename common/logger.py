@@ -2,7 +2,8 @@ import os
 import logging
 import logging.handlers
 
-LOG_FILENAME = __file__[:-16] + 'log.log'
+os.chdir(os.path.dirname(__file__))
+LOG_FILENAME = "../log.log"
 logger = logging.getLogger()
 
 
