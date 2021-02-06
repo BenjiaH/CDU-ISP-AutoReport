@@ -4,8 +4,9 @@ from common.logger import logger
 
 
 class Config(object):
-    def __init__(self, config_file="config/config.ini"):
-        self._path = os.path.join(__file__[:-16], config_file)
+    def __init__(self, config_file="../config/config.ini"):
+        os.chdir(os.path.dirname(__file__))
+        self._path = config_file
         if not os.path.exists(self._path):
             logger.error("No such file:{file}".format(file=config_file))
             raise FileNotFoundError("No such file:{file}".format(file=config_file))
@@ -25,4 +26,4 @@ class Config(object):
         return self._configRaw.get(section, name)
 
 
-global_config = Config("config/config.ini")
+global_config = Config("../config/config.ini")

@@ -6,11 +6,12 @@ from common.config import global_config
 
 
 class Account(object):
-    def __init__(self, csv_file="config/account.csv"):
+    def __init__(self, csv_file="../config/account.csv"):
         if global_config.getRaw('config', 'multiple_enable') == 'false':
             return
 
-        self._path = os.path.join(__file__[:-17], csv_file)
+        os.chdir(os.path.dirname(__file__))
+        self._path = csv_file
         if not os.path.exists(self._path):
             logger.error("No such file:{file}".format(file=csv_file))
             raise FileNotFoundError("No such file:{file}".format(file=csv_file))
@@ -70,4 +71,4 @@ class Account(object):
         return self._col
 
 
-global_account = Account("config/account.csv")
+global_account = Account("../config/account.csv")
