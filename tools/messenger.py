@@ -9,6 +9,7 @@ title = "Title"
 message = "Message"
 
 global_account.refresh()
+global_push.bot_email.login()
 n = global_account.row
 for i in range(n):
     message = str(datetime.datetime.now()) + "\n" + message
