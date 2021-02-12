@@ -47,6 +47,7 @@ class ReportService:
     def _gen(self):
         start_time = time()
         security.refresh_hosts()
+        global_push.bot_email.login()
         if global_config.getRaw('config', 'multiple_enable') != 'true':
             logger.info("Single account mode.")
             self._single_mode()

@@ -15,26 +15,20 @@ class Email:
         self.mail_user = mail_user
         self.mail_pwd = mail_pwd
         self.is_login = False
-        smtpObj = smtplib.SMTP()
+        self.smtp = 0
+
+    def login(self):
+        if global_config.getRaw('config', 'email_enable') == 'false':
+            return
+        smtp = smtplib.SMTP()
         try:
-            smtpObj.connect(mail_host, 25)
-            smtpObj.login(mail_user, mail_pwd)
+            smtp.connect(self.mail_host, 25)
+            smtp.login(self.mail_user, self.mail_pwd)
             self.is_login = True
             logger.info("Email login successfully.")
         except Exception as e:
             logger.error("Email login failed.[{e}]".format(e=e))
-        self.smtpObj = smtpObj
-
-    def relogin(self):
-        smtpObj = smtplib.SMTP()
-        try:
-            smtpObj.connect(self.mail_host, 25)
-            smtpObj.login(self.mail_user, self.mail_pwd)
-            self.is_login = True
-            logger.info("Email relogin successfully.")
-        except Exception as e:
-            logger.error("Email relogin failed.[{e}]".format(e=e))
-        self.smtpObj = smtpObj
+        self.smtp = smtp
 
     def send(self, title, msg, receiver: list):
         logger.info("Email receiver:{receiver}.".format(receiver=receiver[0]))
@@ -45,7 +39,7 @@ class Email:
                 message['From'] = self.mail_user
                 message['To'] = receiver[0]
                 try:
-                    self.smtpObj.sendmail(self.mail_user, receiver, message.as_string())
+                    self.smtp.sendmail(self.mail_user, receiver, message.as_string())
                     logger.info("Email send successfully.")
                     break
                 except Exception as e:
@@ -53,18 +47,17 @@ class Email:
                     error_msg = ["please run connect() first", "Connection unexpectedly closed"]
                     if str(e) in error_msg:
                         self.is_login = False
-                        self.relogin()
+                        self.login()
             else:
                 logger.error("Email not login.")
 
 
 class Push:
     def __init__(self):
-        if global_config.getRaw('config', 'email_enable') == 'true':
-            self._bot_email_user = global_config.getRaw('bot_email', 'email_user')
-            self._bot_email_host = global_config.getRaw('bot_email', 'email_host')
-            self._bot_email_pwd = global_config.getRaw('bot_email', 'email_pwd')
-            self.bot_email = Email(self._bot_email_user, self._bot_email_host, self._bot_email_pwd)
+        self._bot_email_user = global_config.getRaw('bot_email', 'email_user')
+        self._bot_email_host = global_config.getRaw('bot_email', 'email_host')
+        self._bot_email_pwd = global_config.getRaw('bot_email', 'email_pwd')
+        self.bot_email = Email(self._bot_email_user, self._bot_email_host, self._bot_email_pwd)
 
     @staticmethod
     def wechat(title, message, sckey):
