@@ -21,5 +21,3 @@ def set_logger():
 
 set_logger()
 logger.info("Logger started.")
-version = (os.popen('git rev-parse --short HEAD').read()).replace("\n", "")
-logger.info("Version:{version}".format(version=version))
