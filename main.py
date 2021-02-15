@@ -1,7 +1,7 @@
 import os
 
-from common import service
 from common.logger import logger
+from common import service
 
 logo = r"""
    _____ _____  _    _      _____  _____ _____                    _        _____                       _   
