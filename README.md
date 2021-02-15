@@ -59,7 +59,7 @@ pip install -r requirements.txt
 
 ## 4.使用方法
 
-### 4.1.生成`sckey`
+### 4.1.生成`sckey`(可选)
 
 - **此功能有一定概率下线，请勿依赖。[(服务号订阅通知灰度测试)](https://developers.weixin.qq.com/community/develop/doc/000a4e1df800d82acb9b7fb5e5b001)**
 - 打开[Server酱](https://benjiah.gitee.io/redirect/serversauce)。
