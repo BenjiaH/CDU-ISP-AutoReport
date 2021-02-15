@@ -27,7 +27,7 @@ class ReportService:
         return self._str_now_time
 
     def _single_mode(self):
-        logger.info("Reporting... ID:{studentID}.".format(studentID=self._uid))
+        logger.info("Report ID:{studentID}.".format(studentID=self._uid))
         ret = ar_main(uid=self._uid, password=self._password)
         self._push(ret, uid=self._uid, wechat_push=self._wechat_push, email_push=self._email_push, sckey=self._sckey,
                    email_rxer=self._email_rxer)
@@ -37,7 +37,7 @@ class ReportService:
         n = global_account.row
         for i in range(n):
             logger.info(
-                "{i}/{n} Reporting... ID:{studentID}.".format(i=i + 1, n=n, studentID=global_account.studentID[i]))
+                "{i}/{n} Report ID:{studentID}.".format(i=i + 1, n=n, studentID=global_account.studentID[i]))
             ret = ar_main(uid=global_account.studentID[i], password=global_account.password[i])
             self._push(ret, uid=global_account.studentID[i], wechat_push=global_account.wechat_push[i],
                        email_push=global_account.email_push[i], sckey=global_account.sckey[i],
@@ -89,7 +89,7 @@ class ReportService:
                 str_now_time = self._get_now_time()
                 logger.info("Set time mode enable.")
                 logger.info(
-                    "Now_time:{now_time}. Set time:{set_time}.".format(now_time=str_now_time, set_time=str_set_time))
+                    "Now time:{now_time}. Set time:{set_time}.".format(now_time=str_now_time, set_time=str_set_time))
                 logger.info("Waiting...")
                 while True:
                     global_config.refresh()

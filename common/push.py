@@ -31,7 +31,6 @@ class Email:
         self.smtp = smtp
 
     def send(self, title, msg, receiver: list):
-        logger.info("Email receiver:{receiver}.".format(receiver=receiver[0]))
         while True:
             if self.is_login:
                 message = MIMEText(msg, "plain", "utf-8")
