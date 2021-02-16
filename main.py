@@ -1,7 +1,5 @@
-import os
-
-from common.logger import logger
-from common import service
+from common.logger import log_version
+from common.service import report_service
 
 logo = r"""
    _____ _____  _    _      _____  _____ _____                    _        _____                       _   
@@ -14,8 +12,5 @@ logo = r"""
                                                                                      |_|                   
 """
 print(logo)
-stage = "beta"
-version = (os.popen('git rev-parse --short HEAD').read()).replace("\n", "")
-logger.info("Version:{version}.".format(version=stage + "." + version))
-report_service = service.ReportService()
+log_version("beta")
 report_service.start()
