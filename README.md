@@ -67,14 +67,14 @@ pip install -r requirements.txt
 
 ### 4.2.填写[`config/config.ini`](config/config_example.ini)
 
-- 重命名`config_template.ini`文件为`config.ini`。
+- 重命名`config_example.ini`文件为`config.ini`。
 - 填写`studentID`为学号。
 - 填写`password`为CDU-ISP登录密码(**为保证账号安全，建议提前修改登录密码！！！**)。
 - 参照[`config.ini`文件](config/config_example.ini)内说明填写其余内容。
 
 ### 4.3.填写[`config/account.csv`](config/account_example.csv)(可选)
 
-- 重命名`account_template.csv`文件为`account.csv`。
+- 重命名`account_example.csv`文件为`account.csv`。
 - 仿照示例填写内容。
 - `wechat_push`值为`1`则代表当前账户选择微信推送，`email_push`同理。
 - **注意：如果使用MS Excel打开CSV文件时，`studentID`极有可能被MS Excel自动更改格式，导致软件运行错误。推荐使用文本编辑软件进行填写。**
