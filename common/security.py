@@ -56,8 +56,7 @@ USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.15 (KHTML, like Gecko) Chrome/24.0.1295.0 Safari/537.15",
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36 Edg/88.0.705.50",
     "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.14 (KHTML, like Gecko) Chrome/24.0.1292.0 Safari/537.14"
-    ]
-
+]
 
 HOST = [
     "ispstu",
@@ -83,6 +82,8 @@ def get_host_status(host):
     res = requests.get(url=url)
     res.encoding = "utf-8"
     if "updatenow.asp" in res.text:
+        return False
+    elif res.status_code != 200:
         return False
     else:
         return True
