@@ -108,3 +108,6 @@ class ReportService:
                         logger.info("Cleaning... Estimated:1min")
                         sleep(60)
                         break
+
+
+report_service = ReportService()
