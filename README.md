@@ -59,20 +59,20 @@ pip install -r requirements.txt
 
 ## 4.使用方法
 
-### 4.1.生成`sckey`(可选)
+### 4.1.生成`sckey`(用作微信推送)(可选)
 
 - **此功能有一定概率下线，请勿依赖。[(服务号订阅通知灰度测试)](https://developers.weixin.qq.com/community/develop/doc/000a4e1df800d82acb9b7fb5e5b001)**
 - 打开[Server酱](https://benjiah.gitee.io/redirect/serversauce)。
 - 申请一个`sckey`，并记录下来。
 
-### 4.2.填写[`config/config.ini`](config/config_template.ini)
+### 4.2.填写[`config/config.ini`](config/config_example.ini)
 
 - 重命名`config_template.ini`文件为`config.ini`。
 - 填写`studentID`为学号。
 - 填写`password`为CDU-ISP登录密码(**为保证账号安全，建议提前修改登录密码！！！**)。
-- 填写`sckey`。
+- 参照[`config.ini`文件](config/config_example.ini)内说明填写其余内容。
 
-### 4.3.填写[`config/account.csv`](config/account_template.csv)(可选)
+### 4.3.填写[`config/account.csv`](config/account_example.csv)(可选)
 
 - 重命名`account_template.csv`文件为`account.csv`。
 - 仿照示例填写内容。
