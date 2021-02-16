@@ -12,5 +12,5 @@ logo = r"""
                                                                                      |_|                   
 """
 print(logo)
-log_version("beta")
+log_version("rc")
 report_service.start()
