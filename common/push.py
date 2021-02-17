@@ -11,10 +11,10 @@ class Email:
         if global_config.getRaw('config', 'email_enable') == 'false':
             return
 
-        self.mail_host = mail_host
-        self.mail_user = mail_user
-        self.mail_pwd = mail_pwd
-        self.is_login = False
+        self._mail_host = mail_host
+        self._mail_user = mail_user
+        self._mail_pwd = mail_pwd
+        self._is_login = False
         self.smtp = 0
 
     def login(self):
@@ -22,9 +22,9 @@ class Email:
             return
         smtp = smtplib.SMTP()
         try:
-            smtp.connect(self.mail_host, 25)
-            smtp.login(self.mail_user, self.mail_pwd)
-            self.is_login = True
+            smtp.connect(self._mail_host, 25)
+            smtp.login(self._mail_user, self._mail_pwd)
+            self._is_login = True
             logger.info("Email login successfully.")
         except Exception as e:
             logger.error("Email login failed.[{e}]".format(e=e))
@@ -32,21 +32,23 @@ class Email:
 
     def send(self, title, msg, receiver: list):
         while True:
-            if self.is_login:
+            if self._is_login:
                 message = MIMEText(msg, "plain", "utf-8")
                 message['Subject'] = title
-                message['From'] = self.mail_user
+                message['From'] = self._mail_user
                 message['To'] = receiver[0]
                 try:
-                    self.smtp.sendmail(self.mail_user, receiver, message.as_string())
+                    self.smtp.sendmail(self._mail_user, receiver, message.as_string())
                     logger.info("Email send successfully.")
                     break
                 except Exception as e:
                     logger.error("Email send failed.[{e}]".format(e=e))
                     error_msg = ["please run connect() first", "Connection unexpectedly closed"]
                     if str(e) in error_msg:
-                        self.is_login = False
+                        self._is_login = False
                         self.login()
+                    else:
+                        return
             else:
                 logger.error("Email not login.")
 
