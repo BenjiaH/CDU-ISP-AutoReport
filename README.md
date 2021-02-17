@@ -9,7 +9,6 @@
   \_____|_____/ \____/     |_____|_____/|_|        /_/    \_\__,_|\__\___/|_|  \_\___| .__/ \___/|_|   \__|
                                                                                      | |                   
                                                                                      |_|                   
-
 ```
 
 A tool which helps you to report your physical condition on CDU-ISP during COVID-19 automatically.
