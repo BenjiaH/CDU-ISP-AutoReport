@@ -59,18 +59,18 @@ USER_AGENTS = [
 ]
 
 HOST = [
-    "ispstu",
-    "ispstu1-1",
-    "ispstu1-2",
-    "ispstu2",
-    "ispstu2-1",
-    "ispstu2-2",
-    "ispstu3",
-    "ispstu3-1",
-    "ispstu3-2",
-    "ispstu4",
-    "ispstu4-1",
-    "ispstu4-3"
+    "ispstu",  # 富强
+    "ispstu1-1",  # 民主
+    "ispstu1-2",  # 文明
+    "ispstu2",  # 和谐
+    "ispstu2-1",  # 自由
+    "ispstu2-2",  # 平等
+    "ispstu3",  # 公正
+    "ispstu3-1",  # 法治
+    "ispstu3-2",  # 爱国
+    "ispstu4",  # 敬业
+    "ispstu4-1",  # 诚信
+    "ispstu4-3"  # 友善
 ]
 
 # deep copy
