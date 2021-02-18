@@ -91,14 +91,17 @@ def get_host_status(host):
 
 def refresh_hosts():
     global host
+    unavailable_host = []
     # deep copy
     host = copy.deepcopy(HOST)
     for i in host:
         if not get_host_status(i):
             host.remove(i)
+            unavailable_host.append(i)
     logger.info("Hosts refreshed.")
     if len(host) != len(HOST):
-        logger.info("Available host:{host}.".format(host=host))
+        logger.info("Unavailable host:{host}.".format(host=unavailable_host))
+    unavailable_host.clear()
     return host
 
 
@@ -107,6 +110,10 @@ def get_random_useragent():
 
 
 def get_random_host():
-    ret_host = random.choice(host)
-    logger.info("Random host:{ret_host}.".format(ret_host=ret_host))
+    try:
+        ret_host = random.choice(host)
+        logger.info("Random host:{ret_host}.".format(ret_host=ret_host))
+    except Exception as e:
+        logger.error("{e}.".format(e=e))
+        return ""
     return ret_host
