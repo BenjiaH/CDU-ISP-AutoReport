@@ -103,6 +103,6 @@ chmod 777 scripts/run.sh
 
 - 如果需要在我的服务器上为你的打卡服务进行托管，请填写[信息采集表](https://benjiah.gitee.io/redirect/cdu-isp-wjx)。
 
-## CHANGE LOG
+## 6.CHANGE LOG
 
 - [CHANGELOG.md](CHANGELOG.md)
