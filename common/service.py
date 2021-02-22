@@ -58,18 +58,19 @@ class ReportService:
         logger.info("Report completed. Cost time:{:.2f}s.".format(end_time - start_time))
 
     def _push(self, result, uid, wechat_push, email_push, sckey="", email_rxer=""):
+        now_time = datetime.datetime.now()
         if result == 0:
             title = "打卡已存在!"
-            message = "{time}打卡已存在!学号：{uid}".format(time=datetime.datetime.now(), uid=uid)
+            message = "{time}打卡已存在!学号：{uid}".format(time=now_time, uid=uid)
         elif result == 1:
             title = "打卡成功!"
-            message = "{time}打卡成功!学号：{uid}".format(time=datetime.datetime.now(), uid=uid)
+            message = "{time}打卡成功!学号：{uid}".format(time=now_time, uid=uid)
         elif result == 2:
             title = "打卡失败!"
-            message = "{time}打卡失败,请手动打卡!学号：{uid}".format(time=datetime.datetime.now(), uid=uid)
+            message = "{time}打卡失败,请手动打卡!学号：{uid}".format(time=now_time, uid=uid)
         else:
             title = "ERROR!"
-            message = "{time}ERROR!学号：{uid}".format(time=datetime.datetime.now(), uid=uid)
+            message = "{time}ERROR!学号：{uid}".format(time=now_time, uid=uid)
         if self._global_wechat == "true":
             if wechat_push == "1" or wechat_push == "true":
                 global_push.wechat(title, message, sckey)
