@@ -1,3 +1,4 @@
+import json
 import smtplib
 import requests
 
@@ -68,10 +69,17 @@ class Push:
             "desp": message
         }
         res = requests.get(url=url, params=payload)
-        if res.status_code == 200:
-            logger.info("Wechat push successfully.")
-        else:
+        res.encoding = "utf-8"
+        dict_res = json.loads(res.text)
+        if res.status_code != 200:
             logger.error("Wechat push failed. Status code:{code}.".format(code=res.status_code))
+            return False
+        elif dict_res["errno"] != 0:
+            logger.error("Wechat push failed. Error code:{code}.".format(code=dict_res["errno"]))
+            return False
+        else:
+            logger.info("Wechat push successfully.")
+            return True
 
 
 global_push = Push()
