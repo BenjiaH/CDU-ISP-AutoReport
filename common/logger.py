@@ -20,7 +20,12 @@ def set_logger():
 
 
 def log_version(stage: str, version=""):
-    info = version + "." + stage
+    commit_id = ""
+    if os.path.exists("../.git"):
+        commit_id = (os.popen("git rev-parse --short HEAD").read()).replace("\n", "")
+        commit_id += "."
+    version += "."
+    info = version + commit_id + stage
     logger.info("Version:{version}.".format(version=info))
 
 
