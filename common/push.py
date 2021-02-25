@@ -75,7 +75,7 @@ class Push:
             logger.error("Wechat push failed. Status code:{code}.".format(code=res.status_code))
             return False
         elif dict_res["errno"] != 0:
-            logger.error("Wechat push failed. [{msg}].".format(code=dict_res["errmsg"]))
+            logger.error("Wechat push failed. [{msg}].".format(msg=dict_res["errmsg"]))
             return False
         else:
             logger.info("Wechat push successfully.")
