@@ -35,7 +35,6 @@ class Email:
     def send(self, uid, title, msg, time, receiver: list):
         while True:
             if self._is_login:
-                # message = MIMEText(msg, "plain", "utf-8")
                 mail_msg = """
                 {uid}:
                 <p style="text-indent:2em">
@@ -97,19 +96,15 @@ class Push:
         now_time = datetime.datetime.now()
         if result == 0:
             title = "打卡已存在!"
-            # message = "{time}打卡已存在!学号：{uid}".format(time=now_time, uid=uid)
             message = "当日打卡已存在!"
         elif result == 1:
             title = "打卡成功!"
-            # message = "{time}打卡成功!学号：{uid}".format(time=now_time, uid=uid)
             message = "打卡成功!"
         elif result == 2:
             title = "打卡失败!"
-            # message = "{time}打卡失败,请手动打卡!学号：{uid}".format(time=now_time, uid=uid)
             message = "打卡失败,请手动打卡!"
         else:
             title = "ERROR!"
-            # message = "{time}ERROR!学号：{uid}".format(time=now_time, uid=uid)
             message = "ERROR!"
         if self._global_wechat == "true":
             if wechat_push == "1" or wechat_push == "true":
