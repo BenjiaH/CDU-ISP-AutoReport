@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 1.0.1.release
+
+### (2021-2-27)
+
+- Fixd:bugs
+
+---
+
 ## 1.0.0.release
 
 ### (2021-2-18)
