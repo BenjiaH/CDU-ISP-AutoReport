@@ -29,19 +29,20 @@ class ReportService:
     def _single_mode(self):
         logger.info("Report ID:{studentID}.".format(studentID=self._uid))
         ret = ar_main(uid=self._uid, password=self._password)
-        self._push(ret, uid=self._uid, wechat_push=self._wechat_push, email_push=self._email_push, sckey=self._sckey,
-                   email_rxer=self._email_rxer)
+        global_push.push(ret, uid=self._uid, wechat_push=self._wechat_push, email_push=self._email_push,
+                         sckey=self._sckey, email_rxer=self._email_rxer)
 
-    def _multiple_mode(self):
+    @staticmethod
+    def _multiple_mode():
         global_account.refresh()
         n = global_account.row
         for i in range(n):
             logger.info(
                 "{i}/{n} Report ID:{studentID}.".format(i=i + 1, n=n, studentID=global_account.studentID[i]))
             ret = ar_main(uid=global_account.studentID[i], password=global_account.password[i])
-            self._push(ret, uid=global_account.studentID[i], wechat_push=global_account.wechat_push[i],
-                       email_push=global_account.email_push[i], sckey=global_account.sckey[i],
-                       email_rxer=global_account.email[i])
+            global_push.push(ret, uid=global_account.studentID[i], wechat_push=global_account.wechat_push[i],
+                             email_push=global_account.email_push[i], sckey=global_account.sckey[i],
+                             email_rxer=global_account.email[i])
             sleep(1.5)
 
     def _gen(self):
@@ -57,27 +58,6 @@ class ReportService:
         end_time = time()
         logger.info("Report completed. Cost time:{:.2f}s.".format(end_time - start_time))
 
-    def _push(self, result, uid, wechat_push, email_push, sckey="", email_rxer=""):
-        now_time = datetime.datetime.now()
-        if result == 0:
-            title = "打卡已存在!"
-            message = "{time}打卡已存在!学号：{uid}".format(time=now_time, uid=uid)
-        elif result == 1:
-            title = "打卡成功!"
-            message = "{time}打卡成功!学号：{uid}".format(time=now_time, uid=uid)
-        elif result == 2:
-            title = "打卡失败!"
-            message = "{time}打卡失败,请手动打卡!学号：{uid}".format(time=now_time, uid=uid)
-        else:
-            title = "ERROR!"
-            message = "{time}ERROR!学号：{uid}".format(time=now_time, uid=uid)
-        if self._global_wechat == "true":
-            if wechat_push == "1" or wechat_push == "true":
-                global_push.wechat(title, message, sckey)
-        if self._global_email == "true":
-            if email_push == "1" or email_push == "true":
-                global_push.bot_email.send(title, message, [email_rxer])
-
     def start(self):
         if global_config.getRaw('config', 'timer_enable') != 'true':
             logger.info("Set time mode disable.")
@@ -91,7 +71,7 @@ class ReportService:
                 logger.info("Set time mode enable.")
                 logger.info(
                     "Now time:{now_time}. Set time:{set_time}.".format(now_time=str_now_time, set_time=str_set_time))
-                logger.info("Waiting...")
+                # logger.info("Waiting...")
                 while True:
                     global_config.refresh()
                     if str_set_time != global_config.getRaw('config', 'set_time'):
