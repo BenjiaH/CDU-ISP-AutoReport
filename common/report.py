@@ -1,7 +1,7 @@
 import requests
-import datetime
 import re
 
+from datetime import datetime
 from common import security
 from urllib import parse
 from common.logger import logger
@@ -45,7 +45,6 @@ def get_id():
     try:
         id = re.findall(r"(?<=id=).*?(?=\">我的事务<)", res.text)[0]
         logger.info("Login successfully.")
-        logger.info("Get id:{id}.".format(id=id))
         return id
     except Exception as e:
         id = 0
@@ -58,18 +57,18 @@ def report(id):
     if id == 0:
         return
     url = "{host}/com_user/project_addx.asp?id={id}&id2={id2}".format(
-        host=host, id=id, id2=get_date_url())
+        host=host, id=id, id2=get_date())
+    logger.info("Get report url.")
     res = session.get(url=url, headers=headers)
     if res.status_code != 200:
         logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
 
 
-def get_date_url():
-    today = datetime.datetime.now()
-    date_ZH = "{y}年{m}月{d}日".format(y=today.year, m=today.month, d=today.day)
-    date_url = parse.quote(date_ZH)
-    logger.info("Get id2:{id2}.".format(id2=date_url))
-    return date_url
+def get_date():
+    today = datetime.now()
+    today = "{y}年{m}月{d}日".format(y=today.year, m=today.month, d=today.day)
+    # today = parse.quote(today)
+    return today
 
 
 def is_reported(id):
@@ -91,9 +90,7 @@ def is_reported(id):
     except Exception as e:
         logger.error("Regular expression match failed.[{e}]".format(e=e))
         return
-    today = datetime.datetime.now()
-    today_date = "{y}年{m}月{d}日".format(y=today.year, m=today.month, d=today.day)
-    if latest_date == today_date:
+    if latest_date == get_date():
         logger.info("Report is existed.")
         return True
     else:
