@@ -1,5 +1,4 @@
-import datetime
-
+from datetime import datetime
 from time import sleep, time
 from common import security
 from common.logger import logger
@@ -22,8 +21,8 @@ class ReportService:
         self._email_rxer = global_config.getRaw('messenger', 'email')
 
     def _get_now_time(self):
-        now_time = datetime.datetime.now()
-        self._str_now_time = "{h}.{m}".format(h=now_time.hour, m=now_time.minute)
+        now = datetime.now()
+        self._str_now_time = now.strftime("%H.%M")
         return self._str_now_time
 
     def _single_mode(self):
@@ -71,13 +70,11 @@ class ReportService:
                 logger.info("Set time mode enable.")
                 logger.info(
                     "Now time:{now_time}. Set time:{set_time}.".format(now_time=str_now_time, set_time=str_set_time))
-                # logger.info("Waiting...")
                 while True:
                     global_config.refresh()
                     if str_set_time != global_config.getRaw('config', 'set_time'):
                         str_set_time = global_config.getRaw('config', 'set_time')
                         logger.info("New set time:{set_time}.".format(set_time=str_set_time))
-                        logger.info("Waiting...")
                     str_now_time = self._get_now_time()
                     if str_now_time != str_set_time:
                         # print(str_now_time)
