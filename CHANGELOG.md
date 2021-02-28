@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ### (2021-2-27)
 
-- Fixd:bugs
+- Fixed:bugs
 
 ---
 
