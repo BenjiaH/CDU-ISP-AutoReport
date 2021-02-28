@@ -1,8 +1,8 @@
-import datetime
 import json
 import smtplib
 import requests
 
+from datetime import datetime
 from email.mime.text import MIMEText
 from common.config import global_config
 from common.logger import logger
@@ -36,12 +36,12 @@ class Email:
         while True:
             if self._is_login:
                 mail_msg = """
-                {uid}:
+                <div>{uid}:</div>
                 <p style="text-indent:2em">
                     {msg}</p>
                 <br>
-                <p align="right">autoreport_bot</p>
-                <p align="right">{time}</p>
+                <div align="right">autoreport_bot</div>
+                <div align="right">{time}</div>
                 """.format(uid=uid, msg=msg, time=time)
                 message = MIMEText(mail_msg, "html", "utf-8")
                 message['Subject'] = title
@@ -93,7 +93,7 @@ class Push:
             return True
 
     def push(self, result, uid, wechat_push, email_push, sckey="", email_rxer=""):
-        now_time = datetime.datetime.now()
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         if result == 0:
             title = "打卡已存在!"
             message = "当日打卡已存在!"
@@ -108,10 +108,10 @@ class Push:
             message = "ERROR!"
         if self._global_wechat == "true":
             if wechat_push == "1" or wechat_push == "true":
-                self.wechat(uid, title, message, now_time, sckey)
+                self.wechat(uid, title, message, now, sckey)
         if self._global_email == "true":
             if email_push == "1" or email_push == "true":
-                self.bot_email.send(uid, title, message, now_time, [email_rxer])
+                self.bot_email.send(uid, title, message, now, [email_rxer])
 
 
 global_push = Push()
