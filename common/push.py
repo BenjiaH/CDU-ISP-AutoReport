@@ -40,9 +40,9 @@ class Email:
                 <p style="text-indent:2em">
                     {msg}</p>
                 <br>
-                <div align="right">autoreport_bot</div>
+                <div align="right">{mail_user}</div>
                 <div align="right">{time}</div>
-                """.format(uid=uid, msg=msg, time=time)
+                """.format(uid=uid, msg=msg, mail_user=self._mail_user.split("@")[0], time=time)
                 message = MIMEText(mail_msg, "html", "utf-8")
                 message['Subject'] = title
                 message['From'] = self._mail_user
