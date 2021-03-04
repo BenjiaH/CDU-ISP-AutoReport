@@ -7,7 +7,7 @@ from common.config import global_config
 
 class Account(object):
     def __init__(self, csv_file="../config/account.csv"):
-        if global_config.getRaw('config', 'multiple_enable') == 'false':
+        if global_config.getRaw('config', 'multiple_enable') == "off":
             return
 
         os.chdir(os.path.dirname(__file__))

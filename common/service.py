@@ -48,7 +48,7 @@ class ReportService:
         start_time = time()
         security.refresh_hosts()
         global_push.bot_email.login()
-        if global_config.getRaw('config', 'multiple_enable') != 'true':
+        if global_config.getRaw('config', 'multiple_enable') == "off":
             logger.info("Single account mode.")
             self._single_mode()
         else:
@@ -58,7 +58,7 @@ class ReportService:
         logger.info("Report completed. Cost time:{:.2f}s.".format(end_time - start_time))
 
     def start(self):
-        if global_config.getRaw('config', 'timer_enable') != 'true':
+        if global_config.getRaw('config', 'timer_enable') == "off":
             logger.info("Set time mode disable.")
             logger.info("Start to report.")
             self._gen()

@@ -10,7 +10,7 @@ from common.logger import logger
 
 class Email:
     def __init__(self, mail_user, mail_host, mail_pwd):
-        if global_config.getRaw('config', 'email_enable') == 'false':
+        if global_config.getRaw('config', 'email_enable') == "off":
             return
 
         self._mail_host = mail_host
@@ -20,7 +20,7 @@ class Email:
         self.smtp = 0
 
     def login(self):
-        if global_config.getRaw('config', 'email_enable') == 'false':
+        if global_config.getRaw('config', 'email_enable') == "off":
             return
         smtp = smtplib.SMTP()
         try:
@@ -106,11 +106,11 @@ class Push:
         else:
             title = "ERROR!"
             message = "ERROR!"
-        if self._global_wechat == "true":
-            if wechat_push == "1" or wechat_push == "true":
+        if self._global_wechat != "off":
+            if wechat_push == "1" or wechat_push == "on":
                 self.wechat(uid, title, message, now, sckey)
-        if self._global_email == "true":
-            if email_push == "1" or email_push == "true":
+        if self._global_email != "off":
+            if email_push == "1" or email_push == "on":
                 self.bot_email.send(uid, title, message, now, [email_rxer])
 
 
