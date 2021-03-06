@@ -15,6 +15,7 @@ class Email:
 
         self._mail_host = mail_host
         self._mail_user = mail_user
+        self._mail_name = self._mail_user.split("@")[0]
         self._mail_pwd = mail_pwd
         self._is_login = False
         self.smtp = 0
@@ -40,12 +41,13 @@ class Email:
                 <p style="text-indent:2em">
                     {msg}</p>
                 <br>
-                <div align="right">{mail_user}</div>
+                <div align="right">{mail_name}</div>
                 <div align="right">{time}</div>
-                """.format(uid=uid, msg=msg, mail_user=self._mail_user.split("@")[0], time=time)
+                """.format(uid=uid, msg=msg, mail_name=self._mail_name, time=time)
                 message = MIMEText(mail_msg, "html", "utf-8")
                 message['Subject'] = title
-                message['From'] = self._mail_user
+                message['From'] = "{mail_name} <{mail_user}>".format(mail_name=self._mail_name,
+                                                                     mail_user=self._mail_user)
                 message['To'] = receiver[0]
                 try:
                     self.smtp.sendmail(self._mail_user, receiver, message.as_string())
