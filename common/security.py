@@ -79,7 +79,11 @@ host = copy.deepcopy(HOST)
 
 def get_host_status(host):
     url = "https://xsswzx.cdu.edu.cn/{host}/com_user/weblogin.asp".format(host=host)
-    res = requests.get(url=url)
+    try:
+        res = requests.get(url=url, timeout=5)
+    except Exception as e:
+        logger.error("Check '{host}' status failed. [{e}]".format(host=host, e=e))
+        return False
     res.encoding = "utf-8"
     if "updatenow.asp" in res.text:
         return False
