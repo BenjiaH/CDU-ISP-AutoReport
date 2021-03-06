@@ -3,7 +3,7 @@ import logging
 import logging.handlers
 
 os.chdir(os.path.dirname(__file__))
-LOG_FILENAME = r"..\\log.log"
+LOG_FILENAME = r"../log.log"
 logger = logging.getLogger()
 
 

@@ -4,7 +4,7 @@ from common.logger import logger
 
 
 class Config:
-    def __init__(self, config_file=r"..\\config\\config.ini"):
+    def __init__(self, config_file=r"../config/config.ini"):
         os.chdir(os.path.dirname(__file__))
         self._path = config_file
         if not os.path.exists(self._path):
@@ -26,4 +26,4 @@ class Config:
         return self._configRaw.get(section, name)
 
 
-global_config = Config(r"..\\config\\config.ini")
+global_config = Config(r"../config/config.ini")
