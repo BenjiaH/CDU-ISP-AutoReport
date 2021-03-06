@@ -13,20 +13,20 @@ class Report:
         self._headers = 0
         self._main_host = "https://xsswzx.cdu.edu.cn/"
         self._id_value = 0
-        self._date = self._get_date()
+        self._date = ""
+        self._captcha_code = ""
 
-    @staticmethod
-    def _get_date():
+    def _get_date(self):
         today = datetime.now()
         today = "{y}年{m}月{d}日".format(y=today.year, m=today.month, d=today.day)
-        return today
+        self._date = today
 
     def _get_captcha_code(self):
         url = "{host}/com_user/weblogin.asp".format(host=self._host)
         res = self._session.get(url=url, headers=self._headers)
         res.encoding = "utf-8"
         captcha_index = res.text.find('placeholder="验证码"')
-        return res.text[captcha_index + 30: captcha_index + 34]
+        self._captcha_code = res.text[captcha_index + 30: captcha_index + 34]
 
     def _login(self, uid, password, code):
         url = "{host}/com_user/weblogin.asp".format(host=self._host)
@@ -100,8 +100,9 @@ class Report:
         self._headers = {
             "User-Agent": security.get_random_useragent()
         }
-        captcha_code = self._get_captcha_code()
-        self._login(uid, password, captcha_code)
+        self._get_date()
+        self._get_captcha_code()
+        self._login(uid, password, self._captcha_code)
         self._get_id()
         if self._is_reported():
             logger.info("Report is already existed. ID:{uid}".format(uid=uid))
