@@ -1,5 +1,5 @@
 from common.logger import log_version
-from common.service import report_service
+from common.service import ReportService
 
 logo = r"""
    _____ _____  _    _      _____  _____ _____                    _        _____                       _   
@@ -13,4 +13,5 @@ logo = r"""
 """
 print(logo)
 log_version("beta", "1.1.0")
+report_service = ReportService()
 report_service.start()
