@@ -86,8 +86,10 @@ def get_host_status(host):
         return False
     res.encoding = "utf-8"
     if "updatenow.asp" in res.text:
+        logger.error("Check '{host}' status failed. [updating]".format(host=host))
         return False
     elif res.status_code != 200:
+        logger.error("Check '{host}' status failed. [status code:{code}]".format(host=host, code=res.status_code))
         return False
     else:
         return True
