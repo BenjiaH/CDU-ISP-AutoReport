@@ -82,17 +82,18 @@ class Report:
         if "还没有登记记录" in res.text:
             logger.info("Report is not existed.")
             return False
-        try:
-            latest_date = re.findall(r"(?<=<td class=\"tdmenu\"><div align=\"center\">).*?(?=</div></td>)", res.text)[0]
-        except Exception as e:
-            logger.error("Regular expression match failed.[{e}]".format(e=e))
-            return
-        if latest_date == self._date:
-            logger.info("Report is existed.")
-            return True
         else:
-            logger.info("Report is not existed.")
-            return False
+            try:
+                latest_date = re.findall(r"(?<=<td class=\"tdmenu\"><div align=\"center\">).*?(?=</div></td>)", res.text)[0]
+            except Exception as e:
+                logger.error("Regular expression match failed.[{e}]".format(e=e))
+                return
+            if latest_date == self._date:
+                logger.info("Report is existed.")
+                return True
+            else:
+                logger.info("Report is not existed.")
+                return False
 
     def main(self, uid, password):
         self._session = requests.Session()
