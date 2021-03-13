@@ -16,7 +16,7 @@ class Report:
         self._date = ""
         self._captcha_code = ""
 
-    def _get_date(self):
+    def update_date(self):
         today = datetime.now()
         today = "{y}年{m}月{d}日".format(y=today.year, m=today.month, d=today.day)
         self._date = today
@@ -100,7 +100,6 @@ class Report:
         self._headers = {
             "User-Agent": security.get_random_useragent()
         }
-        self._get_date()
         self._get_captcha_code()
         self._login(uid, password, self._captcha_code)
         self._get_id()
