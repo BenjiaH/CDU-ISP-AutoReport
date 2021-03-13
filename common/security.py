@@ -21,7 +21,7 @@ HOSTS = [
 ]
 ua = UserAgent()
 # deep copy
-host = copy.deepcopy(HOST)
+hosts = copy.deepcopy(HOSTS)
 
 
 def get_host_status(host):
@@ -29,33 +29,33 @@ def get_host_status(host):
     try:
         res = requests.get(url=url, timeout=5)
     except Exception as e:
-        logger.error("Check '{host}' status failed. [{e}]".format(host=host, e=e))
+        logger.error("Check \"{host}\" status failed. [{e}]".format(host=host, e=e))
         return False
     res.encoding = "utf-8"
     if "updatenow.asp" in res.text:
-        logger.error("Check '{host}' status failed. [updating]".format(host=host))
+        logger.error("Check \"{host}\" status failed. [updating]".format(host=host))
         return False
     elif res.status_code != 200:
-        logger.error("Check '{host}' status failed. [status code:{code}]".format(host=host, code=res.status_code))
+        logger.error("Check \"{host}\" status failed. [status code:{code}]".format(host=host, code=res.status_code))
         return False
     else:
         return True
 
 
 def refresh_hosts():
-    global host
+    global hosts
     unavailable_host = []
     # deep copy
-    host = copy.deepcopy(HOST)
-    for i in host:
+    hosts = copy.deepcopy(HOSTS)
+    for i in hosts:
         if not get_host_status(i):
-            host.remove(i)
+            hosts.remove(i)
             unavailable_host.append(i)
     logger.info("Hosts refreshed.")
-    if len(host) != len(HOST):
+    if len(hosts) != len(HOSTS):
         logger.info("Unavailable host:{host}.".format(host=unavailable_host))
     unavailable_host.clear()
-    return host
+    return hosts
 
 
 def get_random_useragent():
@@ -64,8 +64,8 @@ def get_random_useragent():
 
 def get_random_host():
     try:
-        ret_host = random.choice(host)
-        logger.info("Random host:{ret_host}.".format(ret_host=ret_host))
+        ret_host = random.choice(hosts)
+        logger.info("Random host:\"{ret_host}\".".format(ret_host=ret_host))
     except Exception as e:
         logger.error("{e}.".format(e=e))
         return ""
