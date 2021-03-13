@@ -28,12 +28,12 @@ class Report:
         captcha_index = res.text.find('placeholder="验证码"')
         self._captcha_code = res.text[captcha_index + 30: captcha_index + 34]
 
-    def _login(self, uid, password, code):
+    def _login(self, uid, password):
         url = "{host}/com_user/weblogin.asp".format(host=self._host)
         data = {
             "username": uid,
             "userpwd": password,
-            "code": code,
+            "code": self._captcha_code,
             "login": "login",
             "checkcode": "1",
             "rank": "0",
@@ -101,7 +101,7 @@ class Report:
             "User-Agent": security.get_random_useragent()
         }
         self._get_captcha_code()
-        self._login(uid, password, self._captcha_code)
+        self._login(uid, password)
         self._get_id()
         if self._is_reported():
             logger.info("Report is already existed. ID:{uid}".format(uid=uid))
