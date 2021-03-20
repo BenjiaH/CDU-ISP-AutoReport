@@ -62,7 +62,7 @@ class Report:
             logger.info("Login successfully.")
         except Exception as e:
             self._id_value = 0
-            logger.error("Regular expression match failed.[{e}]".format(e=e))
+            logger.error("Get id value failed.[{e}]".format(e=e))
             logger.error("Login failed.")
 
     def _report(self):
