@@ -53,7 +53,7 @@ def refresh_hosts():
             unavailable_host.append(i)
     logger.info("Hosts refreshed.")
     if len(hosts) != len(HOSTS):
-        logger.info("Unavailable host:{host}.".format(host=unavailable_host))
+        logger.error("Unavailable host:{host}.".format(host=unavailable_host))
     unavailable_host.clear()
     return hosts
 
