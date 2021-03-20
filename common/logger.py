@@ -3,7 +3,8 @@ import logging
 import logging.handlers
 
 os.chdir(os.path.dirname(__file__))
-LOG_FILENAME = r"../log.log"
+LOG_FILENAME = os.path.abspath(r"../log.log")
+print(LOG_FILENAME)
 logger = logging.getLogger()
 
 

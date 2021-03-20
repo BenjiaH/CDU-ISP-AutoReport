@@ -11,10 +11,10 @@ class Account(object):
             return
 
         os.chdir(os.path.dirname(__file__))
-        self._path = csv_file
+        self._path = os.path.abspath(csv_file)
         if not os.path.exists(self._path):
-            logger.error("No such file:{file}".format(file=csv_file))
-            raise FileNotFoundError("No such file:{file}".format(file=csv_file))
+            logger.error("No such file:{file}".format(file=self._path))
+            raise FileNotFoundError("No such file:{file}".format(file=self._path))
         self._csv_file = open(self._path, encoding='utf-8')
         self._account = csv.reader(self._csv_file)
         self._row = sum(1 for line in open(self._path, encoding='utf-8')) - 1
