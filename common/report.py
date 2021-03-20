@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 from common import security
 from common.logger import logger
+from bs4 import BeautifulSoup
 
 
 class Report:
@@ -25,8 +26,13 @@ class Report:
         url = "{host}/com_user/weblogin.asp".format(host=self._host)
         res = self._session.get(url=url, headers=self._headers)
         res.encoding = "utf-8"
-        captcha_index = res.text.find('placeholder="验证码"')
-        self._captcha_code = res.text[captcha_index + 30: captcha_index + 34]
+        try:
+            soup = BeautifulSoup(res.text, 'lxml')
+            code = soup.find(id="code").parent.text.strip()
+        except Exception as e:
+            logger.error("Get captcha code failed. [{e}]".format(e=e))
+            code = 0
+        self._captcha_code = code
 
     def _login(self, uid, password):
         url = "{host}/com_user/weblogin.asp".format(host=self._host)
@@ -51,7 +57,8 @@ class Report:
             logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         res.encoding = "utf-8"
         try:
-            self._id_value = re.findall(r"(?<=id=).*?(?=\">我的事务<)", res.text)[0]
+            soup = BeautifulSoup(res.text, 'lxml')
+            self._id_value = soup.find('a', string="疫情信息登记")['href'][15:]
             logger.info("Login successfully.")
         except Exception as e:
             self._id_value = 0
@@ -84,9 +91,10 @@ class Report:
             return False
         else:
             try:
-                latest_date = re.findall(r"(?<=<td class=\"tdmenu\"><div align=\"center\">).*?(?=</div></td>)", res.text)[0]
+                soup = BeautifulSoup(res.text, 'lxml')
+                latest_date = soup.find("td", class_="tdmenu").text
             except Exception as e:
-                logger.error("Regular expression match failed.[{e}]".format(e=e))
+                logger.error("Get the latest date failed. [{e}]".format(e=e))
                 return
             if latest_date == self._date:
                 logger.info("Report is existed.")
