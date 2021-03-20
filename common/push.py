@@ -1,6 +1,7 @@
 import json
 import smtplib
 import requests
+import os
 
 from datetime import datetime
 from email.mime.text import MIMEText
@@ -19,10 +20,17 @@ class Email:
         self._mail_pwd = mail_pwd
         self._is_login = False
         self.smtp = 0
+        self._mail_payload = ""
+
+    def _load_tmpl(self):
+        os.chdir(os.path.dirname(__file__))
+        with open(r"../res/email_tmpl.html", "r", encoding="UTF-8") as f:
+            self._mail_payload = f.read()
 
     def login(self):
         if global_config.getRaw('config', 'email_enable') == "off":
             return
+        self._load_tmpl()
         smtp = smtplib.SMTP()
         try:
             smtp.connect(self._mail_host, 25)
@@ -36,14 +44,7 @@ class Email:
     def send(self, uid, title, msg, time, receiver: list):
         while True:
             if self._is_login:
-                mail_msg = """
-                <div>{uid}:</div>
-                <p style="text-indent:2em">
-                    {msg}</p>
-                <br>
-                <div align="right">{mail_name}</div>
-                <div align="right">{time}</div>
-                """.format(uid=uid, msg=msg, mail_name=self._mail_name, time=time)
+                mail_msg = self._mail_payload.format(uid=uid, msg=msg, mail_name=self._mail_name, time=time)
                 message = MIMEText(mail_msg, "html", "utf-8")
                 message['Subject'] = title
                 message['From'] = "{mail_name} <{mail_user}>".format(mail_name=self._mail_name,
