@@ -19,7 +19,7 @@ HOSTS = [
     "ispstu4-1",  # 诚信
     "ispstu4-3"  # 友善
 ]
-ua = UserAgent()
+ua = UserAgent(verify_ssl=False)
 # deep copy
 hosts = copy.deepcopy(HOSTS)
 
