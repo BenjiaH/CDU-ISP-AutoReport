@@ -10,8 +10,8 @@ class Logger:
         self._debug_fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} [<level>{level:}</level>] {name}:{function}:{line}: {message}"
         os.chdir(os.path.dirname(__file__))
         logger.remove()
-        logger.add(sink=log_file, filter=self.run_filter, format=self._log_fmt)
-        logger.add(sink=sys.stderr, filter=self.run_filter, format=self._log_fmt)
+        logger.add(sink=log_file, filter=self.log_filter, format=self._log_fmt)
+        logger.add(sink=sys.stderr, filter=self.log_filter, format=self._log_fmt)
         logger.add(sink=debug_file, filter=self.debug_filter, format=self._debug_fmt)
         logger.info("Logger started.")
         self.logger = logger
@@ -21,7 +21,7 @@ class Logger:
         return record["level"].name == "DEBUG"
 
     @staticmethod
-    def run_filter(record):
+    def log_filter(record):
         return record["level"].name == "INFO" or record["level"].name == "ERROR"
 
     @staticmethod
