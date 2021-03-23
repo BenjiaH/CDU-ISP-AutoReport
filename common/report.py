@@ -9,11 +9,13 @@ from bs4 import BeautifulSoup
 
 class Report:
     def __init__(self):
+        self._error = 0
         self._session = 0
         self._host = 0
         self._headers = 0
         self._main_host = "https://xsswzx.cdu.edu.cn/"
-        self._id_value = 0
+        self._project_url = 0
+        self._report_url = 0
         self._date = ""
         self._captcha_code = ""
 
@@ -23,7 +25,7 @@ class Report:
         self._date = today
 
     def _get_captcha_code(self):
-        url = "{host}/com_user/weblogin.asp".format(host=self._host)
+        url = "{host}/weblogin.asp".format(host=self._host)
         res = self._session.get(url=url, headers=self._headers)
         res.encoding = "utf-8"
         try:
@@ -35,7 +37,7 @@ class Report:
         self._captcha_code = code
 
     def _login(self, uid, password):
-        url = "{host}/com_user/weblogin.asp".format(host=self._host)
+        url = "{host}/weblogin.asp".format(host=self._host)
         data = {
             "username": uid,
             "userpwd": password,
@@ -50,36 +52,49 @@ class Report:
         if res.status_code != 200:
             logger.error("POST request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
 
-    def _get_id(self):
-        url = "{host}/com_user/left.asp".format(host=self._host)
+    def _get_project_url(self):
+        url = "{host}/left.asp".format(host=self._host)
         res = self._session.get(url=url, headers=self._headers)
         if res.status_code != 200:
             logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         res.encoding = "utf-8"
         try:
             soup = BeautifulSoup(res.text, 'lxml')
-            self._id_value = soup.find('a', string="疫情信息登记")['href'][15:]
+            self._project_url = soup.find('a', string="疫情信息登记")['href']
             logger.info("Login successfully.")
         except Exception as e:
-            self._id_value = 0
+            self._error = 1
             logger.error("Get id value failed.[{e}]".format(e=e))
             logger.error("Login failed.")
 
-    def _report(self):
-        if self._id_value == 0:
+    def _get_report_url(self):
+        if self._error == 1:
             return
-        url = "{host}/com_user/project_addx.asp?id={id}&id2={id2}".format(
-            host=self._host, id=self._id_value, id2=self._date)
-        logger.info("Get report url.")
+        url = "{host}/{project}".format(host=self._host, project=self._project_url)
+        res = self._session.get(url=url, headers=self._headers)
+        if res.status_code != 200:
+            logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+        res.encoding = "utf-8"
+        try:
+            soup = BeautifulSoup(res.text, 'lxml')
+            self._report_url = soup.find(value="【一键登记：无变化】").parent['href']
+            logger.info("Get report url.")
+        except Exception as e:
+            self._error = 1
+            logger.error("Get report url failed.[{e}]".format(e=e))
+
+    def _report(self):
+        if self._error == 1:
+            return
+        url = "{host}/{report}".format(host=self._host, report=self._report_url)
         res = self._session.get(url=url, headers=self._headers)
         if res.status_code != 200:
             logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
 
     def _is_reported(self):
-        if self._id_value == 0:
+        if self._error == 1:
             return
-        url = "{host}/com_user/project.asp?id={id}".format(
-            host=self._host, id=self._id_value)
+        url = "{host}/{project}".format(host=self._host, project=self._project_url)
         res = self._session.get(url=url, headers=self._headers)
         if res.status_code != 200:
             logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
@@ -105,13 +120,14 @@ class Report:
 
     def main(self, uid, password):
         self._session = requests.Session()
-        self._host = self._main_host + security.get_random_host()
+        self._host = self._main_host + security.get_random_host() + "/com_user"
         self._headers = {
             "User-Agent": security.get_random_useragent()
         }
         self._get_captcha_code()
         self._login(uid, password)
-        self._get_id()
+        self._get_project_url()
+        self._get_report_url()
         if self._is_reported():
             logger.info("Report is already existed. ID:{uid}".format(uid=uid))
             return 0
