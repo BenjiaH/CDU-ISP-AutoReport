@@ -6,7 +6,7 @@ from loguru import logger
 
 class Logger:
     def __init__(self, log_file: str, debug_file: str):
-        self._log_fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} [<level>{level:<5}</level>]{file}.{line}: {message}"
+        self._log_fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} [<level>{level:<5}</level>] {file}.{line}: {message}"
         self._debug_fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} [<level>{level:}</level>] {name}:{function}:{line}: {message}"
         os.chdir(os.path.dirname(__file__))
         logger.remove()
