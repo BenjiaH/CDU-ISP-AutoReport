@@ -5,16 +5,26 @@ from loguru import logger
 
 
 class Logger:
-    def __init__(self, log_file: str, debug_file: str):
+    def __init__(self, log_file: str, debug_file=""):
+        os.chdir(os.path.dirname(__file__))
         self._log_fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} [<level>{level:<5}</level>] {file}.{line}: {message}"
         self._debug_fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} [<level>{level:}</level>] {name}:{function}:{line}: {message}"
-        os.chdir(os.path.dirname(__file__))
         logger.remove()
         logger.add(sink=log_file, filter=self.log_filter, format=self._log_fmt)
         logger.add(sink=sys.stderr, filter=self.log_filter, format=self._log_fmt)
-        logger.add(sink=debug_file, filter=self.debug_filter, format=self._debug_fmt)
+        if self._is_debug():
+            logger.add(sink=debug_file, filter=self.debug_filter, format=self._debug_fmt)
+            logger.debug("Debug mode enabled.")
         logger.info("Logger started.")
         self.logger = logger
+
+    @staticmethod
+    def _is_debug():
+        with open(r"../config/config.ini", "r", encoding="UTF-8") as f:
+            if "*DEBUG = ON*" in f.read():
+                return True
+            else:
+                return False
 
     @staticmethod
     def debug_filter(record):
