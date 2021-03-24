@@ -6,6 +6,7 @@ from common.config import global_config
 
 
 class Account(object):
+    @logger.catch
     def __init__(self, csv_file="../config/account.csv"):
         if global_config.getRaw('config', 'multiple_enable') == "off":
             return
@@ -21,6 +22,7 @@ class Account(object):
         self._col = len(next(self._account))
         self._all_info = self.get_info()
 
+    @logger.catch
     def refresh(self):
         self._csv_file = open(self._path, encoding='utf-8')
         self._account = csv.reader(self._csv_file)
@@ -28,6 +30,7 @@ class Account(object):
         self._col = len(next(self._account))
         self._all_info = self.get_info()
 
+    @logger.catch
     def get_info(self):
         ret = [[] for i in range(self._col)]
         for item in self._account:

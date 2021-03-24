@@ -35,6 +35,7 @@ class Logger:
         return record["level"].name == "INFO" or record["level"].name == "ERROR"
 
     @staticmethod
+    @logger.catch
     def log_version(stage: str, version=""):
         commit_id = ""
         if os.path.exists("../.git"):

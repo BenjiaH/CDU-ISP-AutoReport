@@ -1,5 +1,4 @@
 import requests
-import re
 
 from datetime import datetime
 from common import security
@@ -19,11 +18,13 @@ class Report:
         self._date = ""
         self._captcha_code = ""
 
+    @logger.catch
     def update_date(self):
         today = datetime.now()
         today = "{y}年{m}月{d}日".format(y=today.year, m=today.month, d=today.day)
         self._date = today
 
+    @logger.catch
     def _get_captcha_code(self):
         url = "{host}/weblogin.asp".format(host=self._host)
         res = self._session.get(url=url, headers=self._headers)
@@ -36,6 +37,7 @@ class Report:
             code = 0
         self._captcha_code = code
 
+    @logger.catch
     def _login(self, uid, password):
         url = "{host}/weblogin.asp".format(host=self._host)
         data = {
@@ -52,6 +54,7 @@ class Report:
         if res.status_code != 200:
             logger.error("POST request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
 
+    @logger.catch
     def _get_project_url(self):
         url = "{host}/left.asp".format(host=self._host)
         res = self._session.get(url=url, headers=self._headers)
@@ -67,6 +70,7 @@ class Report:
             logger.error("Get id value failed.[{e}]".format(e=e))
             logger.error("Login failed.")
 
+    @logger.catch
     def _get_report_url(self):
         if self._error == 1:
             return
@@ -83,6 +87,7 @@ class Report:
             self._error = 1
             logger.error("Get report url failed.[{e}]".format(e=e))
 
+    @logger.catch
     def _report(self):
         if self._error == 1:
             return
@@ -91,6 +96,7 @@ class Report:
         if res.status_code != 200:
             logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
 
+    @logger.catch
     def _is_reported(self):
         if self._error == 1:
             return
@@ -118,6 +124,7 @@ class Report:
                 logger.info("Report is not existed.")
                 return False
 
+    @logger.catch
     def main(self, uid, password):
         self._session = requests.Session()
         self._host = self._main_host + security.get_random_host() + "/com_user"

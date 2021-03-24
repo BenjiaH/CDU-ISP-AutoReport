@@ -24,6 +24,7 @@ ua = UserAgent(verify_ssl=False)
 hosts = copy.deepcopy(HOSTS)
 
 
+@logger.catch
 def get_host_status(host):
     url = "https://xsswzx.cdu.edu.cn/{host}/com_user/weblogin.asp".format(host=host)
     try:
@@ -42,6 +43,7 @@ def get_host_status(host):
         return True
 
 
+@logger.catch
 def refresh_hosts():
     global hosts
     unavailable_host = []
@@ -58,10 +60,12 @@ def refresh_hosts():
     return hosts
 
 
+@logger.catch
 def get_random_useragent():
     return ua.random
 
 
+@logger.catch
 def get_random_host():
     try:
         ret_host = random.choice(hosts)

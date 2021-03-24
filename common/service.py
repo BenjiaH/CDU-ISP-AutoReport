@@ -9,6 +9,7 @@ from common.push import global_push
 
 
 class ReportService:
+    @logger.catch
     def __init__(self):
         self._str_now_time = "0.1"
         self._global_wechat = global_config.getRaw('config', 'wechat_enable')
@@ -21,17 +22,20 @@ class ReportService:
         self._email_rxer = global_config.getRaw('messenger', 'email')
         self._report = Report()
 
+    @logger.catch
     def _get_now_time(self):
         now = datetime.now()
         self._str_now_time = now.strftime("%H.%M")
         return self._str_now_time
 
+    @logger.catch
     def _single_mode(self):
         logger.info("Report ID:{studentID}.".format(studentID=self._uid))
         ret = self._report.main(uid=self._uid, password=self._password)
         global_push.push(ret, uid=self._uid, wechat_push=self._wechat_push, email_push=self._email_push,
                          sckey=self._sckey, email_rxer=self._email_rxer)
 
+    @logger.catch
     def _multiple_mode(self):
         global_account.refresh()
         n = global_account.row
@@ -44,6 +48,7 @@ class ReportService:
                              email_rxer=global_account.email[i])
             sleep(1.5)
 
+    @logger.catch
     def _gen(self):
         start_time = time()
         security.refresh_hosts()
@@ -58,6 +63,7 @@ class ReportService:
         end_time = time()
         logger.info("Report completed. Cost time:{:.2f}s.".format(end_time - start_time))
 
+    @logger.catch
     def start(self):
         if global_config.getRaw('config', 'timer_enable') == "off":
             logger.info("Timer disabled.")
