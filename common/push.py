@@ -45,10 +45,11 @@ class Email:
         self.smtp = smtp
 
     @logger.catch
-    def send(self, uid, title, msg, time, receiver: list):
+    def send(self, uid, title, msg, receiver: list):
         while True:
             if self._is_login:
-                mail_msg = self._mail_payload.format(uid=uid, msg=msg, mail_name=self._mail_name, time=time)
+                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                mail_msg = self._mail_payload.format(uid=uid, msg=msg, mail_name=self._mail_name, time=now)
                 message = MIMEText(mail_msg, "html", "utf-8")
                 message['Subject'] = title
                 message['From'] = "{mail_name} <{mail_user}>".format(mail_name=self._mail_name,
@@ -82,11 +83,12 @@ class Push:
 
     @staticmethod
     @logger.catch
-    def wechat(uid, title, message, time, sckey):
+    def wechat(uid, title, message, sckey):
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         url = 'http://sc.ftqq.com/{}.send'.format(sckey)
         payload = {
             "text": title,
-            "desp": uid + ":\n\n" + message + "\n\n`{time}`".format(time=time)
+            "desp": uid + ":\n\n" + message + "\n\n`{time}`".format(time=now)
         }
         res = requests.get(url=url, params=payload)
         res.encoding = "utf-8"
@@ -103,7 +105,6 @@ class Push:
 
     @logger.catch
     def push(self, result, uid, wechat_push, email_push, sckey="", email_rxer=""):
-        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         if result == 0:
             title = "打卡已存在!"
             message = "当日打卡已存在!"
@@ -118,10 +119,10 @@ class Push:
             message = "ERROR!"
         if self._global_wechat != "off":
             if wechat_push == "1" or wechat_push == "on":
-                self.wechat(uid, title, message, now, sckey)
+                self.wechat(uid, title, message, sckey)
         if self._global_email != "off":
             if email_push == "1" or email_push == "on":
-                self.bot_email.send(uid, title, message, now, [email_rxer])
+                self.bot_email.send(uid, title, message, [email_rxer])
 
 
 global_push = Push()
