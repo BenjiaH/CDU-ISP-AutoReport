@@ -10,6 +10,7 @@ from common.logger import logger
 
 
 class Email:
+    @logger.catch
     def __init__(self, mail_user, mail_host, mail_pwd):
         if global_config.getRaw('config', 'email_enable') == "off":
             return
@@ -22,11 +23,13 @@ class Email:
         self.smtp = 0
         self._mail_payload = ""
 
+    @logger.catch
     def _load_tmpl(self):
         os.chdir(os.path.dirname(__file__))
         with open(r"../res/email_tmpl.html", "r", encoding="UTF-8") as f:
             self._mail_payload = f.read()
 
+    @logger.catch
     def login(self):
         if global_config.getRaw('config', 'email_enable') == "off":
             return
@@ -41,6 +44,7 @@ class Email:
             logger.error("Email login failed.[{e}]".format(e=e))
         self.smtp = smtp
 
+    @logger.catch
     def send(self, uid, title, msg, time, receiver: list):
         while True:
             if self._is_login:
@@ -67,6 +71,7 @@ class Email:
 
 
 class Push:
+    @logger.catch
     def __init__(self):
         self._global_wechat = global_config.getRaw('config', 'wechat_enable')
         self._global_email = global_config.getRaw('config', 'email_enable')
@@ -76,6 +81,7 @@ class Push:
         self.bot_email = Email(self._bot_email_user, self._bot_email_host, self._bot_email_pwd)
 
     @staticmethod
+    @logger.catch
     def wechat(uid, title, message, time, sckey):
         url = 'http://sc.ftqq.com/{}.send'.format(sckey)
         payload = {
@@ -95,6 +101,7 @@ class Push:
             logger.info("Wechat push successfully.")
             return True
 
+    @logger.catch
     def push(self, result, uid, wechat_push, email_push, sckey="", email_rxer=""):
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         if result == 0:
