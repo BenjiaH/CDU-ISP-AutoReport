@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 
 from loguru import logger
@@ -14,7 +15,6 @@ class Logger:
         logger.add(sink=sys.stderr, filter=self.log_filter, format=self._log_fmt)
         if self._is_debug():
             logger.add(sink=debug_file, filter=self.debug_filter, format=self._debug_fmt)
-            logger.debug("Debug mode enabled.")
         logger.info("Logger started.")
         self.logger = logger
 
@@ -22,6 +22,7 @@ class Logger:
     def _is_debug():
         with open(r"../config/config.ini", "r", encoding="UTF-8") as f:
             if "*DEBUG = ON*" in f.read():
+                logger.debug("Debug mode enabled.")
                 return True
             else:
                 return False
@@ -39,10 +40,12 @@ class Logger:
     def log_version(stage: str, version=""):
         commit_id = ""
         if os.path.exists("../.git"):
+            logger.debug("Founded:{git_path}.".format(git_path=os.path.abspath("../.git")))
             commit_id = (os.popen("git rev-parse --short HEAD").read()).replace("\n", "")
             version += "."
         info = version + commit_id + "(" + stage + ")"
         logger.info("Version:{version}".format(version=info))
+        logger.debug("Version:{version}".format(version=info))
 
 
 handlers = Logger("../log.log", "../debug.log")

@@ -29,15 +29,19 @@ def get_host_status(host):
     url = "https://xsswzx.cdu.edu.cn/{host}/com_user/weblogin.asp".format(host=host)
     try:
         res = requests.get(url=url, timeout=5)
+        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
     except Exception as e:
-        logger.error("Check \"{host}\" status failed. [{e}]".format(host=host, e=e))
+        logger.error("Check \"{host}\" status failed.".format(host=host, e=e))
+        logger.debug("Check \"{host}\" status failed. [{e}]".format(host=host, e=e))
         return False
     res.encoding = "utf-8"
     if "updatenow.asp" in res.text:
-        logger.error("Check \"{host}\" status failed. [updating]".format(host=host))
+        logger.error("Check \"{host}\" status failed.".format(host=host))
+        logger.debug("Check \"{host}\" status failed. [updating]".format(host=host))
         return False
     elif res.status_code != 200:
-        logger.error("Check \"{host}\" status failed. [status code:{code}]".format(host=host, code=res.status_code))
+        logger.error("Check \"{host}\" status failed.".format(host=host, code=res.status_code))
+        logger.debug("Check \"{host}\" status failed. [status code:{code}]".format(host=host, code=res.status_code))
         return False
     else:
         return True
@@ -62,7 +66,9 @@ def refresh_hosts():
 
 @logger.catch
 def get_random_useragent():
-    return ua.random
+    random_ua = ua.random
+    logger.debug("User Agent:{ua}".format(ua=random_ua))
+    return random_ua
 
 
 @logger.catch
@@ -70,6 +76,7 @@ def get_random_host():
     try:
         ret_host = random.choice(hosts)
         logger.info("Random host:\"{ret_host}\".".format(ret_host=ret_host))
+        logger.debug("Random host:\"{ret_host}\".".format(ret_host=ret_host))
     except Exception as e:
         logger.error("{e}.".format(e=e))
         return ""

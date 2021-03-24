@@ -23,17 +23,20 @@ class Report:
         today = datetime.now()
         today = "{y}年{m}月{d}日".format(y=today.year, m=today.month, d=today.day)
         self._date = today
+        logger.debug("Date:{today}".format(today=self._date))
 
     @logger.catch
     def _get_captcha_code(self):
         url = "{host}/weblogin.asp".format(host=self._host)
         res = self._session.get(url=url, headers=self._headers)
+        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
         res.encoding = "utf-8"
         try:
             soup = BeautifulSoup(res.text, 'lxml')
             code = soup.find(id="code").parent.text.strip()
         except Exception as e:
             logger.error("Get captcha code failed. [{e}]".format(e=e))
+            logger.debug("{url} text:\n{res}".format(url=url, res=res.text))
             code = 0
         self._captcha_code = code
 
@@ -51,6 +54,7 @@ class Report:
             "m5": "1",
         }
         res = self._session.post(url=url, headers=self._headers, data=data)
+        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
             logger.error("POST request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
 
@@ -58,6 +62,7 @@ class Report:
     def _get_project_url(self):
         url = "{host}/left.asp".format(host=self._host)
         res = self._session.get(url=url, headers=self._headers)
+        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
             logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         res.encoding = "utf-8"
@@ -69,6 +74,7 @@ class Report:
             self._error = 1
             logger.error("Get id value failed.[{e}]".format(e=e))
             logger.error("Login failed.")
+            logger.debug("{url} text:\n{res}".format(url=url, res=res.text))
 
     @logger.catch
     def _get_report_url(self):
@@ -76,6 +82,7 @@ class Report:
             return
         url = "{host}/{project}".format(host=self._host, project=self._project_url)
         res = self._session.get(url=url, headers=self._headers)
+        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
             logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         res.encoding = "utf-8"
@@ -86,6 +93,7 @@ class Report:
         except Exception as e:
             self._error = 1
             logger.error("Get report url failed.[{e}]".format(e=e))
+            logger.debug("{url} text:\n{res}".format(url=url, res=res.text))
 
     @logger.catch
     def _report(self):
@@ -93,6 +101,7 @@ class Report:
             return
         url = "{host}/{report}".format(host=self._host, report=self._report_url)
         res = self._session.get(url=url, headers=self._headers)
+        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
             logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
 
@@ -102,6 +111,7 @@ class Report:
             return
         url = "{host}/{project}".format(host=self._host, project=self._project_url)
         res = self._session.get(url=url, headers=self._headers)
+        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
             logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
             return
@@ -116,6 +126,7 @@ class Report:
                 latest_date = soup.find("td", class_="tdmenu").text
             except Exception as e:
                 logger.error("Get the latest date failed. [{e}]".format(e=e))
+                logger.debug("{url} text:\n{res}".format(url=url, res=res.text))
                 return
             if latest_date == self._date:
                 logger.info("Report is existed.")

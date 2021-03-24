@@ -15,11 +15,13 @@ class Config:
         self._config.read(self._path, encoding='utf-8-sig')
         self._configRaw = configparser.RawConfigParser()
         self._configRaw.read(self._path, encoding='utf-8-sig')
+        logger.debug("Loaded:{file}".format(file=self._path))
 
     @logger.catch
     def refresh(self):
         self._config.read(self._path, encoding='utf-8-sig')
         self._configRaw.read(self._path, encoding='utf-8-sig')
+        logger.debug("Refreshed:{file}".format(file=self._path))
 
     @logger.catch
     def get(self, section, name):

@@ -9,6 +9,7 @@ class Account(object):
     @logger.catch
     def __init__(self, csv_file="../config/account.csv"):
         if global_config.getRaw('config', 'multiple_enable') == "off":
+            logger.debug("Multiple mode disabled")
             return
 
         os.chdir(os.path.dirname(__file__))
@@ -21,6 +22,7 @@ class Account(object):
         self._row = sum(1 for line in open(self._path, encoding='utf-8')) - 1
         self._col = len(next(self._account))
         self._all_info = self.get_info()
+        logger.debug("Loaded:{file}".format(file=self._path))
 
     @logger.catch
     def refresh(self):
@@ -29,6 +31,7 @@ class Account(object):
         self._row = sum(1 for line in open(self._path, encoding='utf-8')) - 1
         self._col = len(next(self._account))
         self._all_info = self.get_info()
+        logger.debug("Refreshed:{file}".format(file=self._path))
 
     @logger.catch
     def get_info(self):

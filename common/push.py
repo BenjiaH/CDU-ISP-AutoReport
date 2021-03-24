@@ -13,6 +13,7 @@ class Email:
     @logger.catch
     def __init__(self, mail_user, mail_host, mail_pwd):
         if global_config.getRaw('config', 'email_enable') == "off":
+            logger.debug("Email disabled")
             return
 
         self._mail_host = mail_host
@@ -28,6 +29,7 @@ class Email:
         os.chdir(os.path.dirname(__file__))
         with open(r"../res/email_tmpl.html", "r", encoding="UTF-8") as f:
             self._mail_payload = f.read()
+            logger.debug("Loaded:{tmpl}.".format(tmpl=os.path.abspath(r"../res/email_tmpl.html")))
 
     @logger.catch
     def login(self):
@@ -93,6 +95,8 @@ class Push:
         res = requests.get(url=url, params=payload)
         res.encoding = "utf-8"
         dict_res = json.loads(res.text)
+        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug("Response:{res}".format(res=dict_res))
         if res.status_code != 200:
             logger.error("Wechat push failed. Status code:{code}.".format(code=res.status_code))
             return False
