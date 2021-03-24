@@ -14,7 +14,7 @@ class Logger:
         logger.add(sink=log_file, filter=self.log_filter, format=self._log_fmt)
         logger.add(sink=sys.stderr, filter=self.log_filter, format=self._log_fmt)
         if self._is_debug():
-            logger.add(sink=debug_file, filter=self.debug_filter, format=self._debug_fmt)
+            logger.add(sink=debug_file, filter=self.debug_filter, format=self._debug_fmt,rotation="1 MB")
         logger.info("Logger started.")
         self.logger = logger
 
@@ -48,6 +48,6 @@ class Logger:
         logger.debug("Version:{version}".format(version=info))
 
 
-handlers = Logger("../log.log", "../debug.log")
+handlers = Logger("../log/log/log.log", "../log/debug/debug.log")
 logger = handlers.logger
 log_version = handlers.log_version
