@@ -13,16 +13,17 @@ class Logger:
         logger.remove()
         logger.add(sink=log_file, filter=self.log_filter, format=self._log_fmt)
         logger.add(sink=sys.stderr, filter=self.log_filter, format=self._log_fmt)
+        logger.info("Logger started.")
         if self._is_debug():
             logger.add(sink=debug_file, filter=self.debug_filter, format=self._debug_fmt,rotation="1 MB")
-        logger.info("Logger started.")
+            logger.debug("Debug mode enabled.")
+            logger.debug("Logger started.")
         self.logger = logger
 
     @staticmethod
     def _is_debug():
         with open(r"../config/config.ini", "r", encoding="UTF-8") as f:
             if "*DEBUG = ON*" in f.read():
-                logger.debug("Debug mode enabled.")
                 return True
             else:
                 return False

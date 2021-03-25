@@ -29,7 +29,7 @@ def get_host_status(host):
     url = "https://xsswzx.cdu.edu.cn/{host}/com_user/weblogin.asp".format(host=host)
     try:
         res = requests.get(url=url, timeout=5)
-        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
     except Exception as e:
         logger.error("Check \"{host}\" status failed.".format(host=host, e=e))
         logger.debug("Check \"{host}\" status failed. [{e}]".format(host=host, e=e))
@@ -75,7 +75,6 @@ def get_random_useragent():
 def get_random_host():
     try:
         ret_host = random.choice(hosts)
-        logger.info("Random host:\"{ret_host}\".".format(ret_host=ret_host))
         logger.debug("Random host:\"{ret_host}\".".format(ret_host=ret_host))
     except Exception as e:
         logger.error("{e}.".format(e=e))

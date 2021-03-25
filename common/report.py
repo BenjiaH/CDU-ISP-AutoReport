@@ -29,7 +29,7 @@ class Report:
     def _get_captcha_code(self):
         url = "{host}/weblogin.asp".format(host=self._host)
         res = self._session.get(url=url, headers=self._headers)
-        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         res.encoding = "utf-8"
         try:
             soup = BeautifulSoup(res.text, 'lxml')
@@ -54,7 +54,7 @@ class Report:
             "m5": "1",
         }
         res = self._session.post(url=url, headers=self._headers, data=data)
-        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
             logger.error("POST request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
 
@@ -62,7 +62,7 @@ class Report:
     def _get_project_url(self):
         url = "{host}/left.asp".format(host=self._host)
         res = self._session.get(url=url, headers=self._headers)
-        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
             logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         res.encoding = "utf-8"
@@ -82,7 +82,7 @@ class Report:
             return
         url = "{host}/{project}".format(host=self._host, project=self._project_url)
         res = self._session.get(url=url, headers=self._headers)
-        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
             logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         res.encoding = "utf-8"
@@ -101,7 +101,7 @@ class Report:
             return
         url = "{host}/{report}".format(host=self._host, report=self._report_url)
         res = self._session.get(url=url, headers=self._headers)
-        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
             logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
 
@@ -111,7 +111,7 @@ class Report:
             return
         url = "{host}/{project}".format(host=self._host, project=self._project_url)
         res = self._session.get(url=url, headers=self._headers)
-        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
             logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
             return
@@ -150,7 +150,7 @@ class Report:
             logger.info("Report is already existed. ID:{uid}".format(uid=uid))
             return 0
         else:
-            self._report()
+            # self._report()
             if self._is_reported():
                 logger.info("Report successfully. ID:{uid}".format(uid=uid))
                 return 1

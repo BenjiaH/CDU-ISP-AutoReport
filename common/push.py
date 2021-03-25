@@ -57,6 +57,7 @@ class Email:
                 message['From'] = "{mail_name} <{mail_user}>".format(mail_name=self._mail_name,
                                                                      mail_user=self._mail_user)
                 message['To'] = receiver[0]
+                logger.debug("Email receiver:{rxer}.".format(rxer=receiver[0]))
                 try:
                     self.smtp.sendmail(self._mail_user, receiver, message.as_string())
                     logger.info("Email send successfully.")
@@ -95,7 +96,7 @@ class Push:
         res = requests.get(url=url, params=payload)
         res.encoding = "utf-8"
         dict_res = json.loads(res.text)
-        logger.debug("URL:{url}.Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         logger.debug("Response:{res}".format(res=dict_res))
         if res.status_code != 200:
             logger.error("Wechat push failed. Status code:{code}.".format(code=res.status_code))
