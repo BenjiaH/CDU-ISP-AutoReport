@@ -16,8 +16,8 @@ class Logger:
         logger.info("Logger started.")
         if self._is_debug():
             logger.add(sink=debug_file, filter=self.debug_filter, format=self._debug_fmt,rotation="1 MB")
-            logger.debug("Debug mode enabled.")
             logger.debug("Logger started.")
+            logger.debug("Debug mode enabled.")
         self.logger = logger
 
     @staticmethod
