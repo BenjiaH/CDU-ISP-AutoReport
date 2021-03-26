@@ -150,7 +150,7 @@ class Report:
             logger.info("Report is already existed. ID:{uid}".format(uid=uid))
             return 0
         else:
-            # self._report()
+            self._report()
             if self._is_reported():
                 logger.info("Report successfully. ID:{uid}".format(uid=uid))
                 return 1
