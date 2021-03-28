@@ -147,11 +147,11 @@ class Report:
         self._get_captcha_code()
         self._login(uid, password)
         self._get_project_url()
-        self._get_report_url()
         if self._is_reported():
             logger.info("Report is already existed. ID:{uid}".format(uid=uid))
             return 0
         else:
+            self._get_report_url()
             self._report()
             if self._is_reported():
                 logger.info("Report successfully. ID:{uid}".format(uid=uid))
