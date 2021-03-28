@@ -70,11 +70,11 @@ class ReportService:
             logger.info("Start to report.")
             self._gen()
         else:
+            logger.info("Timer enabled.")
             while True:
                 global_config.refresh()
                 str_set_time = global_config.getRaw('config', 'set_time')
                 str_now_time = self._get_now_time()
-                logger.info("Timer enabled.")
                 logger.info(
                     "Now time:{now_time}. Set time:{set_time}.".format(now_time=str_now_time, set_time=str_set_time))
                 while True:
