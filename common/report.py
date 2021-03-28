@@ -70,6 +70,7 @@ class Report:
             soup = BeautifulSoup(res.text, 'lxml')
             self._project_url = soup.find('a', string="疫情信息登记")['href']
             logger.info("Login successfully.")
+            logger.debug("Project url:{url}.".format(url=self._project_url))
         except Exception as e:
             self._error = 1
             logger.error("Get id value failed.[{e}]".format(e=e))
@@ -90,6 +91,7 @@ class Report:
             soup = BeautifulSoup(res.text, 'lxml')
             self._report_url = soup.find(value="【一键登记：无变化】").parent['href']
             logger.info("Get report url.")
+            logger.debug("Report url:{url}.".format(url=self._report_url))
         except Exception as e:
             self._error = 1
             logger.error("Get report url failed.[{e}]".format(e=e))
