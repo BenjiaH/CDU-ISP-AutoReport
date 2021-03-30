@@ -12,7 +12,7 @@ global_push.bot_email.login()
 n = global_account.row
 for i in range(n):
     uid = global_account.studentID[i]
-    logger.info("{i}/{n} Sending... ID:{studentID}.".format(i=i + 1, n=n, studentID=global_account.studentID[i]))
+    logger.info("{i}/{n} Sending... ID:{studentID}.".format(i=i + 1, n=n, studentID=uid))
     global_push.bot_email.send(uid, title, message, [global_account.email[i]])
     global_push.wechat(uid, title, message, global_account.sckey[i])
     sleep(1.5)
