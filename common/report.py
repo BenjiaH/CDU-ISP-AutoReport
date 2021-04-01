@@ -118,24 +118,20 @@ class Report:
             logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
             return
         res.encoding = "utf-8"
-        # host refreshes records every months(1st day of this month)
-        if "还没有登记记录" in res.text:
+        try:
+            soup = BeautifulSoup(res.text, 'lxml')
+            record_val = soup.find("td", class_="tdmenu").text.strip()
+            logger.debug("Record value:{val}".format(val=record_val))
+        except Exception as e:
+            logger.error("Get the latest record value failed. [{e}]".format(e=e))
+            logger.debug("{url} text:\n{res}".format(url=url, res=res.text))
+            return
+        if record_val == self._date:
+            logger.info("Report is existed.")
+            return True
+        else:
             logger.info("Report is not existed.")
             return False
-        else:
-            try:
-                soup = BeautifulSoup(res.text, 'lxml')
-                latest_date = soup.find("td", class_="tdmenu").text
-            except Exception as e:
-                logger.error("Get the latest date failed. [{e}]".format(e=e))
-                logger.debug("{url} text:\n{res}".format(url=url, res=res.text))
-                return
-            if latest_date == self._date:
-                logger.info("Report is existed.")
-                return True
-            else:
-                logger.info("Report is not existed.")
-                return False
 
     @logger.catch
     def main(self, uid, password):
@@ -152,7 +148,7 @@ class Report:
             return 0
         else:
             self._get_report_url()
-            self._report()
+            # self._report()
             if self._is_reported():
                 logger.info("Report successfully. ID:{uid}".format(uid=uid))
                 return 1
