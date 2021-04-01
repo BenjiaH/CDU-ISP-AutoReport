@@ -148,7 +148,7 @@ class Report:
             return 0
         else:
             self._get_report_url()
-            # self._report()
+            self._report()
             if self._is_reported():
                 logger.info("Report successfully. ID:{uid}".format(uid=uid))
                 return 1
