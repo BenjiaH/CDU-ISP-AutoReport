@@ -3,6 +3,7 @@ __pycache__/
 data/
 .idea/
 monitor/
+env/
 *.log
 config.ini
 account.csv
