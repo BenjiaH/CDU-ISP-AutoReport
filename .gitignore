@@ -2,7 +2,7 @@ test/
 __pycache__/
 data/
 .idea/
+monitor/
 *.log
 config.ini
 account.csv
-*副本*.*
