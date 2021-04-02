@@ -9,23 +9,27 @@ class Logger:
         os.chdir(os.path.dirname(__file__))
         self._log_fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} [<level>{level:<5}</level>] {file}.{line}: {message}"
         self._debug_fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} [<level>{level:}</level>] {name}:{function}:{line}: {message}"
+        self._config_path = os.path.abspath(r"../config/config.ini")
         logger.remove()
         logger.add(sink=log_file, filter=self.log_filter, format=self._log_fmt)
         logger.add(sink=sys.stderr, filter=self.log_filter, format=self._log_fmt)
         logger.info("Logger started.")
         if self._is_debug():
-            logger.add(sink=debug_file, filter=self.debug_filter, format=self._debug_fmt,rotation="1 MB")
+            logger.add(sink=debug_file, filter=self.debug_filter, format=self._debug_fmt, rotation="1 MB")
             logger.debug("Logger started.")
             logger.debug("Debug mode enabled.")
         self.logger = logger
 
-    @staticmethod
-    def _is_debug():
-        with open(r"../config/config.ini", "r", encoding="UTF-8") as f:
-            if "*DEBUG = ON*" in f.read():
-                return True
-            else:
-                return False
+    def _is_debug(self):
+        try:
+            with open(self._config_path, "r", encoding="UTF-8") as f:
+                if "*DEBUG = ON*" in f.read():
+                    return True
+                else:
+                    return False
+        except Exception as e:
+            logger.error("{e}".format(e=e))
+            return False
 
     @staticmethod
     def debug_filter(record):
