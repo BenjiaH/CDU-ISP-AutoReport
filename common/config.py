@@ -4,7 +4,6 @@ from common.logger import logger
 
 
 class Config:
-    @logger.catch
     def __init__(self, config_file=r"../config/config.ini"):
         os.chdir(os.path.dirname(__file__))
         self._path = os.path.abspath(config_file)
