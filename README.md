@@ -1,5 +1,8 @@
 # CDU-ISP-AutoReport
 
+![License](https://img.shields.io/badge/License-GPL3.0-blue.svg)
+![Version](https://img.shields.io/badge/Version-1.1.0.release-green.svg)
+
 ```?
    _____ _____  _    _      _____  _____ _____                    _        _____                       _   
   / ____|  __ \| |  | |    |_   _|/ ____|  __ \        /\        | |      |  __ \                     | |  
