@@ -1,7 +1,8 @@
 # CDU-ISP-AutoReport
 
-![License](https://img.shields.io/badge/License-GPL3.0-blue.svg)
-![Version](https://img.shields.io/badge/Version-1.1.0.release-green.svg)
+[![License](https://img.shields.io/github/license/BenjiaH/CDU-ISP-AutoReport.svg)](https://github.com/BenjiaH/CDU-ISP-AutoReport/blob/master/LICENSE)
+[![Release](https://img.shields.io/github/release/BenjiaH/CDU-ISP-AutoReport.svg)](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/latest)
+[![Release Date](https://img.shields.io/github/release-date-pre/BenjiaH/CDU-ISP-AutoReport.svg)](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/latest)
 
 ```?
    _____ _____  _    _      _____  _____ _____                    _        _____                       _   
@@ -30,8 +31,9 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 
 - 如果任何单位或个人认为该项目的脚本可能涉嫌侵犯其权利，则应及时通知并提供身份证明，所有权证明，我们将在收到认证文件后删除相关脚本。
 
-- 以任何方式查看此项目的人或直接或间接使用`CDU-ISP-AutoReport`项目的任何脚本的使用者都应仔细阅读此声明。本仓库拥有者保留随时更改或补充此免责声明的权利。一旦使用并复制了任何相关脚本或`CDU-ISP-AutoReport`项目，则视为您已接受此免责声明。
-  
+- 以任何方式查看此项目的人或直接或间接使用`CDU-ISP-AutoReport`
+  项目的任何脚本的使用者都应仔细阅读此声明。本仓库拥有者保留随时更改或补充此免责声明的权利。一旦使用并复制了任何相关脚本或`CDU-ISP-AutoReport`项目，则视为您已接受此免责声明。
+
 - 您必须在下载后的24小时内从计算机或手机中完全删除以上内容。
 
 - 本项目遵循[`GPL-3.0 License`](LICENSE)协议，如果本特别声明与`GPL-3.0 License`协议有冲突之处，以本特别声明为准。
@@ -63,7 +65,8 @@ pip install -r requirements.txt
 
 ### 4.1.生成`sckey`(用作微信推送)(可选)
 
-- **此功能有一定概率下线，请勿依赖。[(服务号订阅通知灰度测试)](https://developers.weixin.qq.com/community/develop/doc/000a4e1df800d82acb9b7fb5e5b001)**
+- **
+  此功能有一定概率下线，请勿依赖。[(服务号订阅通知灰度测试)](https://developers.weixin.qq.com/community/develop/doc/000a4e1df800d82acb9b7fb5e5b001)**
 - 打开[Server酱](https://benjiah.gitee.io/redirect/serversauce)。
 - 申请一个`sckey`，并记录下来。
 
