@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ### (2021-4-2)
 
-- **Incompatible changed:configuration segments format([time](https://github.com/BenjiaH/CDU-ISP-AutoReport/commit/8f859965bbb635a19ef750daa857c8c7e081dd3e) & [switch](https://github.com/BenjiaH/CDU-ISP-AutoReport/commit/1a9f69d8efd757b897bfcacc1249e809bc9b9219))**
+- **Incompatible changed:configuration segments format([time](../../commit/8f859965bbb635a19ef750daa857c8c7e081dd3e) & [switch](../../commit/1a9f69d8efd757b897bfcacc1249e809bc9b9219))**
 - Added:fake_useragent to get random user-agents
 - Added:BeautifulSoup4 to match information more stably
 - Added:loguru for better logging
