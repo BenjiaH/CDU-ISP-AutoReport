@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/github/license/BenjiaH/CDU-ISP-AutoReport.svg)](https://github.com/BenjiaH/CDU-ISP-AutoReport/blob/master/LICENSE)
 [![Release](https://img.shields.io/github/release/BenjiaH/CDU-ISP-AutoReport.svg)](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/latest)
-[![Release Date](https://img.shields.io/github/release-date-pre/BenjiaH/CDU-ISP-AutoReport.svg)](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/latest)
+[![Release Date](https://img.shields.io/github/release-date/BenjiaH/CDU-ISP-AutoReport.svg)](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/latest)
 
 ```?
    _____ _____  _    _      _____  _____ _____                    _        _____                       _   
