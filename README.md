@@ -4,7 +4,7 @@
 [![Release](https://img.shields.io/github/release/BenjiaH/CDU-ISP-AutoReport.svg)](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/latest)
 [![Release Date](https://img.shields.io/github/release-date/BenjiaH/CDU-ISP-AutoReport.svg)](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/latest)
 
-```?
+```N/A
    _____ _____  _    _      _____  _____ _____                    _        _____                       _   
   / ____|  __ \| |  | |    |_   _|/ ____|  __ \        /\        | |      |  __ \                     | |  
  | |    | |  | | |  | |______| | | (___ | |__) ______ /  \  _   _| |_ ___ | |__) |___ _ __   ___  _ __| |_ 
@@ -95,7 +95,7 @@ cd .\CDU-ISP-AutoReport\
 .\scripts\run.bat 
 ```
 
-- 在`Linux`平台下，你可以运行[`scripts/run.sh`](scripts/run.sh)
+- 在`GNU/Linux`平台下，你可以运行[`scripts/run.sh`](scripts/run.sh)
 
 ```bash
 cd CDU-ISP-AutoReport\
@@ -110,3 +110,43 @@ chmod 777 scripts/run.sh
 ## 6.CHANGE LOG
 
 - [CHANGELOG.md](CHANGELOG.md)
+
+## 7.程序结构
+
+```N/A
+│  .gitignore
+│  CHANGELOG.md         <---更新日志
+│  LICENSE
+│  main.py              <---入口程序
+│  README.md
+│
+├─common
+│      account.py       <---多账户读取模块
+│      config.py        <---配置读取模块
+│      logger.py        <---日志模块
+│      push.py          <---推送模块
+│      report.py        <---自动化报告模块
+│      security.py      <---安全及运行检查模块
+│      service.py       <---服务管理模块
+│
+├─config
+│      account.csv      <---多账户管理文件
+│      config.ini       <---配置文件
+│
+├─log
+│  ├─debug
+│  │      debug.log     <---debug级日志
+│  │
+│  └─log
+│         log.log       <---info级日志
+│
+├─res
+│      email_tmpl.html  <---Email模板文件
+│
+├─scripts
+│      run.bat          <---Windows下启动文件
+│      run.sh           <---GNU/Linux下启动文件
+│
+└─tools
+        messenger.py    <---群发推送程序
+```
