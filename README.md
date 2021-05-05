@@ -148,5 +148,5 @@ chmod 777 scripts/run.sh
 │      run.sh           <---GNU/Linux下运行文件
 │
 └─tools
-       messenger.py    <---群发推送程序
+       messenger.py     <---群发推送程序
 ```
