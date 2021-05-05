@@ -144,9 +144,9 @@ chmod 777 scripts/run.sh
 │      email_tmpl.html  <---Email模板文件
 │
 ├─scripts
-│      run.bat          <---Windows下启动文件
-│      run.sh           <---GNU/Linux下启动文件
+│      run.bat          <---Windows下运行文件
+│      run.sh           <---GNU/Linux下运行文件
 │
 └─tools
-        messenger.py    <---群发推送程序
+       messenger.py    <---群发推送程序
 ```
