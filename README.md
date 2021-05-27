@@ -64,7 +64,7 @@ pip install -r requirements.txt
 
 ### 4.1.生成`sckey`(用作微信推送)(可选)
 
-- **此功能有一定概率下线，请勿依赖。[(服务号订阅通知灰度测试)](https://developers.weixin.qq.com/community/develop/doc/000a4e1df800d82acb9b7fb5e5b001)**
+- ~~此功能有一定概率下线，请勿依赖。[(服务号订阅通知灰度测试)](https://developers.weixin.qq.com/community/develop/doc/000a4e1df800d82acb9b7fb5e5b001)~~ **此功能暂无下线计划。[(服务号订阅通知灰度测试延期公告)](https://developers.weixin.qq.com/community/develop/doc/000a46c7eb8468ba1a1cc863e51401)**
 - 打开[Server酱](https://benjiah.gitee.io/redirect/serversauce)。
 - 申请一个`sckey`，并记录下来。
 
