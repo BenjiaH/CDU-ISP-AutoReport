@@ -36,7 +36,7 @@ class Email:
         if global_config.getRaw('config', 'email_enable') == "off":
             return
         self._load_tmpl()
-        smtp = smtplib.SMTP()
+        smtp = smtplib.SMTP(timeout=20)
         try:
             smtp.connect(self._mail_host, 25)
             smtp.login(self._mail_user, self._mail_pwd)
@@ -48,30 +48,26 @@ class Email:
 
     @logger.catch
     def send(self, uid, title, msg, receiver: list):
-        while True:
-            if self._is_login:
-                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                mail_msg = self._mail_payload.format(uid=uid, msg=msg, mail_name=self._mail_name, time=now)
-                message = MIMEText(mail_msg, "html", "utf-8")
-                message['Subject'] = title
-                message['From'] = "{mail_name} <{mail_user}>".format(mail_name=self._mail_name,
-                                                                     mail_user=self._mail_user)
-                message['To'] = receiver[0]
-                logger.debug("Email receiver:{rxer}.".format(rxer=receiver[0]))
-                try:
-                    self.smtp.sendmail(self._mail_user, receiver, message.as_string())
-                    logger.info("Email send successfully.")
-                    break
-                except Exception as e:
-                    logger.error("Email send failed.[{e}]".format(e=e))
-                    error_msg = ["please run connect() first", "Connection unexpectedly closed"]
-                    if str(e) in error_msg:
-                        self._is_login = False
-                        self.login()
-                    else:
-                        return
-            else:
-                logger.error("Email not login.")
+        logger.debug("Email receiver:{rxer}.".format(rxer=receiver[0]))
+        if not self._is_login:
+            logger.error("Email send failed.[Email not login]")
+        else:
+            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            mail_msg = self._mail_payload.format(uid=uid, msg=msg, mail_name=self._mail_name, time=now)
+            message = MIMEText(mail_msg, "html", "utf-8")
+            message['Subject'] = title
+            message['From'] = "{mail_name} <{mail_user}>".format(mail_name=self._mail_name,
+                                                                 mail_user=self._mail_user)
+            message['To'] = receiver[0]
+            try:
+                self.smtp.sendmail(self._mail_user, receiver, message.as_string())
+                logger.info("Email send successfully.")
+            except Exception as e:
+                logger.error("Email send failed.[{e}]".format(e=e))
+                error_msg = ["please run connect() first", "Connection unexpectedly closed"]
+                if str(e) in error_msg:
+                    self._is_login = False
+                    self.login()
 
 
 class Push:
