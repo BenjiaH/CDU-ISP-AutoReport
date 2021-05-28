@@ -103,6 +103,7 @@ class Report:
             return
         url = "{host}/{report}".format(host=self._host, report=self._report_url)
         res = self._session.get(url=url, headers=self._headers)
+        logger.info("Trying to report.")
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
             logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
