@@ -64,7 +64,7 @@ pip install -r requirements.txt
 
 ### 4.1.生成`sckey`(用作微信推送)(可选)
 
-- ~~此功能有一定概率下线，请勿依赖。[(服务号订阅通知灰度测试)](https://developers.weixin.qq.com/community/develop/doc/000a4e1df800d82acb9b7fb5e5b001)~~ **此功能暂无下线计划。[(服务号订阅通知灰度测试延期公告)](https://developers.weixin.qq.com/community/develop/doc/000a46c7eb8468ba1a1cc863e51401)**
+- `sc.ftqq.com`API将于2021年7月30日（暂定，可能延后）下线，届时`sc.ftqq.com`推送接口将无法使用。本项目将尽快上线`sct.ftqq.com`以便继续提供微信推送接口。[(sc.ftqq.com 分期下线通知和常见问题解答)](https://mp.weixin.qq.com/s/KGQC1v5rsG_JKVRtN2DY4w)
 - 打开[Server酱](https://benjiah.gitee.io/redirect/serversauce)。
 - 申请一个`sckey`，并记录下来。
 
