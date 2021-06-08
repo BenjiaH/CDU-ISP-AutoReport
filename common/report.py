@@ -136,6 +136,7 @@ class Report:
 
     @logger.catch
     def main(self, uid, password):
+        self._error = 0
         self._session = requests.Session()
         self._host = self._main_host + security.get_random_host() + "/com_user"
         self._headers = {
