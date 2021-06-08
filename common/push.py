@@ -84,10 +84,12 @@ class Push:
     @logger.catch
     def wechat(uid, title, message, sckey):
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        url = 'http://sc.ftqq.com/{}.send'.format(sckey)
+        url = 'https://sc.ftqq.com/{}.send'.format(sckey)
+        ps = """PS [sc.ftqq.com]API将于2021年7月30日(暂定，可能延后)下线，届时[sc.ftqq.com]推送接口将无法使用。本项目将尽快上线[sct.ftqq.com]以便继续提供微信推送接口。[
+        (sc.ftqq.com 分期下线通知和常见问题解答)](https://mp.weixin.qq.com/s/KGQC1v5rsG_JKVRtN2DY4w)"""
         payload = {
             "text": title,
-            "desp": uid + ":\n\n" + message + "\n\n`{time}`".format(time=now)
+            "desp": uid + ":\n\n" + message + "\n\n{ps}\n\n`{time}`".format(ps=ps, time=now)
         }
         res = requests.get(url=url, params=payload)
         res.encoding = "utf-8"
