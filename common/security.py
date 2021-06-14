@@ -31,17 +31,17 @@ def get_host_status(host):
         res = requests.get(url=url, timeout=5)
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
     except Exception as e:
-        logger.error("Check \"{host}\" status failed.".format(host=host, e=e))
-        logger.debug("Check \"{host}\" status failed. [{e}]".format(host=host, e=e))
+        logger.error("Failed to check \"{host}\" status.".format(host=host, e=e))
+        logger.debug("Failed to check \"{host}\" status. [{e}]".format(host=host, e=e))
         return False
     res.encoding = "utf-8"
     if "updatenow.asp" in res.text:
-        logger.error("Check \"{host}\" status failed.".format(host=host))
-        logger.debug("Check \"{host}\" status failed. [updating]".format(host=host))
+        logger.error("Failed to check \"{host}\" status.".format(host=host))
+        logger.debug("Failed to check \"{host}\" status. [updating]".format(host=host))
         return False
     elif res.status_code != 200:
-        logger.error("Check \"{host}\" status failed.".format(host=host, code=res.status_code))
-        logger.debug("Check \"{host}\" status failed. [status code:{code}]".format(host=host, code=res.status_code))
+        logger.error("Failed to check \"{host}\" status.".format(host=host, code=res.status_code))
+        logger.debug("Failed to check \"{host}\" status. [status code:{code}]".format(host=host, code=res.status_code))
         return False
     else:
         return True
@@ -57,7 +57,7 @@ def refresh_hosts():
         if not get_host_status(i):
             hosts.remove(i)
             unavailable_host.append(i)
-    logger.info("Hosts refreshed.")
+    logger.info("Refresh hosts.")
     if len(hosts) != len(HOSTS):
         logger.error("Unavailable host:{host}.".format(host=unavailable_host))
     unavailable_host.clear()
