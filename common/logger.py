@@ -13,11 +13,11 @@ class Logger:
         logger.remove()
         logger.add(sink=log_file, filter=self.log_filter, format=self._log_fmt)
         logger.add(sink=sys.stderr, filter=self.log_filter, format=self._log_fmt)
-        logger.info("Logger started.")
+        logger.info("The logger is started.")
         if self._is_debug():
             logger.add(sink=debug_file, filter=self.debug_filter, format=self._debug_fmt, rotation="1 MB")
-            logger.debug("Logger started.")
-            logger.debug("Debug mode enabled.")
+            logger.debug("The logger is started.")
+            logger.debug("The debug mode is enabled.")
         self.logger = logger
 
     def _is_debug(self):

@@ -41,16 +41,16 @@ class Email:
             smtp.connect(self._mail_host, 25)
             smtp.login(self._mail_user, self._mail_pwd)
             self._is_login = True
-            logger.info("Email login successfully.")
+            logger.info("Successful to login the email.")
         except Exception as e:
-            logger.error("Email login failed.[{e}]".format(e=e))
+            logger.error("Failed to login the email. [{e}]".format(e=e))
         self.smtp = smtp
 
     @logger.catch
     def send(self, uid, title, msg, receiver: list):
         logger.debug("Email receiver:{rxer}.".format(rxer=receiver[0]))
         if not self._is_login:
-            logger.error("Email send failed.[Email not login]")
+            logger.error("Failed to send the email.[Email not login]")
         else:
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             mail_msg = self._mail_payload.format(uid=uid, msg=msg, mail_name=self._mail_name, time=now)
@@ -61,9 +61,9 @@ class Email:
             message['To'] = receiver[0]
             try:
                 self.smtp.sendmail(self._mail_user, receiver, message.as_string())
-                logger.info("Email send successfully.")
+                logger.info("Successful to send the email.")
             except Exception as e:
-                logger.error("Email send failed.[{e}]".format(e=e))
+                logger.error("Failed to send the email.[{e}]".format(e=e))
                 error_msg = ["please run connect() first", "Connection unexpectedly closed"]
                 if str(e) in error_msg:
                     self._is_login = False
@@ -85,7 +85,7 @@ class Push:
     def wechat(uid, title, message, sckey):
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         url = 'https://sc.ftqq.com/{}.send'.format(sckey)
-        ps = """PS [sc.ftqq.com]API将于2021年7月30日(暂定，可能延后)下线，届时[sc.ftqq.com]推送接口将无法使用。本项目将尽快上线[sct.ftqq.com]以便继续提供微信推送接口。[
+        ps = """PS 「sc.ftqq.com」API将于2021年7月30日(暂定，可能延后)下线，届时「sc.ftqq.com」推送接口将无法使用。本项目将尽快上线「sct.ftqq.com」以便继续提供微信推送接口。[
         (sc.ftqq.com 分期下线通知和常见问题解答)](https://mp.weixin.qq.com/s/KGQC1v5rsG_JKVRtN2DY4w)"""
         payload = {
             "text": title,
@@ -97,13 +97,13 @@ class Push:
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         logger.debug("Response:{res}".format(res=dict_res))
         if res.status_code != 200:
-            logger.error("Wechat push failed. Status code:{code}.".format(code=res.status_code))
+            logger.error("Failed to push the wechat message. Status code:{code}.".format(code=res.status_code))
             return False
         elif dict_res["errno"] != 0:
-            logger.error("Wechat push failed. [{msg}].".format(msg=dict_res["errmsg"]))
+            logger.error("Failed to push the wechat message. [{msg}].".format(msg=dict_res["errmsg"]))
             return False
         else:
-            logger.info("Wechat push successfully.")
+            logger.info("Successful to push the wechat message.")
             return True
 
     @logger.catch
