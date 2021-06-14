@@ -4,7 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.1.0.release](../../tree/1.1.0.release)
+## [1.1.1.release](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/tag/1.1.1.release)
+
+### (2021-6-14)
+
+- Fixed:reset the error flag correctly
+- Optimized:other details
+
+---
+
+## [1.1.0.release](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/tag/1.1.0.release)
 
 ### (2021-4-2)
 
@@ -20,7 +29,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.0.1.release](../../tree/1.0.1.release)
+## [1.0.1.release](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/tag/1.0.1.release)
 
 ### (2021-2-27)
 
@@ -28,7 +37,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.0.0.release](../../tree/1.0.0.release)
+## [1.0.0.release](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/tag/1.0.0.release)
 
 ### (2021-2-18)
 
