@@ -36,7 +36,7 @@ class Report:
             code = soup.find(id="code").parent.text.strip()
         except Exception as e:
             logger.error("Get captcha code failed. [{e}]".format(e=e))
-            logger.debug("{url} text:\n{res}".format(url=url, res=res.text))
+            logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
             code = 0
         self._captcha_code = code
 
@@ -56,7 +56,7 @@ class Report:
         res = self._session.post(url=url, headers=self._headers, data=data)
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
-            logger.error("POST request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+            logger.error("Failed:POST request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
 
     @logger.catch
     def _get_project_url(self):
@@ -64,74 +64,78 @@ class Report:
         res = self._session.get(url=url, headers=self._headers)
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
-            logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+            logger.error("Failed:GET request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         res.encoding = "utf-8"
         try:
             soup = BeautifulSoup(res.text, 'lxml')
             self._project_url = soup.find('a', string="疫情信息登记")['href']
-            logger.info("Login successfully.")
+            logger.info("Successful to login the ISP.")
             logger.debug("Project url:{url}.".format(url=self._project_url))
         except Exception as e:
             self._error = 1
-            logger.error("Get id value failed.[{e}]".format(e=e))
-            logger.error("Login failed.")
-            logger.debug("{url} text:\n{res}".format(url=url, res=res.text))
+            logger.debug("Set the error flag to {err_flag}.".format(err_flag=self._error))
+            logger.error("Failed to get the id value.[{e}]".format(e=e))
+            logger.error("Failed to login the ISP.")
+            logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
 
     @logger.catch
     def _get_report_url(self):
         if self._error == 1:
+            logger.debug("The error flag:{err_flag}.Exit.".format(err_flag=self._error))
             return
         url = "{host}/{project}".format(host=self._host, project=self._project_url)
         res = self._session.get(url=url, headers=self._headers)
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
-            logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+            logger.error("Failed:GET request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         res.encoding = "utf-8"
         try:
             soup = BeautifulSoup(res.text, 'lxml')
             self._report_url = soup.find(value="【一键登记：无变化】").parent['href']
-            logger.info("Get report url.")
-            logger.debug("Report url:{url}.".format(url=self._report_url))
+            logger.info("Get the report url.")
+            logger.debug("The report url:{url}.".format(url=self._report_url))
         except Exception as e:
             self._error = 1
-            logger.error("Get report url failed.[{e}]".format(e=e))
-            logger.debug("{url} text:\n{res}".format(url=url, res=res.text))
+            logger.debug("Set the error flag to {err_flag}.".format(err_flag=self._error))
+            logger.error("Failed to get the report url.[{e}]".format(e=e))
+            logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
 
     @logger.catch
     def _report(self):
         if self._error == 1:
+            logger.debug("The error flag:{err_flag}.Exit.".format(err_flag=self._error))
             return
         url = "{host}/{report}".format(host=self._host, report=self._report_url)
         res = self._session.get(url=url, headers=self._headers)
-        logger.info("Trying to report.")
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
-            logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+            logger.error("Failed:GET request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
 
     @logger.catch
     def _is_reported(self):
         if self._error == 1:
+            logger.debug("The error flag:{err_flag}.Exit.".format(err_flag=self._error))
             return
         url = "{host}/{project}".format(host=self._host, project=self._project_url)
         res = self._session.get(url=url, headers=self._headers)
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
-            logger.error("GET request failed. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+            logger.error("Failed:GET request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
             return
         res.encoding = "utf-8"
         try:
             soup = BeautifulSoup(res.text, 'lxml')
             record_val = soup.find("td", class_="tdmenu").text.strip()
-            logger.debug("Record value:{val}".format(val=record_val))
+            logger.debug("The record value:{val}".format(val=record_val))
         except Exception as e:
-            logger.error("Get the latest record value failed. [{e}]".format(e=e))
-            logger.debug("{url} text:\n{res}".format(url=url, res=res.text))
+            logger.error("Failed to get the latest record value. [{e}]".format(e=e))
+            logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
             return
         if record_val == self._date:
-            logger.info("Report is existed.")
+            logger.info("Check:the report is existed.")
             return True
         else:
-            logger.info("Report is not existed.")
+            logger.info("Check:the report is not existed.")
             return False
 
     @logger.catch
@@ -146,14 +150,15 @@ class Report:
         self._login(uid, password)
         self._get_project_url()
         if self._is_reported():
-            logger.info("Report is already existed. ID:{uid}".format(uid=uid))
+            logger.info("The report is already existed. ID:{uid}".format(uid=uid))
             return 0
         else:
+            logger.info("Try to report.")
             self._get_report_url()
             self._report()
             if self._is_reported():
-                logger.info("Report successfully. ID:{uid}".format(uid=uid))
+                logger.info("Successful to report. ID:{uid}".format(uid=uid))
                 return 1
             else:
-                logger.error("Report failed. ID:{uid}".format(uid=uid))
+                logger.error("Failed to report. ID:{uid}".format(uid=uid))
                 return 2
