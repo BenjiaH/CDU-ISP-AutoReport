@@ -112,6 +112,22 @@ class Report:
             logger.error("Failed:GET request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
 
     @logger.catch
+    def _parse_records(self, page_text):
+        soup = BeautifulSoup(page_text, 'lxml')
+        try:
+            record_val = soup.find("td", class_="tdmenu").text.strip()
+            if "年" not in record_val:
+                record_val = soup.find("table", class_="table table-hover").find_all("div", align="center")[
+                    8].text.strip()
+            logger.debug("The record value:{val}".format(val=record_val))
+        except Exception as e:
+            logger.error("Failed to get the latest record value. [{e}]".format(e=e))
+            self._errno = 5
+            logger.debug("Set the error code to {errno}.".format(errno=self._errno))
+            return False
+        return record_val
+
+    @logger.catch
     def _is_reported(self):
         if self._error == 1:
             logger.debug("The error flag:{err_flag}.Exit.".format(err_flag=self._error))
@@ -123,15 +139,11 @@ class Report:
             logger.error("Failed:GET request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
             return
         res.encoding = "utf-8"
-        try:
-            soup = BeautifulSoup(res.text, 'lxml')
-            record_val = soup.find("td", class_="tdmenu").text.strip()
-            logger.debug("The record value:{val}".format(val=record_val))
-        except Exception as e:
-            logger.error("Failed to get the latest record value. [{e}]".format(e=e))
+        record_val = self._parse_records(res.text)
+        if not record_val:
             logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
-            return
-        if record_val == self._date:
+            return False
+        elif record_val == self._date:
             logger.info("Check:the report is existed.")
             return True
         else:
