@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 class Report:
     def __init__(self):
         self._error = 0
+        self._errno = 0
         self._session = 0
         self._host = 0
         self._headers = 0
@@ -36,6 +37,8 @@ class Report:
             code = soup.find(id="code").parent.text.strip()
         except Exception as e:
             logger.error("Get captcha code failed. [{e}]".format(e=e))
+            self._errno = 1
+            logger.debug("Set the error code to {errno}.".format(errno=self._errno))
             logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
             code = 0
         self._captcha_code = code
@@ -54,12 +57,23 @@ class Report:
             "m5": "1",
         }
         res = self._session.post(url=url, headers=self._headers, data=data)
+        res.encoding = "utf-8"
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
             logger.error("Failed:POST request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+        if "学号或密码错误" in res.text:
+            logger.error("Failed to login the ISP.[Incorrect username or password]")
+            logger.debug("Failed to login the ISP.[Incorrect username or password]")
+            self._errno = 2
+            logger.debug("Set the error code to {errno}.".format(errno=self._errno))
+            self._error = 1
+            logger.debug("Set the error flag to {err_flag}.".format(err_flag=self._error))
 
     @logger.catch
     def _get_project_url(self):
+        if self._error == 1:
+            logger.debug("The error flag:{err_flag}.Exit.".format(err_flag=self._error))
+            return
         url = "{host}/left.asp".format(host=self._host)
         res = self._session.get(url=url, headers=self._headers)
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
@@ -72,10 +86,11 @@ class Report:
             logger.info("Successful to login the ISP.")
             logger.debug("Project url:{url}.".format(url=self._project_url))
         except Exception as e:
+            logger.error("Failed to get the project url.[{e}]".format(e=e))
             self._error = 1
             logger.debug("Set the error flag to {err_flag}.".format(err_flag=self._error))
-            logger.error("Failed to get the id value.[{e}]".format(e=e))
-            logger.error("Failed to login the ISP.")
+            self._errno = 3
+            logger.debug("Set the error code to {errno}.".format(errno=self._errno))
             logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
 
     @logger.catch
@@ -95,9 +110,11 @@ class Report:
             logger.info("Get the report url.")
             logger.debug("The report url:{url}.".format(url=self._report_url))
         except Exception as e:
+            logger.error("Failed to get the report url.[{e}]".format(e=e))
             self._error = 1
             logger.debug("Set the error flag to {err_flag}.".format(err_flag=self._error))
-            logger.error("Failed to get the report url.[{e}]".format(e=e))
+            self._errno = 4
+            logger.debug("Set the error code to {errno}.".format(errno=self._errno))
             logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
 
     @logger.catch
@@ -153,6 +170,7 @@ class Report:
     @logger.catch
     def main(self, uid, password):
         self._error = 0
+        self._errno = 0
         self._session = requests.Session()
         self._host = self._main_host + security.get_random_host() + "/com_user"
         self._headers = {
@@ -163,14 +181,14 @@ class Report:
         self._get_project_url()
         if self._is_reported():
             logger.info("The report is already existed. ID:{uid}".format(uid=uid))
-            return 0
+            return 0, self._errno
         else:
             logger.info("Try to report.")
             self._get_report_url()
             self._report()
             if self._is_reported():
                 logger.info("Successful to report. ID:{uid}".format(uid=uid))
-                return 1
+                return 1, self._errno
             else:
                 logger.error("Failed to report. ID:{uid}".format(uid=uid))
-                return 2
+                return 2, self._errno
