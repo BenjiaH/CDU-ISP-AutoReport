@@ -40,11 +40,11 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 ## 1.Features
 
 - 自动打卡
-- Wechat、邮件推送结果
+- Wechat、邮件双通道推送结果
 - 定时执行
 - 多账户
 - 实时刷新配置文件
-- 高安全性：随机主机、随机`User-Agent`
+- 高安全性：随机主机、随机`User-Agent`、SSL加密
 
 ## 2.TODO
 
