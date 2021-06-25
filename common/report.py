@@ -36,9 +36,9 @@ class Report:
             soup = BeautifulSoup(res.text, 'lxml')
             code = soup.find(id="code").parent.text.strip()
         except Exception as e:
-            logger.error("Get captcha code failed. [{e}]".format(e=e))
+            logger.error("Failed to get the captcha code. [{e}]".format(e=e))
             self._errno = 1
-            logger.debug("Set the error code to {errno}.".format(errno=self._errno))
+            logger.debug("Set the error code: {errno}.".format(errno=self._errno))
             logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
             code = 0
         self._captcha_code = code
@@ -65,14 +65,14 @@ class Report:
             logger.error("Failed to login the ISP.[Incorrect username or password]")
             logger.debug("Failed to login the ISP.[Incorrect username or password]")
             self._errno = 2
-            logger.debug("Set the error code to {errno}.".format(errno=self._errno))
+            logger.debug("Set the error code: {errno}.".format(errno=self._errno))
             self._error = 1
-            logger.debug("Set the error flag to {err_flag}.".format(err_flag=self._error))
+            logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
 
     @logger.catch
     def _get_project_url(self):
         if self._error == 1:
-            logger.debug("The error flag:{err_flag}.Exit.".format(err_flag=self._error))
+            logger.debug("The error flag: {err_flag}.Exit.".format(err_flag=self._error))
             return
         url = "{host}/left.asp".format(host=self._host)
         res = self._session.get(url=url, headers=self._headers)
@@ -88,15 +88,15 @@ class Report:
         except Exception as e:
             logger.error("Failed to get the project url.[{e}]".format(e=e))
             self._error = 1
-            logger.debug("Set the error flag to {err_flag}.".format(err_flag=self._error))
+            logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
             self._errno = 3
-            logger.debug("Set the error code to {errno}.".format(errno=self._errno))
+            logger.debug("Set the error code: {errno}.".format(errno=self._errno))
             logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
 
     @logger.catch
     def _get_report_url(self):
         if self._error == 1:
-            logger.debug("The error flag:{err_flag}.Exit.".format(err_flag=self._error))
+            logger.debug("The error flag: {err_flag}.Exit.".format(err_flag=self._error))
             return
         url = "{host}/{project}".format(host=self._host, project=self._project_url)
         res = self._session.get(url=url, headers=self._headers)
@@ -112,15 +112,15 @@ class Report:
         except Exception as e:
             logger.error("Failed to get the report url.[{e}]".format(e=e))
             self._error = 1
-            logger.debug("Set the error flag to {err_flag}.".format(err_flag=self._error))
+            logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
             self._errno = 4
-            logger.debug("Set the error code to {errno}.".format(errno=self._errno))
+            logger.debug("Set the error code: {errno}.".format(errno=self._errno))
             logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
 
     @logger.catch
     def _report(self):
         if self._error == 1:
-            logger.debug("The error flag:{err_flag}.Exit.".format(err_flag=self._error))
+            logger.debug("The error flag: {err_flag}.Exit.".format(err_flag=self._error))
             return
         url = "{host}/{report}".format(host=self._host, report=self._report_url)
         res = self._session.get(url=url, headers=self._headers)
@@ -133,21 +133,27 @@ class Report:
         soup = BeautifulSoup(page_text, 'lxml')
         try:
             record_val = soup.find("td", class_="tdmenu").text.strip()
-            if "年" not in record_val:
+            logger.debug("The record value:{val}".format(val=record_val))
+            if "年" not in record_val and "还没有登记记录" not in record_val:
+                raise Exception("Failed to parse the latest record value.Change the parse rule.")
+        except Exception as e:
+            logger.debug("Failed to get the latest record value. [{e}]".format(e=e))
+            try:
                 record_val = soup.find("table", class_="table table-hover").find_all("div", align="center")[
                     8].text.strip()
-            logger.debug("The record value:{val}".format(val=record_val))
-        except Exception as e:
-            logger.error("Failed to get the latest record value. [{e}]".format(e=e))
-            self._errno = 5
-            logger.debug("Set the error code to {errno}.".format(errno=self._errno))
-            return False
+                if "年" not in record_val and "还没有登记记录" not in record_val:
+                    raise Exception("Failed to parse the latest record value.Change the parse rule.")
+            except Exception as e:
+                logger.error("Failed to get the latest record value. [{e}]".format(e=e))
+                self._errno = 5
+                logger.debug("Set the error code: {errno}.".format(errno=self._errno))
+                return False
         return record_val
 
     @logger.catch
     def _is_reported(self):
         if self._error == 1:
-            logger.debug("The error flag:{err_flag}.Exit.".format(err_flag=self._error))
+            logger.debug("The error flag: {err_flag}.Exit.".format(err_flag=self._error))
             return
         url = "{host}/{project}".format(host=self._host, project=self._project_url)
         res = self._session.get(url=url, headers=self._headers)
