@@ -79,6 +79,15 @@ class Push:
         self._bot_email_host = global_config.getRaw('bot_email', 'email_host')
         self._bot_email_pwd = global_config.getRaw('bot_email', 'email_pwd')
         self.bot_email = Email(self._bot_email_user, self._bot_email_host, self._bot_email_pwd)
+        self._errno_msg_path = r"../res/errno.json"
+        self._errno_msg = self._load_errno()
+
+    @logger.catch
+    def _load_errno(self):
+        with open(r"{}".format(self._errno_msg_path), "r", encoding="UTF-8") as f:
+            self._raw = f.read()
+            logger.debug("Loaded:{file}.".format(file=os.path.abspath(r"{}".format(self._errno_msg_path))))
+            return json.loads(self._raw)
 
     @staticmethod
     @logger.catch
@@ -108,18 +117,23 @@ class Push:
 
     @logger.catch
     def push(self, result, uid, wechat_push, email_push, sckey="", email_rxer=""):
-        if result == 0:
+        status = result[0]
+        errno = result[1]
+        if status == 0:
             title = "打卡已存在!"
             message = "当日打卡已存在!"
-        elif result == 1:
+        elif status == 1:
             title = "打卡成功!"
             message = "打卡成功!"
-        elif result == 2:
+        elif status == 2:
             title = "打卡失败!"
             message = "打卡失败,请手动打卡!"
         else:
             title = "ERROR!"
             message = "ERROR!"
+        if errno != 0:
+            errmsg = [i["msg"] for i in self._errno_msg["content"] if errno == i["errno"]][0]
+            message = message + "[错误消息:" + errmsg + "]"
         if self._global_wechat != "off":
             if wechat_push == "1" or wechat_push == "on":
                 self.wechat(uid, title, message, sckey)
