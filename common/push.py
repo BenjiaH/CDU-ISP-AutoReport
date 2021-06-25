@@ -36,9 +36,8 @@ class Email:
         if global_config.getRaw('config', 'email_enable') == "off":
             return
         self._load_tmpl()
-        smtp = smtplib.SMTP(timeout=20)
         try:
-            smtp.connect(self._mail_host, 25)
+            smtp = smtplib.SMTP_SSL(self._mail_host, 465, timeout=20)
             smtp.login(self._mail_user, self._mail_pwd)
             self._is_login = True
             logger.info("Successful to login the email.")
