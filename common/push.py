@@ -78,7 +78,7 @@ class Push:
         self._bot_email_host = global_config.getRaw('bot_email', 'email_host')
         self._bot_email_pwd = global_config.getRaw('bot_email', 'email_pwd')
         self.bot_email = Email(self._bot_email_user, self._bot_email_host, self._bot_email_pwd)
-        self._errno_msg_path = r"../res/errno.json"
+        self._errno_msg_path = r"../res/error.json"
         self._errno_msg = self._load_errno()
 
     @logger.catch
