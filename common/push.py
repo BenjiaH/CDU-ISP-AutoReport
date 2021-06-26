@@ -126,7 +126,7 @@ class Push:
             message = "打卡成功!"
         elif status == 2:
             title = "打卡失败!"
-            message = "打卡失败,请手动打卡!"
+            message = "打卡可能失败,请手动打卡!"
         else:
             title = "ERROR!"
             message = "ERROR!"
