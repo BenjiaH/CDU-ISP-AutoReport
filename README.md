@@ -142,6 +142,7 @@ chmod 777 scripts/run.sh
 │
 ├─res
 │      email_tmpl.html  <---Email模板文件
+│      error.json       <---错误码及错误信息文件
 │
 ├─scripts
 │      run.bat          <---Windows下运行文件
