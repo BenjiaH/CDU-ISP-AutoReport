@@ -100,10 +100,10 @@ class Push:
             "desp": uid + ":\n\n" + message + "\n\n{ps}\n\n`{time}`".format(ps=ps, time=now)
         }
         res = requests.get(url=url, params=payload)
-        res.encoding = "utf-8"
-        dict_res = json.loads(res.text)
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
-        logger.debug("Response:{res}".format(res=dict_res))
+        res.encoding = "utf-8"
+        logger.debug("Response:{res}".format(res=res.text))
+        dict_res = json.loads(res.text)
         if res.status_code != 200:
             logger.error("Failed to push the wechat message. Status code:{code}.".format(code=res.status_code))
             return False
