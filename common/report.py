@@ -165,6 +165,7 @@ class Report:
         res.encoding = "utf-8"
         record_val = self._parse_records(res.text)
         if not record_val:
+            logger.info("Check:the report is not existed.")
             logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
             return False
         elif record_val == self._date:
@@ -192,7 +193,7 @@ class Report:
         else:
             logger.info("Try to report.")
             self._get_report_url()
-            self._report()
+            # self._report()
             if self._is_reported():
                 logger.info("Successful to report. ID:{uid}".format(uid=uid))
                 return 1, self._errno

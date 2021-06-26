@@ -133,6 +133,7 @@ class Push:
         if errno != 0:
             errmsg = [i["msg"] for i in self._errno_msg["content"] if errno == i["errno"]][0]
             message = message + "[错误消息:" + errmsg + "]"
+        logger.debug("Title:{title}#Message:{msg}#Error code:{errno}".format(title=title, msg=message, errno=errno))
         if self._global_wechat != "off":
             if wechat_push == "1" or wechat_push == "on":
                 self.wechat(uid, title, message, sckey)
