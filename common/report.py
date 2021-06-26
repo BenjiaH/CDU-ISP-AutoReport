@@ -139,8 +139,8 @@ class Report:
         except Exception as e:
             logger.debug("Failed to get the latest record value. [{e}. Try to change the parse rule.]".format(e=e))
             try:
-                record_val = soup.find("table", class_="table table-hover").find_all("div", align="center")[
-                    8].text.strip()
+                record_val = soup.find("table", class_="table table-hover").find_all("tr")[
+                    3].find("div", align="center").text.strip()
                 logger.debug("The record value:{val}".format(val=record_val))
                 if "年" not in record_val and "还没有登记记录" not in record_val:
                     raise Exception("Can not parse the latest record value.")
@@ -193,7 +193,7 @@ class Report:
         else:
             logger.info("Try to report.")
             self._get_report_url()
-            # self._report()
+            self._report()
             if self._is_reported():
                 logger.info("Successful to report. ID:{uid}".format(uid=uid))
                 return 1, self._errno
