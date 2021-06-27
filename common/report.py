@@ -135,7 +135,7 @@ class Report:
             record_val = soup.find("td", class_="tdmenu").text.strip()
             logger.debug("The record value:{val}".format(val=record_val))
             if "年" not in record_val and "还没有登记记录" not in record_val:
-                raise Exception("Can not parse the latest record value.Try to change the parse rule.")
+                raise Exception("Can not parse the latest record value")
         except Exception as e:
             logger.debug("Failed to get the latest record value. [{e}. Try to change the parse rule.]".format(e=e))
             try:
