@@ -28,7 +28,7 @@ hosts = copy.deepcopy(HOSTS)
 def get_host_status(host):
     url = "https://xsswzx.cdu.edu.cn/{host}/com_user/weblogin.asp".format(host=host)
     try:
-        res = requests.get(url=url, timeout=5)
+        res = requests.get(url=url, timeout=10)
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
     except Exception as e:
         logger.error("Failed to check \"{host}\" status.".format(host=host, e=e))
