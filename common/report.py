@@ -29,9 +29,18 @@ class Report:
     @logger.catch
     def _get_captcha_code(self):
         url = "{host}/weblogin.asp".format(host=self._host)
-        res = self._session.get(url=url, headers=self._headers)
-        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
-        res.encoding = "utf-8"
+        try:
+            raise Exception
+            res = self._session.get(url=url, headers=self._headers)
+            logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+            res.encoding = "utf-8"
+        except Exception as e:
+            logger.error("Failed to establish a new connection. [{e}]".format(e=e))
+            self._errno = 6
+            logger.debug("Set the error code: {errno}.".format(errno=self._errno))
+            self._error = 1
+            logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
+            return
         try:
             soup = BeautifulSoup(res.text, 'lxml')
             code = soup.find(id="code").parent.text.strip()
@@ -41,10 +50,15 @@ class Report:
             logger.debug("Set the error code: {errno}.".format(errno=self._errno))
             logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
             code = 0
+            self._error = 1
+            logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
         self._captcha_code = code
 
     @logger.catch
     def _login(self, uid, password):
+        if self._error == 1:
+            logger.debug("The error flag: {err_flag}. Exit the function.".format(err_flag=self._error))
+            return
         url = "{host}/weblogin.asp".format(host=self._host)
         data = {
             "username": uid,
@@ -72,7 +86,7 @@ class Report:
     @logger.catch
     def _get_project_url(self):
         if self._error == 1:
-            logger.debug("The error flag: {err_flag}.Exit.".format(err_flag=self._error))
+            logger.debug("The error flag: {err_flag}. Exit the function.".format(err_flag=self._error))
             return
         url = "{host}/left.asp".format(host=self._host)
         res = self._session.get(url=url, headers=self._headers)
@@ -96,7 +110,7 @@ class Report:
     @logger.catch
     def _get_report_url(self):
         if self._error == 1:
-            logger.debug("The error flag: {err_flag}.Exit.".format(err_flag=self._error))
+            logger.debug("The error flag: {err_flag}. Exit the function.".format(err_flag=self._error))
             return
         url = "{host}/{project}".format(host=self._host, project=self._project_url)
         res = self._session.get(url=url, headers=self._headers)
@@ -120,7 +134,7 @@ class Report:
     @logger.catch
     def _report(self):
         if self._error == 1:
-            logger.debug("The error flag: {err_flag}.Exit.".format(err_flag=self._error))
+            logger.debug("The error flag: {err_flag}. Exit the function.".format(err_flag=self._error))
             return
         url = "{host}/{report}".format(host=self._host, report=self._report_url)
         res = self._session.get(url=url, headers=self._headers)
@@ -154,7 +168,7 @@ class Report:
     @logger.catch
     def _is_reported(self):
         if self._error == 1:
-            logger.debug("The error flag: {err_flag}.Exit.".format(err_flag=self._error))
+            logger.debug("The error flag: {err_flag}. Exit the function.".format(err_flag=self._error))
             return
         url = "{host}/{project}".format(host=self._host, project=self._project_url)
         res = self._session.get(url=url, headers=self._headers)
