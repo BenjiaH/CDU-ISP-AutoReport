@@ -30,7 +30,6 @@ class Report:
     def _get_captcha_code(self):
         url = "{host}/weblogin.asp".format(host=self._host)
         try:
-            raise Exception
             res = self._session.get(url=url, headers=self._headers)
             logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
             res.encoding = "utf-8"
