@@ -11,7 +11,7 @@ class Logger:
         self._debug_fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} [<level>{level:}</level>] {name}:{function}:{line}: {message}"
         self._config_path = os.path.abspath(r"../config/config.ini")
         logger.remove()
-        logger.add(sink=log_file, filter=self.log_filter, format=self._log_fmt)
+        logger.add(sink=log_file, filter=self.log_filter, format=self._log_fmt, rotation="1 MB")
         logger.add(sink=sys.stderr, filter=self.log_filter, format=self._log_fmt)
         logger.info("The logger is started.")
         if self._is_debug():
