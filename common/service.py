@@ -90,6 +90,6 @@ class ReportService:
                         logger.info("Time arrived. Start to report.")
                         self._gen()
                         # avoid running twice in 1 minute
-                        logger.info("Cleaning... Estimated:1min")
+                        logger.info("Cleaning... Estimated:1 min")
                         sleep(60)
                         break
