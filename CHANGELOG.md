@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ## [1.1.2.release](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/tag/1.1.2.release)
 
-### (2021-7-15)
+### (2021-7-25)
 
 - Added:error message prompt
 - Changed:enable SSL in SMTP
