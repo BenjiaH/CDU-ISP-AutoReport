@@ -178,14 +178,14 @@ class Report:
         res.encoding = "utf-8"
         record_val = self._parse_records(res.text)
         if not record_val:
-            logger.info("Check:the report is not existed.")
+            logger.info("Check:the latest report is not existed.")
             logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
             return False
         elif record_val == self._date:
-            logger.info("Check:the report is existed.")
+            logger.info("Check:the latest report is existed.")
             return True
         else:
-            logger.info("Check:the report is not existed.")
+            logger.info("Check:the latest report is not existed.")
             return False
 
     @logger.catch
