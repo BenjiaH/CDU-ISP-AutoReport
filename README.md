@@ -37,6 +37,10 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 
 - 本项目遵循[`GPL-3.0 License`](LICENSE)协议，如果本特别声明与`GPL-3.0 License`协议有冲突之处，以本特别声明为准。
 
+## 0.托管
+
+- 如果您为新人且需要在我的服务器上为您进行自动化打卡服务，请填写[信息采集表](https://benjiah.gitee.io/redirect/cdu-isp-wjx)。
+
 ## 1.Features
 
 - 自动打卡
@@ -103,15 +107,11 @@ chmod 777 scripts/run.sh
 ./scripts/run.sh
 ```
 
-## 5.托管
-
-- 如果需要在我的服务器上为你的打卡服务进行托管，请填写[信息采集表](https://benjiah.gitee.io/redirect/cdu-isp-wjx)。
-
-## 6.CHANGE LOG
+## 5.CHANGE LOG
 
 - [CHANGELOG.md](CHANGELOG.md)
 
-## 7.程序结构
+## 6.程序结构
 
 ```N/A
 │  .gitignore
