@@ -119,7 +119,9 @@ class Report:
         res.encoding = "utf-8"
         try:
             soup = BeautifulSoup(res.text, 'lxml')
-            self._report_url = soup.find(value="【一键登记：无变化】").parent['href']
+            t_url = str(soup.find_all("script", type="text/javascript")[2]).replace("\r\n", "")
+            report_url = t_url[t_url.find("href=") + 6: -11]
+            self._report_url = report_url.replace('"+adds2+"', "undefined").replace('"+addsxy2', "undefined")
             logger.info("Get the report url.")
             logger.debug("The report url:{url}.".format(url=self._report_url))
         except Exception as e:
