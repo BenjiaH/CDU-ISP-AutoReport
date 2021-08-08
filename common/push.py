@@ -124,6 +124,7 @@ class Push:
             "msg": msg,
             "to_user": userid
         }
+        # go_scf post请求body必须为json。详见文档
         res = requests.post(url=url, data=json.dumps(payload))
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         res.encoding = "utf-8"
