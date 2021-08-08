@@ -44,7 +44,7 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 ## 1.Features
 
 - 自动打卡
-- Wechat、邮件双通道推送结果
+- WeChat、邮件双通道推送结果
 - 定时执行
 - 多账户
 - 实时刷新配置文件
@@ -66,11 +66,10 @@ pip install -r requirements.txt
 
 ## 4.使用方法
 
-### 4.1.生成`sckey`(用作微信推送)(可选)
+### 4.1.生成`sendkey`(用作微信推送)(可选)
 
-- `sc.ftqq.com`API将于2021年7月30日（暂定，可能延后）下线，届时`sc.ftqq.com`推送接口将无法使用。本项目将尽快上线`sct.ftqq.com`以便继续提供微信推送接口。[(sc.ftqq.com 分期下线通知和常见问题解答)](https://mp.weixin.qq.com/s/KGQC1v5rsG_JKVRtN2DY4w)
 - 打开[Server酱](https://benjiah.gitee.io/redirect/serversauce)。
-- 申请一个`sckey`，并记录下来。
+- 申请一个`sendkey`，并记录下来。
 
 ### 4.2.填写[`config/config.ini`](config/config_example.ini)
 
