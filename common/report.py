@@ -214,4 +214,7 @@ class Report:
                 return 1, self._errno
             else:
                 logger.error("Failed to report. ID:{uid}".format(uid=uid))
+                if self._errno == 0:
+                    self._errno = 7
+                    logger.debug("Set the error code: {errno}.".format(errno=self._errno))
                 return 2, self._errno
