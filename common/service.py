@@ -19,6 +19,7 @@ class ReportService:
         self._wechat_push = global_config.getRaw('config', 'wechat_enable')
         self._email_push = global_config.getRaw('config', 'email_enable')
         self._sendkey = global_config.getRaw('messenger', 'sendkey')
+        self._multi_sendkey = global_config.getRaw('config', 'sendkey')
         self._email_rxer = global_config.getRaw('messenger', 'email')
         self._wechat_type = global_config.getRaw('config', 'wechat_type')
         self._api = global_config.getRaw('config', 'api')
@@ -48,7 +49,7 @@ class ReportService:
             logger.info(log_info)
             ret = self._report.main(uid=global_account.studentID[i], password=global_account.password[i])
             global_push.push(ret, uid=global_account.studentID[i], wechat_push=global_account.wechat_push[i],
-                             email_push=global_account.email_push[i], sendkey=self._sendkey,
+                             email_push=global_account.email_push[i], sendkey=self._multi_sendkey,
                              email_rxer=global_account.email[i], wechat_type=self._wechat_type,
                              api=self._api, userid=global_account.userid[i])
             sleep(1.5)
