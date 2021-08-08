@@ -61,12 +61,16 @@ class Account(object):
         return self._all_info[3]
 
     @property
-    def sckey(self):
+    def sendkey(self):
         return self._all_info[4]
 
     @property
-    def email(self):
+    def userid(self):
         return self._all_info[5]
+
+    @property
+    def email(self):
+        return self._all_info[6]
 
     @property
     def row(self):

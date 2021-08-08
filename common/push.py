@@ -3,6 +3,7 @@ import smtplib
 import requests
 import os
 
+from urllib import parse
 from datetime import datetime
 from email.mime.text import MIMEText
 from common.config import global_config
@@ -90,16 +91,41 @@ class Push:
 
     @staticmethod
     @logger.catch
-    def wechat(uid, title, message, sckey):
+    def sct_wechat(uid, title, message, sendkey):
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        url = 'https://sc.ftqq.com/{}.send'.format(sckey)
-        ps = """PS 「sc.ftqq.com」API将于2021年7月30日(暂定，可能延后)下线，届时「sc.ftqq.com」推送接口将无法使用。本项目将尽快上线「sct.ftqq.com」以便继续提供微信推送接口。[
-        (sc.ftqq.com 分期下线通知和常见问题解答)](https://mp.weixin.qq.com/s/KGQC1v5rsG_JKVRtN2DY4w)"""
+        url = 'https://sctapi.ftqq.com/{}.send'.format(sendkey)
+        ps = ""
+        msg = " " * 10 + title + "\n\n" + uid + ":\n" + " " * 7 + message + "\n{ps}\n\n{time}".format(ps=ps, time=now)
         payload = {
-            "text": title,
-            "desp": uid + ":\n\n" + message + "\n\n{ps}\n\n`{time}`".format(ps=ps, time=now)
+            "title": title,
+            "desp": parse.quote(msg)
         }
         res = requests.get(url=url, params=payload)
+        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+        res.encoding = "utf-8"
+        logger.debug("Response:{res}".format(res=res.text))
+        if res.status_code != 200:
+            logger.error("Failed to push the wechat message. Status code:{code}.".format(code=res.status_code))
+            return False
+        else:
+            logger.info("Successful to push the wechat message.")
+            return True
+
+    @staticmethod
+    @logger.catch
+    def go_scf_wechat(uid, title, message, api, sendkey, userid):
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        url = '{api}/{sendkey}'.format(api=api, sendkey=sendkey)
+        ps = ""
+        msg = " " * 10 + title + "\n\n" + uid + ":\n" + " " * 7 + message + "\n{ps}\n\n{time}".format(ps=ps, time=now)
+        payload = {
+            "sendkey": sendkey,
+            "msg_type": "text",
+            "msg": msg,
+            "to_user": userid
+        }
+        # go_scf post请求body必须为json。详见文档
+        res = requests.post(url=url, data=json.dumps(payload))
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         res.encoding = "utf-8"
         logger.debug("Response:{res}".format(res=res.text))
@@ -107,15 +133,15 @@ class Push:
         if res.status_code != 200:
             logger.error("Failed to push the wechat message. Status code:{code}.".format(code=res.status_code))
             return False
-        elif dict_res["errno"] != 0:
-            logger.error("Failed to push the wechat message. [{msg}].".format(msg=dict_res["errmsg"]))
+        elif dict_res["code"] != 0:
+            logger.error("Failed to push the wechat message. [{msg}].".format(msg=dict_res["msg"]))
             return False
         else:
             logger.info("Successful to push the wechat message.")
             return True
 
     @logger.catch
-    def push(self, result, uid, wechat_push, email_push, sckey="", email_rxer=""):
+    def push(self, result, uid, wechat_push, email_push, wechat_type, api, userid, sendkey="", email_rxer=""):
         status = result[0]
         errno = result[1]
         if status == 0:
@@ -136,7 +162,10 @@ class Push:
         logger.debug("Title:{title}#Message:{msg}#Error code:{errno}".format(title=title, msg=message, errno=errno))
         if self._global_wechat != "off":
             if wechat_push == "1" or wechat_push == "on":
-                self.wechat(uid, title, message, sckey)
+                if str(wechat_type) == "1":
+                    self.sct_wechat(uid, title, message, sendkey)
+                else:
+                    self.go_scf_wechat(uid, title, message, api, sendkey, userid)
         if self._global_email != "off":
             if email_push == "1" or email_push == "on":
                 self.bot_email.send(uid, title, message, [email_rxer])
