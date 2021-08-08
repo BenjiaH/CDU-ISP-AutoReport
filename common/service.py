@@ -18,8 +18,11 @@ class ReportService:
         self._password = global_config.getRaw('account', 'password')
         self._wechat_push = global_config.getRaw('config', 'wechat_enable')
         self._email_push = global_config.getRaw('config', 'email_enable')
-        self._sckey = global_config.getRaw('messenger', 'sckey')
+        self._sendkey = global_config.getRaw('messenger', 'sendkey')
         self._email_rxer = global_config.getRaw('messenger', 'email')
+        self._wechat_type = global_config.getRaw('config', 'wechat_type')
+        self._api = global_config.getRaw('config', 'api')
+        self._userid = global_config.getRaw('messenger', 'userid')
         self._report = Report()
 
     @logger.catch
@@ -33,7 +36,8 @@ class ReportService:
         logger.info("Report ID:{uid}".format(uid=self._uid).center(46, '-'))
         ret = self._report.main(uid=self._uid, password=self._password)
         global_push.push(ret, uid=self._uid, wechat_push=self._wechat_push, email_push=self._email_push,
-                         sckey=self._sckey, email_rxer=self._email_rxer)
+                         sendkey=self._sendkey, email_rxer=self._email_rxer, wechat_type=self._wechat_type,
+                         api=self._api, userid=self._userid)
 
     @logger.catch
     def _multiple_mode(self):
@@ -44,8 +48,9 @@ class ReportService:
             logger.info(log_info)
             ret = self._report.main(uid=global_account.studentID[i], password=global_account.password[i])
             global_push.push(ret, uid=global_account.studentID[i], wechat_push=global_account.wechat_push[i],
-                             email_push=global_account.email_push[i], sckey=global_account.sckey[i],
-                             email_rxer=global_account.email[i])
+                             email_push=global_account.email_push[i], sendkey=self._sendkey,
+                             email_rxer=global_account.email[i], wechat_type=self._wechat_type,
+                             api=self._api, userid=global_account.userid[i])
             sleep(1.5)
 
     @logger.catch
