@@ -151,6 +151,6 @@ chmod 777 scripts/run.sh
        messenger.py     <---群发推送程序
 ```
 
-# 7.致谢
+## 7.致谢
 
 - [easychen/wecomchan](https://github.com/easychen/wecomchan/blob/main/LICENSE)
