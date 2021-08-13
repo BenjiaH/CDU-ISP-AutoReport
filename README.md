@@ -39,7 +39,7 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 
 ## 0.托管
 
-- 如果您为新人且需要在我的服务器上为您进行自动化打卡服务，请填写[信息采集表](https://benjiah.gitee.io/redirect/cdu-isp-wjx)。
+- 如果您为小白或新手且需要在我的服务器上为您进行自动化打卡服务，请填写[信息采集表](https://benjiah.gitee.io/redirect/cdu-isp-wjx)，我将每日为您定时打卡。
 
 ## 1.Features
 
