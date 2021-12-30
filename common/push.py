@@ -3,6 +3,7 @@ import smtplib
 import requests
 import os
 
+from retrying import retry
 from urllib import parse
 from datetime import datetime
 from email.mime.text import MIMEText
@@ -46,7 +47,7 @@ class Email:
             logger.error("Failed to login the email. [{e}]".format(e=e))
         self.smtp = smtp
 
-    @logger.catch
+    @retry(stop_max_attempt_number=3, wait_fixed=500)
     def send(self, uid, title, msg, receiver: list):
         logger.debug("Email receiver:{rxer}.".format(rxer=receiver[0]))
         if not self._is_login:
@@ -63,11 +64,10 @@ class Email:
                 self.smtp.sendmail(self._mail_user, receiver, message.as_string())
                 logger.info("Successful to send the email.")
             except Exception as e:
-                logger.error("Failed to send the email.[{e}]".format(e=e))
-                error_msg = ["please run connect() first", "Connection unexpectedly closed"]
-                if str(e) in error_msg:
-                    self._is_login = False
-                    self.login()
+                logger.error("Retry to send the email.[{e}]".format(e=e))
+                self._is_login = False
+                self.login()
+                raise Exception("Failed to send the email.")
 
 
 class Push:
@@ -112,7 +112,7 @@ class Push:
             return True
 
     @staticmethod
-    @logger.catch
+    @retry(stop_max_attempt_number=3, wait_fixed=500)
     def go_scf_wechat(uid, title, message, api, sendkey, userid):
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         url = '{api}/{sendkey}'.format(api=api, sendkey=sendkey)
@@ -124,21 +124,20 @@ class Push:
             "msg": msg,
             "to_user": userid
         }
-        # go_scf post请求body必须为json。详见文档
+        # go_scf post请求body必须为json,详见文档
         res = requests.post(url=url, data=json.dumps(payload))
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         res.encoding = "utf-8"
         logger.debug("Response:{res}".format(res=res.text))
         dict_res = json.loads(res.text)
         if res.status_code != 200:
-            logger.error("Failed to push the wechat message. Status code:{code}.".format(code=res.status_code))
-            return False
+            logger.error("Retry to push the wechat message. Status code:{code}.".format(code=res.status_code))
+            raise Exception("Failed to push the wechat message.")
         elif dict_res["code"] != 0:
-            logger.error("Failed to push the wechat message. [{msg}].".format(msg=dict_res["msg"]))
-            return False
+            logger.error("Retry to push the wechat message. [{msg}].".format(msg=dict_res["msg"]))
+            raise Exception("Failed to push the wechat message.")
         else:
             logger.info("Successful to push the wechat message.")
-            return True
 
     @logger.catch
     def push(self, result, uid, wechat_push, email_push, wechat_type, api, userid, sendkey="", email_rxer=""):
@@ -162,13 +161,19 @@ class Push:
         logger.debug("Title:{title}#Message:{msg}#Error code:{errno}".format(title=title, msg=message, errno=errno))
         if self._global_wechat != "off":
             if wechat_push == "1" or wechat_push == "on":
-                if str(wechat_type) == "1":
-                    self.sct_wechat(uid, title, message, sendkey)
-                else:
-                    self.go_scf_wechat(uid, title, message, api, sendkey, userid)
+                try:
+                    if str(wechat_type) == "1":
+                        self.sct_wechat(uid, title, message, sendkey)
+                    else:
+                        self.go_scf_wechat(uid, title, message, api, sendkey, userid)
+                except Exception as e:
+                    logger.error("{e}".format(e=e))
         if self._global_email != "off":
             if email_push == "1" or email_push == "on":
-                self.bot_email.send(uid, title, message, [email_rxer])
+                try:
+                    self.bot_email.send(uid, title, message, [email_rxer])
+                except Exception as e:
+                    logger.error("{e}".format(e=e))
 
 
 global_push = Push()
