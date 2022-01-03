@@ -64,7 +64,8 @@ class Email:
                 self.smtp.sendmail(self._mail_user, receiver, message.as_string())
                 logger.info("Successful to send the email.")
             except Exception as e:
-                logger.error("Retry to send the email.[{e}]".format(e=e))
+                logger.error("Failed to send the email.[{e}]".format(e=e))
+                logger.error("Retry to send the email.")
                 self._is_login = False
                 self.login()
                 raise Exception("Failed to send the email.")
@@ -105,10 +106,10 @@ class Push:
         res.encoding = "utf-8"
         logger.debug("Response:{res}".format(res=res.text))
         if res.status_code != 200:
-            logger.error("Failed to push the wechat message. Status code:{code}.".format(code=res.status_code))
+            logger.error("Failed to push the WeChat message. Status code:{code}.".format(code=res.status_code))
             return False
         else:
-            logger.info("Successful to push the wechat message.")
+            logger.info("Successful to push the WeChat message.")
             return True
 
     @staticmethod
@@ -131,13 +132,15 @@ class Push:
         logger.debug("Response:{res}".format(res=res.text))
         dict_res = json.loads(res.text)
         if res.status_code != 200:
-            logger.error("Retry to push the wechat message. Status code:{code}.".format(code=res.status_code))
-            raise Exception("Failed to push the wechat message.")
+            logger.error("Failed to push the WeChat message. Status code:{code}.".format(code=res.status_code))
+            logger.error("Retry to push the WeChat message.")
+            raise Exception("Failed to push the WeChat message.")
         elif dict_res["code"] != 0:
-            logger.error("Retry to push the wechat message. [{msg}].".format(msg=dict_res["msg"]))
-            raise Exception("Failed to push the wechat message.")
+            logger.error("Failed to push the WeChat message. [{msg}].".format(msg=dict_res["msg"]))
+            logger.error("Retry to push the WeChat message.")
+            raise Exception("Failed to push the WeChat message.")
         else:
-            logger.info("Successful to push the wechat message.")
+            logger.info("Successful to push the WeChat message.")
 
     @logger.catch
     def push(self, result, uid, wechat_push, email_push, wechat_type, api, userid, sendkey="", email_rxer=""):
