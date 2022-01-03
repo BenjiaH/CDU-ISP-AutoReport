@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.2.0.release](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/tag/1.1.3.release)
+
+### (2022-1-3)
+
+- **Incompatible changed:configuration segments format([`wechat_type`, `api`, `sendkey`, `userid`](../../commit/bcd6e8304fef833eef22d4940259baa1acec61c9#diff-00064dc5d2c5e2552c4d60b93722af776e9efca92fda5d9c9c06f33ce355f58b))**
+- Added:go-scf push channel
+- Added:sct.ftqq push channel
+- Added:retry to push WeChat message and email
+- Removed:sc.ftqq push channel
+- Fixed:bugs
+
+---
+
 ## [1.1.2.release](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/tag/1.1.2.release)
 
 ### (2021-7-25)
