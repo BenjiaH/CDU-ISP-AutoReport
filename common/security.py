@@ -6,18 +6,7 @@ from common.logger import logger
 from fake_useragent import UserAgent
 
 HOSTS = [
-    "ispstu",  # 富强
-    "ispstu1-1",  # 民主
-    "ispstu1-2",  # 文明
-    "ispstu2",  # 和谐
-    "ispstu2-1",  # 自由
-    "ispstu2-2",  # 平等
-    "ispstu3",  # 公正
-    "ispstu3-1",  # 法治
-    "ispstu3-2",  # 爱国
-    "ispstu4",  # 敬业
-    "ispstu4-1",  # 诚信
-    "ispstu4-3"  # 友善
+    "ispteacher/teacher_admin5"  # 教师入口
 ]
 ua = UserAgent(verify_ssl=False)
 # deep copy
@@ -26,7 +15,7 @@ hosts = copy.deepcopy(HOSTS)
 
 @logger.catch
 def get_host_status(host):
-    url = "https://xsswzx.cdu.edu.cn/{host}/com_user/weblogin.asp".format(host=host)
+    url = "https://xsswzx.cdu.edu.cn/{host}/weblogin.asp".format(host=host)
     try:
         res = requests.get(url=url, timeout=10)
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))

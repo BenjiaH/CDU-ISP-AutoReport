@@ -146,15 +146,12 @@ class Push:
     def push(self, result, uid, wechat_push, email_push, wechat_type, api, userid, sendkey="", email_rxer=""):
         status = result[0]
         errno = result[1]
-        if status == 0:
-            title = "打卡已存在!"
-            message = "当日打卡已存在!"
-        elif status == 1:
-            title = "打卡成功!"
-            message = "打卡成功!"
+        if status == 1:
+            title = "查询成功!"
+            message = "当日未打卡人员名单：\n" + json.dumps(result[2], ensure_ascii=False, indent=4)
         elif status == 2:
-            title = "打卡失败!"
-            message = "打卡可能失败,请手动打卡!"
+            title = "查询失败!"
+            message = "查询可能失败,请手动查询!"
         else:
             title = "ERROR!"
             message = "ERROR!"

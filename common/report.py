@@ -18,6 +18,8 @@ class Report:
         self._report_url = 0
         self._date = ""
         self._captcha_code = ""
+        self.class_dict = {}
+        self.not_reported_stu_dict = {}
 
     @logger.catch
     def update_date(self):
@@ -42,7 +44,7 @@ class Report:
             return
         try:
             soup = BeautifulSoup(res.text, 'lxml')
-            code = soup.find(id="code").parent.text.strip()
+            code = soup.find(id="code").parent.text.strip()[:4]
         except Exception as e:
             logger.error("Failed to get the captcha code. [{e}]".format(e=e))
             self._errno = 1
@@ -65,7 +67,7 @@ class Report:
             "code": self._captcha_code,
             "login": "login",
             "checkcode": "1",
-            "rank": "0",
+            "rank": "4",
             "action": "login",
             "m5": "1",
         }
@@ -74,9 +76,9 @@ class Report:
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
             logger.error("Failed:POST request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
-        if "学号或密码错误" in res.text:
-            logger.error("Failed to login the ISP.[Incorrect username or password]")
-            logger.debug("Failed to login the ISP.[Incorrect username or password]")
+        if "重新登陆" in res.text:
+            logger.error("Failed to login the ISP.[Incorrect username, password or captcha_code]")
+            logger.debug("Failed to login the ISP.[Incorrect username, password or captcha_code]")
             self._errno = 2
             logger.debug("Set the error code: {errno}.".format(errno=self._errno))
             self._error = 1
@@ -95,126 +97,105 @@ class Report:
         res.encoding = "utf-8"
         try:
             soup = BeautifulSoup(res.text, 'lxml')
-            self._project_url = soup.find('a', string="疫情信息登记")['href']
+            self._project_url = soup.find('a', string="疫情登记情况")['href']
             logger.info("Successful to login the ISP.")
             logger.debug("Project url:{url}.".format(url=self._project_url))
         except Exception as e:
             logger.error("Failed to get the project url.[{e}]".format(e=e))
             self._error = 1
             logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
-            self._errno = 3
+            self._errno = 7
             logger.debug("Set the error code: {errno}.".format(errno=self._errno))
             logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
 
     @logger.catch
-    def _get_report_url(self):
+    def _get_class_info(self):
         if self._error == 1:
             logger.debug("The error flag: {err_flag}. Exit the function.".format(err_flag=self._error))
             return
         url = "{host}/{project}".format(host=self._host, project=self._project_url)
-        res = self._session.get(url=url, headers=self._headers)
+        payload = {
+            "coded": self._date
+        }
+        res = self._session.get(url=url, headers=self._headers, data=payload)
         logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         if res.status_code != 200:
             logger.error("Failed:GET request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
         res.encoding = "utf-8"
         try:
             soup = BeautifulSoup(res.text, 'lxml')
-            t_url = str(soup.find_all("script", type="text/javascript")[2]).replace("\r\n", "")
-            report_url = t_url[t_url.find("href=") + 6: -11]
-            self._report_url = report_url.replace('"+adds2+"', "undefined").replace('"+addsxy2', "undefined")
-            logger.info("Get the report url.")
-            logger.debug("The report url:{url}.".format(url=self._report_url))
+            classname = soup.find_all("select", size="1")[-1].text.strip()
+            classname = classname.split("\n")
+            for i in classname:
+                self.class_dict[i] = soup.find('option', string=i)['value'].strip()
+            logger.info("Successful to get the class info.")
+            logger.debug("The class info:{dict}.".format(dict=self.class_dict))
         except Exception as e:
-            logger.error("Failed to get the report url.[{e}]".format(e=e))
+            logger.error("Failed to get the classed info.[{e}]".format(e=e))
             self._error = 1
             logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
-            self._errno = 4
+            self._errno = 8
             logger.debug("Set the error code: {errno}.".format(errno=self._errno))
             logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
 
     @logger.catch
-    def _report(self):
+    def _get_not_reported_stu(self):
         if self._error == 1:
             logger.debug("The error flag: {err_flag}. Exit the function.".format(err_flag=self._error))
             return
-        url = "{host}/{report}".format(host=self._host, report=self._report_url)
-        res = self._session.get(url=url, headers=self._headers)
-        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
-        if res.status_code != 200:
-            logger.error("Failed:GET request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
-
-    @logger.catch
-    def _parse_records(self, page_text):
-        soup = BeautifulSoup(page_text, 'lxml')
-        try:
-            record_val = soup.find("td", class_="tdmenu").text.strip()
-            logger.debug("The record value:{val}".format(val=record_val))
-            if "年" not in record_val and "还没有登记记录" not in record_val:
-                raise Exception("Can not parse the latest record value")
-        except Exception as e:
-            logger.debug("Failed to get the latest record value. [{e}. Try to change the parse rule.]".format(e=e))
+        for i in self.class_dict:
+            url = "{host}/{project}".format(host=self._host, project=self._project_url)
+            payload = {
+                "coded": self._date,
+                "class_id": self.class_dict[i],
+                "submit": "查询"
+            }
+            res = self._session.get(url=url, headers=self._headers, data=payload)
+            logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+            if res.status_code != 200:
+                logger.error("Failed:GET request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+            res.encoding = "utf-8"
             try:
-                record_val = soup.find("table", class_="table table-hover").find_all("tr")[
-                    3].find("div", align="center").text.strip()
-                logger.debug("The record value:{val}".format(val=record_val))
-                if "年" not in record_val and "还没有登记记录" not in record_val:
-                    raise Exception("Can not parse the latest record value.")
+                soup = BeautifulSoup(res.text, 'lxml')
+                stu = ""
+                t = soup.find_all("table", class_="atable1")[3]
+                if "完成" in t.text:
+                    stu = ["无"]
+                else:
+                    t = t.find_all("td")[1].find_all(size=2)
+                    for j in t:
+                        if j.text in ["[同步][登记]", "同步", "[登记]"]:
+                            pass
+                        else:
+                            # stu.append(j.text)
+                            stu = j.text + "、" + stu
+                self.not_reported_stu_dict[i] = stu[:-1]
             except Exception as e:
-                logger.error("Failed to get the latest record value. [{e}]".format(e=e))
-                self._errno = 5
+                logger.error("Failed to get the not reported students list.[{e}]".format(e=e))
+                self._error = 1
+                logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
+                self._errno = 9
                 logger.debug("Set the error code: {errno}.".format(errno=self._errno))
-                return False
-        return record_val
-
-    @logger.catch
-    def _is_reported(self):
-        if self._error == 1:
-            logger.debug("The error flag: {err_flag}. Exit the function.".format(err_flag=self._error))
-            return
-        url = "{host}/{project}".format(host=self._host, project=self._project_url)
-        res = self._session.get(url=url, headers=self._headers)
-        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
-        if res.status_code != 200:
-            logger.error("Failed:GET request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
-            return
-        res.encoding = "utf-8"
-        record_val = self._parse_records(res.text)
-        if not record_val:
-            logger.info("Check:the latest report is not existed.")
-            logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
-            return False
-        elif record_val == self._date:
-            logger.info("Check:the latest report is existed.")
-            return True
-        else:
-            logger.info("Check:the latest report is not existed.")
-            return False
+                logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
+        logger.debug(self.not_reported_stu_dict)
 
     @logger.catch
     def main(self, uid, password):
+        self.class_dict = {}
+        self.not_reported_stu_dict = {}
         self._error = 0
         self._errno = 0
         self._session = requests.Session()
-        self._host = self._main_host + security.get_random_host() + "/com_user"
+        self._host = self._main_host + security.get_random_host()
         self._headers = {
             "User-Agent": security.get_random_useragent()
         }
         self._get_captcha_code()
         self._login(uid, password)
         self._get_project_url()
-        if self._is_reported():
-            logger.info("The report is already existed. ID:{uid}".format(uid=uid))
-            return 0, self._errno
+        self._get_class_info()
+        self._get_not_reported_stu()
+        if self._errno != 0:
+            return 2, self._errno, None
         else:
-            logger.info("Try to report.")
-            self._get_report_url()
-            self._report()
-            if self._is_reported():
-                logger.info("Successful to report. ID:{uid}".format(uid=uid))
-                return 1, self._errno
-            else:
-                logger.error("Failed to report. ID:{uid}".format(uid=uid))
-                if self._errno == 0:
-                    self._errno = 7
-                    logger.debug("Set the error code: {errno}.".format(errno=self._errno))
-                return 2, self._errno
+            return 1, self._errno, self.not_reported_stu_dict
