@@ -1,8 +1,12 @@
-# CDU-ISP-AutoReport
+# CDU-ISP-AutoReport[teacher]
 
 [![License](https://img.shields.io/github/license/BenjiaH/CDU-ISP-AutoReport.svg)](https://github.com/BenjiaH/CDU-ISP-AutoReport/blob/master/LICENSE)
 [![Release](https://img.shields.io/github/release/BenjiaH/CDU-ISP-AutoReport.svg)](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/latest)
 [![Release Date](https://img.shields.io/github/release-date/BenjiaH/CDU-ISP-AutoReport.svg)](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/latest)
+
+
+[![Branch-main](https://img.shields.io/badge/branch-main-green)](https://github.com/BenjiaH/CDU-ISP-AutoReport/tree/main)
+[![Branch-teacher](https://img.shields.io/badge/branch-teacher-green)](https://github.com/BenjiaH/CDU-ISP-AutoReport/tree/teacher)
 
 ```N/A
    _____ _____  _    _      _____  _____ _____                    _        _____                       _   
@@ -43,49 +47,41 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 
 ## 1.Features
 
-- 自动打卡
+- 自动获取未打卡人员名单
 - WeChat、邮件双通道推送结果
 - 定时执行
 - 多账户
 - 实时刷新配置文件
-- 高安全性：随机主机、随机`User-Agent`、SSL加密
+- 高安全性：随机主机、随机`User-Agent`、HTTPS加密、SSL加密
 
-## 2.TODO
-
-- [X] ~~Wechat推送更多内容~~
-- [X] ~~定时执行~~
-- [X] ~~多账户~~
-- [X] ~~邮件推送~~
-- [X] ~~增加安全性：随机主机、随机`User-Agent`~~
-
-## 3.安装依赖
+## 2.安装依赖
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 4.使用方法
+## 3.使用方法
 
-### 4.1.生成`sendkey`(用作微信推送)(可选)
+### 3.1.生成`sendkey`(用作微信推送)(可选)
 
 - 打开[Server酱](https://benjiah.gitee.io/redirect/serversauce)。
 - 申请一个`sendkey`，并记录下来。
 
-### 4.2.填写[`config/config.ini`](config/config_example.ini)
+### 3.2.填写[`config/config.ini`](config/config_example.ini)
 
 - 重命名`config_example.ini`文件为`config.ini`。
 - 填写`studentID`为学号。
 - 填写`password`为CDU-ISP登录密码(**为保证账号安全，建议提前修改登录密码！！！**)。
 - 参照[`config.ini`文件](config/config_example.ini)内说明填写其余内容。
 
-### 4.3.填写[`config/account.csv`](config/account_example.csv)(可选)
+### 3.3.填写[`config/account.csv`](config/account_example.csv)(可选)
 
 - 重命名`account_example.csv`文件为`account.csv`。
 - 仿照示例填写内容。
 - `wechat_push`值为`1`则代表当前账户选择微信推送，`email_push`同理。
 - **注意：如果使用MS Excel打开CSV文件时，`studentID`极有可能被MS Excel自动更改格式，导致软件运行错误。推荐使用文本编辑软件进行填写。**
 
-### 4.4.运行脚本
+### 3.4.运行脚本
 
 ```bash
 python main.py
@@ -106,11 +102,11 @@ chmod 777 scripts/run.sh
 ./scripts/run.sh
 ```
 
-## 5.CHANGE LOG
+## 4.CHANGE LOG
 
 - [CHANGELOG.md](CHANGELOG.md)
 
-## 6.程序结构
+## 5.程序结构
 
 ```N/A
 │  .gitignore
@@ -151,6 +147,6 @@ chmod 777 scripts/run.sh
        messenger.py     <---群发推送程序
 ```
 
-## 7.致谢
+## 6.致谢
 
 - [easychen/wecomchan](https://github.com/easychen/wecomchan/blob/main/LICENSE)
