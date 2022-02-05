@@ -1,3 +1,4 @@
+import re
 import requests
 
 from datetime import datetime
@@ -53,6 +54,7 @@ class Report:
             code = 0
             self._error = 1
             logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
+            logger.debug("{url} text:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
         self._captcha_code = code
 
     @logger.catch
@@ -106,7 +108,7 @@ class Report:
             logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
             self._errno = 7
             logger.debug("Set the error code: {errno}.".format(errno=self._errno))
-            logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
+            logger.debug("{url} text:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
 
     @logger.catch
     def _get_class_info(self):
@@ -136,7 +138,7 @@ class Report:
             logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
             self._errno = 8
             logger.debug("Set the error code: {errno}.".format(errno=self._errno))
-            logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
+            logger.debug("{url} text:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
 
     @logger.catch
     def _get_not_reported_stu(self):
@@ -167,7 +169,6 @@ class Report:
                         if j.text in ["[同步][登记]", "同步", "[登记]"]:
                             pass
                         else:
-                            # stu.append(j.text)
                             stu = j.text + "、" + stu
                 self.not_reported_stu_dict[i] = stu[:-1]
             except Exception as e:
@@ -176,7 +177,8 @@ class Report:
                 logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
                 self._errno = 9
                 logger.debug("Set the error code: {errno}.".format(errno=self._errno))
-                logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
+                logger.debug("{url} text:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
+        logger.info("Successful to get the not reported students list.")
         logger.debug(self.not_reported_stu_dict)
 
     @logger.catch
