@@ -4,6 +4,10 @@
 [![Release](https://img.shields.io/github/release/BenjiaH/CDU-ISP-AutoReport.svg)](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/latest)
 [![Release Date](https://img.shields.io/github/release-date/BenjiaH/CDU-ISP-AutoReport.svg)](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/latest)
 
+
+[![Branch-main](https://img.shields.io/badge/branch-main-green)](https://github.com/BenjiaH/CDU-ISP-AutoReport/tree/main)
+[![Branch-teacher](https://img.shields.io/badge/branch-teacher-green)](https://github.com/BenjiaH/CDU-ISP-AutoReport/tree/teacher)
+
 ```N/A
    _____ _____  _    _      _____  _____ _____                    _        _____                       _   
   / ____|  __ \| |  | |    |_   _|/ ____|  __ \        /\        | |      |  __ \                     | |  
