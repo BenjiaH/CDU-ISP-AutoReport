@@ -28,7 +28,7 @@ class Logger:
                 else:
                     return False
         except Exception as e:
-            logger.error(f"{e}")
+            logger.error(e)
             return False
 
     @staticmethod

@@ -166,7 +166,7 @@ class Push:
                     else:
                         self.go_scf_wechat(uid, title, message, api, sendkey, userid)
                 except Exception as e:
-                    logger.error(f"{e}")
+                    logger.error(e)
         if self._global_email != "off":
             if email_push == "1" or email_push == "on":
                 try:
