@@ -146,16 +146,16 @@ class Push:
         status = result[0]
         errno = result[1]
         if status == 0:
-            title = "打卡已存在!"
+            title = "[打卡已存在]"
             message = "当日打卡已存在!"
         elif status == 1:
-            title = "打卡成功!"
+            title = "[打卡成功]"
             message = "打卡成功!"
         elif status == 2:
-            title = "打卡失败!"
+            title = "[打卡失败]"
             message = "打卡可能失败,请手动打卡!"
         else:
-            title = "ERROR!"
+            title = "[ERROR]"
             message = "ERROR!"
         if errno != 0:
             errmsg = [i["msg"] for i in self._errno_msg["content"] if errno == i["errno"]][0]
