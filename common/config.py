@@ -8,13 +8,13 @@ class Config:
         os.chdir(os.path.dirname(__file__))
         self._path = os.path.abspath(config_file)
         if not os.path.exists(self._path):
-            logger.error("No such file:{file}".format(file=self._path))
-            raise FileNotFoundError("No such file:{file}".format(file=self._path))
+            logger.error(f"No such file:{self._path}")
+            raise FileNotFoundError(f"No such file:{self._path}")
         self._config = configparser.ConfigParser()
         self._config.read(self._path, encoding='utf-8-sig')
         self._configRaw = configparser.RawConfigParser()
         self._configRaw.read(self._path, encoding='utf-8-sig')
-        logger.debug("Loaded:{file}".format(file=self._path))
+        logger.debug(f"Loaded:{self._path}")
 
     @logger.catch
     def refresh(self):

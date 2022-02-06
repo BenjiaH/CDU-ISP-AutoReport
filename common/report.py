@@ -1,3 +1,5 @@
+import re
+
 import requests
 
 from datetime import datetime
@@ -22,43 +24,43 @@ class Report:
     @logger.catch
     def update_date(self):
         today = datetime.now()
-        today = "{y}年{m}月{d}日".format(y=today.year, m=today.month, d=today.day)
+        today = f"{today.year}年{today.month}月{today.day}日"
         self._date = today
-        logger.debug("Date:{today}".format(today=self._date))
+        logger.debug(f"Date:{self._date}")
 
     @logger.catch
     def _get_captcha_code(self):
-        url = "{host}/weblogin.asp".format(host=self._host)
+        url = f"{self._host}/weblogin.asp"
         try:
             res = self._session.get(url=url, headers=self._headers)
-            logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+            logger.debug(f"URL:{url}. Status code:{res.status_code}")
             res.encoding = "utf-8"
         except Exception as e:
-            logger.error("Failed to establish a new connection. [{e}]".format(e=e))
+            logger.error(f"Failed to establish a new connection. [{e}]")
             self._errno = 6
-            logger.debug("Set the error code: {errno}.".format(errno=self._errno))
+            logger.debug(f"Set the error code: {self._errno}.")
             self._error = 1
-            logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
+            logger.debug(f"Set the error flag: {self._error}.")
             return
         try:
             soup = BeautifulSoup(res.text, 'lxml')
             code = soup.find(id="code").parent.text.strip()
         except Exception as e:
-            logger.error("Failed to get the captcha code. [{e}]".format(e=e))
+            logger.error(f"Failed to get the captcha code. [{e}]")
             self._errno = 1
-            logger.debug("Set the error code: {errno}.".format(errno=self._errno))
-            logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
+            logger.debug(f"Set the error code: {self._errno}.")
             code = 0
             self._error = 1
-            logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
+            logger.debug(f"Set the error flag: {self._error}.")
+            logger.debug("{url} content:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
         self._captcha_code = code
 
     @logger.catch
     def _login(self, uid, password):
         if self._error == 1:
-            logger.debug("The error flag: {err_flag}. Exit the function.".format(err_flag=self._error))
+            logger.debug(f"The error flag: {self._error}. Exit the function.")
             return
-        url = "{host}/weblogin.asp".format(host=self._host)
+        url = f"{self._host}/weblogin.asp"
         data = {
             "username": uid,
             "userpwd": password,
@@ -71,51 +73,51 @@ class Report:
         }
         res = self._session.post(url=url, headers=self._headers, data=data)
         res.encoding = "utf-8"
-        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug(f"URL:{url}. Status code:{res.status_code}")
         if res.status_code != 200:
-            logger.error("Failed:POST request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+            logger.error(f"Failed:POST request. URL:{url}. Status code:{res.status_code}")
         if "学号或密码错误" in res.text:
             logger.error("Failed to login the ISP.[Incorrect username or password]")
             logger.debug("Failed to login the ISP.[Incorrect username or password]")
             self._errno = 2
-            logger.debug("Set the error code: {errno}.".format(errno=self._errno))
+            logger.debug(f"Set the error code: {self._errno}.")
             self._error = 1
-            logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
+            logger.debug(f"Set the error flag: {self._error}.")
 
     @logger.catch
     def _get_project_url(self):
         if self._error == 1:
-            logger.debug("The error flag: {err_flag}. Exit the function.".format(err_flag=self._error))
+            logger.debug(f"The error flag: {self._error}. Exit the function.")
             return
-        url = "{host}/left.asp".format(host=self._host)
+        url = f"{self._host}/left.asp"
         res = self._session.get(url=url, headers=self._headers)
-        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug(f"URL:{url}. Status code:{res.status_code}")
         if res.status_code != 200:
-            logger.error("Failed:GET request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+            logger.error(f"Failed:GET request. URL:{url}. Status code:{res.status_code}")
         res.encoding = "utf-8"
         try:
             soup = BeautifulSoup(res.text, 'lxml')
             self._project_url = soup.find('a', string="疫情信息登记")['href']
             logger.info("Successful to login the ISP.")
-            logger.debug("Project url:{url}.".format(url=self._project_url))
+            logger.debug(f"Project url:{self._project_url}.")
         except Exception as e:
-            logger.error("Failed to get the project url.[{e}]".format(e=e))
+            logger.error(f"Failed to get the project url.[{e}]")
             self._error = 1
-            logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
+            logger.debug(f"Set the error flag: {self._error}.")
             self._errno = 3
-            logger.debug("Set the error code: {errno}.".format(errno=self._errno))
-            logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
+            logger.debug(f"Set the error code: {self._errno}.")
+            logger.debug("{url} content:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
 
     @logger.catch
     def _get_report_url(self):
         if self._error == 1:
-            logger.debug("The error flag: {err_flag}. Exit the function.".format(err_flag=self._error))
+            logger.debug(f"The error flag: {self._error}. Exit the function.")
             return
-        url = "{host}/{project}".format(host=self._host, project=self._project_url)
+        url = f"{self._host}/{self._project_url}"
         res = self._session.get(url=url, headers=self._headers)
-        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug(f"URL:{url}. Status code:{res.status_code}")
         if res.status_code != 200:
-            logger.error("Failed:GET request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+            logger.error(f"Failed:GET request. URL:{url}. Status code:{res.status_code}")
         res.encoding = "utf-8"
         try:
             soup = BeautifulSoup(res.text, 'lxml')
@@ -123,65 +125,65 @@ class Report:
             report_url = t_url[t_url.find("href=") + 6: -11]
             self._report_url = report_url.replace('"+adds2+"', "undefined").replace('"+addsxy2', "undefined")
             logger.info("Get the report url.")
-            logger.debug("The report url:{url}.".format(url=self._report_url))
+            logger.debug(f"The report url:{self._report_url}.")
         except Exception as e:
-            logger.error("Failed to get the report url.[{e}]".format(e=e))
+            logger.error(f"Failed to get the report url.[{e}]")
             self._error = 1
-            logger.debug("Set the error flag: {err_flag}.".format(err_flag=self._error))
+            logger.debug(f"Set the error flag: {self._error}.")
             self._errno = 4
-            logger.debug("Set the error code: {errno}.".format(errno=self._errno))
-            logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
+            logger.debug(f"Set the error code: {self._errno}.")
+            logger.debug("{url} content:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
 
     @logger.catch
     def _report(self):
         if self._error == 1:
-            logger.debug("The error flag: {err_flag}. Exit the function.".format(err_flag=self._error))
+            logger.debug(f"The error flag: {self._error}. Exit the function.")
             return
-        url = "{host}/{report}".format(host=self._host, report=self._report_url)
+        url = f"{self._host}/{self._report_url}"
         res = self._session.get(url=url, headers=self._headers)
-        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug(f"URL:{url}. Status code:{res.status_code}")
         if res.status_code != 200:
-            logger.error("Failed:GET request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+            logger.error(f"Failed:GET request. URL:{url}. Status code:{res.status_code}")
 
     @logger.catch
     def _parse_records(self, page_text):
         soup = BeautifulSoup(page_text, 'lxml')
         try:
             record_val = soup.find("td", class_="tdmenu").text.strip()
-            logger.debug("The record value:{val}".format(val=record_val))
+            logger.debug(f"The record value:{record_val}")
             if "年" not in record_val and "还没有登记记录" not in record_val:
                 raise Exception("Can not parse the latest record value")
         except Exception as e:
-            logger.debug("Failed to get the latest record value. [{e}. Try to change the parse rule.]".format(e=e))
+            logger.debug(f"Failed to get the latest record value. [{e}. Try to change the parse rule.]")
             try:
                 record_val = soup.find("table", class_="table table-hover").find_all("tr")[
                     3].find("div", align="center").text.strip()
-                logger.debug("The record value:{val}".format(val=record_val))
+                logger.debug(f"The record value:{record_val}")
                 if "年" not in record_val and "还没有登记记录" not in record_val:
                     raise Exception("Can not parse the latest record value.")
             except Exception as e:
-                logger.error("Failed to get the latest record value. [{e}]".format(e=e))
+                logger.error(f"Failed to get the latest record value. [{e}]")
                 self._errno = 5
-                logger.debug("Set the error code: {errno}.".format(errno=self._errno))
+                logger.debug(f"Set the error code: {self._errno}.")
                 return False
         return record_val
 
     @logger.catch
     def _is_reported(self):
         if self._error == 1:
-            logger.debug("The error flag: {err_flag}. Exit the function.".format(err_flag=self._error))
+            logger.debug(f"The error flag: {self._error}. Exit the function.")
             return
-        url = "{host}/{project}".format(host=self._host, project=self._project_url)
+        url = f"{self._host}/{self._project_url}"
         res = self._session.get(url=url, headers=self._headers)
-        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug(f"URL:{url}. Status code:{res.status_code}")
         if res.status_code != 200:
-            logger.error("Failed:GET request. URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+            logger.error(f"Failed:GET request. URL:{url}. Status code:{res.status_code}")
             return
         res.encoding = "utf-8"
         record_val = self._parse_records(res.text)
         if not record_val:
             logger.info("Check:the latest report is not existed.")
-            logger.debug("{url} text:\n{res}".format(url=url, res=res.content))
+            logger.debug("{url} content:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
             return False
         elif record_val == self._date:
             logger.info("Check:the latest report is existed.")
@@ -203,18 +205,18 @@ class Report:
         self._login(uid, password)
         self._get_project_url()
         if self._is_reported():
-            logger.info("The report is already existed. ID:{uid}".format(uid=uid))
+            logger.info(f"The report is already existed. ID:{uid}")
             return 0, self._errno
         else:
             logger.info("Try to report.")
             self._get_report_url()
             self._report()
             if self._is_reported():
-                logger.info("Successful to report. ID:{uid}".format(uid=uid))
+                logger.info(f"Successful to report. ID:{uid}")
                 return 1, self._errno
             else:
-                logger.error("Failed to report. ID:{uid}".format(uid=uid))
+                logger.error(f"Failed to report. ID:{uid}")
                 if self._errno == 0:
                     self._errno = 7
-                    logger.debug("Set the error code: {errno}.".format(errno=self._errno))
+                    logger.debug(f"Set the error code: {self._errno}.")
                 return 2, self._errno

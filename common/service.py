@@ -33,7 +33,7 @@ class ReportService:
 
     @logger.catch
     def _single_mode(self):
-        logger.info("Report ID:{uid}".format(uid=self._uid).center(46, '-'))
+        logger.info(f"Report ID:{self._uid}".center(46, '-'))
         ret = self._report.main(uid=self._uid, password=self._password)
         global_push.push(ret, uid=self._uid, wechat_push=self._wechat_push, email_push=self._email_push,
                          sendkey=self._sendkey, email_rxer=self._email_rxer, wechat_type=self._wechat_type,
@@ -44,7 +44,7 @@ class ReportService:
         global_account.refresh()
         n = global_account.row
         for i in range(n):
-            log_info = "[{i}/{n}] Report ID:{uid}".format(i=i + 1, n=n, uid=global_account.studentID[i]).center(46, '-')
+            log_info = f"[{i + 1}/{n}] Report ID:{global_account.studentID[i]}".center(46, '-')
             logger.info(log_info)
             ret = self._report.main(uid=global_account.studentID[i], password=global_account.password[i])
             global_push.push(ret, uid=global_account.studentID[i], wechat_push=global_account.wechat_push[i],
@@ -80,13 +80,12 @@ class ReportService:
                 global_config.refresh()
                 str_set_time = global_config.getRaw('config', 'set_time')
                 str_now_time = self._get_now_time()
-                logger.info(
-                    "Now time:{now_time}. Set time:{set_time}.".format(now_time=str_now_time, set_time=str_set_time))
+                logger.info(f"Now time:{str_now_time}. Set time:{str_set_time}.")
                 while True:
                     global_config.refresh()
                     if str_set_time != global_config.getRaw('config', 'set_time'):
                         str_set_time = global_config.getRaw('config', 'set_time')
-                        logger.info("New set time:{set_time}.".format(set_time=str_set_time))
+                        logger.info(f"New set time:{str_set_time}.")
                     str_now_time = self._get_now_time()
                     if str_now_time != str_set_time:
                         # print(str_now_time)

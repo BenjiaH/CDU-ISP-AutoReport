@@ -26,22 +26,22 @@ hosts = copy.deepcopy(HOSTS)
 
 @logger.catch
 def get_host_status(host):
-    url = "https://xsswzx.cdu.edu.cn/{host}/com_user/weblogin.asp".format(host=host)
+    url = f"https://xsswzx.cdu.edu.cn/{host}/com_user/weblogin.asp"
     try:
         res = requests.get(url=url, timeout=10)
-        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug(f"URL:{url}. Status code:{res.status_code}")
     except Exception as e:
-        logger.error("Failed to check \"{host}\" status.".format(host=host, e=e))
-        logger.debug("Failed to check \"{host}\" status. [{e}]".format(host=host, e=e))
+        logger.error(f'Failed to check "{host}" status.')
+        logger.debug(f'Failed to check "{host}" status. [{e}]')
         return False
     res.encoding = "utf-8"
     if "updatenow.asp" in res.text:
-        logger.error("Failed to check \"{host}\" status.".format(host=host))
-        logger.debug("Failed to check \"{host}\" status. [updating]".format(host=host))
+        logger.error(f'Failed to check "{host}" status.')
+        logger.debug(f'Failed to check "{host}" status. [updating]')
         return False
     elif res.status_code != 200:
-        logger.error("Failed to check \"{host}\" status.".format(host=host, code=res.status_code))
-        logger.debug("Failed to check \"{host}\" status. [status code:{code}]".format(host=host, code=res.status_code))
+        logger.error(f'Failed to check "{host}" status.')
+        logger.debug(f'Failed to check "{host}" status. [Status code:{res.status_code}]')
         return False
     else:
         return True
@@ -59,7 +59,7 @@ def refresh_hosts():
             unavailable_host.append(i)
     logger.info("Refresh hosts.")
     if len(hosts) != len(HOSTS):
-        logger.error("Unavailable host:{host}.".format(host=unavailable_host))
+        logger.error(f"Unavailable host:{unavailable_host}.")
     unavailable_host.clear()
     return hosts
 
@@ -67,7 +67,7 @@ def refresh_hosts():
 @logger.catch
 def get_random_useragent():
     random_ua = ua.random
-    logger.debug("User Agent:{ua}".format(ua=random_ua))
+    logger.debug(f"User Agent:{random_ua}")
     return random_ua
 
 
@@ -75,8 +75,8 @@ def get_random_useragent():
 def get_random_host():
     try:
         ret_host = random.choice(hosts)
-        logger.debug("Random host:\"{ret_host}\".".format(ret_host=ret_host))
+        logger.debug(f'Random host:"{ret_host}".')
     except Exception as e:
-        logger.error("{e}.".format(e=e))
+        logger.error(e)
         return ""
     return ret_host
