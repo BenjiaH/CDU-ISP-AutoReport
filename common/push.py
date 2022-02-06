@@ -146,13 +146,13 @@ class Push:
         status = result[0]
         errno = result[1]
         if status == 1:
-            title = "查询成功!"
+            title = "[查询成功]"
             message = "当日未打卡人员名单：\n" + json.dumps(result[2], ensure_ascii=False, indent=4)
         elif status == 2:
-            title = "查询失败!"
+            title = "[查询失败]"
             message = "查询失败,请手动查询!"
         else:
-            title = "ERROR!"
+            title = "[ERROR]"
             message = "ERROR!"
         if errno != 0:
             errmsg = [i["msg"] for i in self._errno_msg["content"] if errno == i["errno"]][0]
