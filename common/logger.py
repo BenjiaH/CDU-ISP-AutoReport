@@ -28,7 +28,7 @@ class Logger:
                 else:
                     return False
         except Exception as e:
-            logger.error("{e}".format(e=e))
+            logger.error(f"{e}")
             return False
 
     @staticmethod
@@ -44,12 +44,12 @@ class Logger:
     def log_version(stage: str, version=""):
         commit_id = ""
         if os.path.exists("../.git"):
-            logger.debug("Founded:{git_path}.".format(git_path=os.path.abspath("../.git")))
+            logger.debug(f'Founded:{os.path.abspath("../.git")}.')
             commit_id = (os.popen("git rev-parse --short HEAD").read()).replace("\n", "")
             version += "."
         info = version + commit_id + "(" + stage + ")"
-        logger.info("Version:{version}".format(version=info))
-        logger.debug("Version:{version}".format(version=info))
+        logger.info(f"Version:{info}")
+        logger.debug(f"Version:{info}")
 
 
 handlers = Logger("../log/log/log.log", "../log/debug/debug.log")

@@ -15,14 +15,14 @@ class Account(object):
         os.chdir(os.path.dirname(__file__))
         self._path = os.path.abspath(csv_file)
         if not os.path.exists(self._path):
-            logger.error("No such file:{file}".format(file=self._path))
-            raise FileNotFoundError("No such file:{file}".format(file=self._path))
+            logger.error(f"No such file:{self._path}")
+            raise FileNotFoundError(f"No such file:{self._path}")
         self._csv_file = open(self._path, encoding='utf-8')
         self._account = csv.reader(self._csv_file)
         self._row = sum(1 for line in open(self._path, encoding='utf-8')) - 1
         self._col = len(next(self._account))
         self._all_info = self.get_info()
-        logger.debug("Loaded:{file}".format(file=self._path))
+        logger.debug(f"Loaded:{self._path}")
 
     @logger.catch
     def refresh(self):
@@ -31,7 +31,7 @@ class Account(object):
         self._row = sum(1 for line in open(self._path, encoding='utf-8')) - 1
         self._col = len(next(self._account))
         self._all_info = self.get_info()
-        logger.debug("Refreshed:{file}".format(file=self._path))
+        logger.debug(f"Refreshed:{self._path}")
 
     @logger.catch
     def get_info(self):

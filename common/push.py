@@ -31,7 +31,7 @@ class Email:
         os.chdir(os.path.dirname(__file__))
         with open(r"../res/email_tmpl.html", "r", encoding="UTF-8") as f:
             self._mail_payload = f.read()
-            logger.debug("Loaded:{tmpl}.".format(tmpl=os.path.abspath(r"../res/email_tmpl.html")))
+            logger.debug(f'Loaded:{os.path.abspath(r"../res/email_tmpl.html")}.')
 
     @logger.catch
     def login(self):
@@ -44,12 +44,12 @@ class Email:
             self._is_login = True
             logger.info("Successful to login the email.")
         except Exception as e:
-            logger.error("Failed to login the email. [{e}]".format(e=e))
+            logger.error(f"Failed to login the email. [{e}]")
         self.smtp = smtp
 
     @retry(stop_max_attempt_number=3, wait_fixed=500)
     def send(self, uid, title, msg, receiver: list):
-        logger.debug("Email receiver:{rxer}.".format(rxer=receiver[0]))
+        logger.debug(f"Email receiver:{receiver[0]}.")
         if not self._is_login:
             logger.error("Failed to send the email.[Email not login]")
         else:
@@ -57,14 +57,13 @@ class Email:
             mail_msg = self._mail_payload.format(uid=uid, msg=msg, mail_name=self._mail_name, time=now)
             message = MIMEText(mail_msg, "html", "utf-8")
             message['Subject'] = title
-            message['From'] = "{mail_name} <{mail_user}>".format(mail_name=self._mail_name,
-                                                                 mail_user=self._mail_user)
+            message['From'] = f"{self._mail_name} <{self._mail_user}>"
             message['To'] = receiver[0]
             try:
                 self.smtp.sendmail(self._mail_user, receiver, message.as_string())
                 logger.info("Successful to send the email.")
             except Exception as e:
-                logger.error("Failed to send the email.[{e}]".format(e=e))
+                logger.error(f"Failed to send the email.[{e}]")
                 logger.error("Retry to send the email.")
                 self._is_login = False
                 self.login()
@@ -85,28 +84,28 @@ class Push:
 
     @logger.catch
     def _load_errno(self):
-        with open(r"{}".format(self._errno_msg_path), "r", encoding="UTF-8") as f:
+        with open(fr"{self._errno_msg_path}", "r", encoding="UTF-8") as f:
             self._raw = f.read()
-            logger.debug("Loaded:{file}.".format(file=os.path.abspath(r"{}".format(self._errno_msg_path))))
+            logger.debug(f'Loaded:{os.path.abspath(fr"{self._errno_msg_path}")}.')
             return json.loads(self._raw)
 
     @staticmethod
     @logger.catch
     def sct_wechat(uid, title, message, sendkey):
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        url = 'https://sctapi.ftqq.com/{}.send'.format(sendkey)
+        url = f'https://sctapi.ftqq.com/{sendkey}.send'
         ps = ""
-        msg = " " * 10 + title + "\n\n" + uid + ":\n" + " " * 7 + message + "\n{ps}\n\n{time}".format(ps=ps, time=now)
+        msg = " " * 10 + title + "\n\n" + uid + ":\n" + " " * 7 + message + f"\n{ps}\n\n{now}"
         payload = {
             "title": title,
             "desp": parse.quote(msg)
         }
         res = requests.get(url=url, params=payload)
-        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug(f"URL:{url}. Status code:{res.status_code}")
         res.encoding = "utf-8"
-        logger.debug("Response:{res}".format(res=res.text))
+        logger.debug(f"Response:{res.text}")
         if res.status_code != 200:
-            logger.error("Failed to push the WeChat message. Status code:{code}.".format(code=res.status_code))
+            logger.error(f"Failed to push the WeChat message. Status code:{res.status_code}.")
             return False
         else:
             logger.info("Successful to push the WeChat message.")
@@ -116,9 +115,9 @@ class Push:
     @retry(stop_max_attempt_number=3, wait_fixed=500)
     def go_scf_wechat(uid, title, message, api, sendkey, userid):
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        url = '{api}/{sendkey}'.format(api=api, sendkey=sendkey)
+        url = f'{api}/{sendkey}'
         ps = ""
-        msg = " " * 10 + title + "\n\n" + uid + ":\n" + " " * 7 + message + "\n{ps}\n\n{time}".format(ps=ps, time=now)
+        msg = " " * 10 + title + "\n\n" + uid + ":\n" + " " * 4 + message + f"\n{ps}\n\n{now}"
         payload = {
             "sendkey": sendkey,
             "msg_type": "text",
@@ -127,16 +126,16 @@ class Push:
         }
         # go_scf post请求body必须为json,详见文档
         res = requests.post(url=url, data=json.dumps(payload))
-        logger.debug("URL:{url}. Status code:{code}".format(url=url, code=res.status_code))
+        logger.debug(f"URL:{url}. Status code:{res.status_code}")
         res.encoding = "utf-8"
-        logger.debug("Response:{res}".format(res=res.text))
+        logger.debug(f"Response:{res.text}")
         dict_res = json.loads(res.text)
         if res.status_code != 200:
-            logger.error("Failed to push the WeChat message. Status code:{code}.".format(code=res.status_code))
+            logger.error(f"Failed to push the WeChat message. Status code:{res.status_code}.")
             logger.error("Retry to push the WeChat message.")
             raise Exception("Failed to push the WeChat message.")
         elif dict_res["code"] != 0:
-            logger.error("Failed to push the WeChat message. [{msg}].".format(msg=dict_res["msg"]))
+            logger.error(f'Failed to push the WeChat message. [{dict_res["msg"]}].')
             logger.error("Retry to push the WeChat message.")
             raise Exception("Failed to push the WeChat message.")
         else:
@@ -151,14 +150,14 @@ class Push:
             message = "当日未打卡人员名单：\n" + json.dumps(result[2], ensure_ascii=False, indent=4)
         elif status == 2:
             title = "查询失败!"
-            message = "查询可能失败,请手动查询!"
+            message = "查询失败,请手动查询!"
         else:
             title = "ERROR!"
             message = "ERROR!"
         if errno != 0:
             errmsg = [i["msg"] for i in self._errno_msg["content"] if errno == i["errno"]][0]
             message = message + "[错误信息:" + errmsg + "]"
-        logger.debug("Title:{title}#Message:{msg}#Error code:{errno}".format(title=title, msg=message, errno=errno))
+        logger.debug(f"Title:{title}#Message:{message}#Error code:{errno}")
         if self._global_wechat != "off":
             if wechat_push == "1" or wechat_push == "on":
                 try:
@@ -167,13 +166,13 @@ class Push:
                     else:
                         self.go_scf_wechat(uid, title, message, api, sendkey, userid)
                 except Exception as e:
-                    logger.error("{e}".format(e=e))
+                    logger.error(f"{e}")
         if self._global_email != "off":
             if email_push == "1" or email_push == "on":
                 try:
                     self.bot_email.send(uid, title, message, [email_rxer])
                 except Exception as e:
-                    logger.error("{e}".format(e=e))
+                    logger.error(e)
 
 
 global_push = Push()
