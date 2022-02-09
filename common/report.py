@@ -15,7 +15,7 @@ class Report:
         self._host = 0
         self._headers = 0
         self._main_host = "https://xsswzx.cdu.edu.cn/"
-        self._project_url = 0
+        self._navigation_url = 0
         self._report_url = 0
         self._date = ""
         self._captcha_code = ""
@@ -77,16 +77,22 @@ class Report:
         logger.debug(f"URL:{url}. Status code:{res.status_code}")
         if res.status_code != 200:
             logger.error(f"Failed:POST request. URL:{url}. Status code:{res.status_code}")
-        if "重新登陆" in res.text:
+            self._errno = 2
+            logger.debug(f"Set the error code: {self._errno}.")
+            self._error = 1
+            logger.debug(f"Set the error flag: {self._error}.")
+        elif "重新登陆" in res.text:
             logger.error("Failed to login the ISP.[Incorrect username, password or captcha code]")
             logger.debug("Failed to login the ISP.[Incorrect username, password or captcha code]")
             self._errno = 2
             logger.debug(f"Set the error code: {self._errno}.")
             self._error = 1
             logger.debug(f"Set the error flag: {self._error}.")
+        else:
+            logger.info("Successful to login the ISP.")
 
     @logger.catch
-    def _get_project_url(self):
+    def _get_navigation_url(self, target):
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return
@@ -98,11 +104,10 @@ class Report:
         res.encoding = "utf-8"
         try:
             soup = BeautifulSoup(res.text, 'lxml')
-            self._project_url = soup.find('a', string="疫情登记情况")['href']
-            logger.info("Successful to login the ISP.")
-            logger.debug(f"Project url:{self._project_url}.")
+            self._navigation_url = soup.find('a', string=target)['href']
+            logger.debug(f"Navigation url:{self._navigation_url}.")
         except Exception as e:
-            logger.error(f"Failed to get the project url.[{e}]")
+            logger.error(f"Failed to get the navigation url.[{e}]")
             self._error = 1
             logger.debug(f"Set the error flag: {self._error}.")
             self._errno = 7
@@ -114,7 +119,7 @@ class Report:
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return
-        url = f"{self._host}/{self._project_url}"
+        url = f"{self._host}/{self._navigation_url}"
         payload = {
             "coded": self._date
         }
@@ -141,11 +146,11 @@ class Report:
 
     @logger.catch
     def _get_not_reported_stu(self):
-        if self._error == 1:
-            logger.debug(f"The error flag: {self._error}. Exit the function.")
-            return
         for i in self.class_dict:
-            url = f"{self._host}/{self._project_url}"
+            if self._error == 1:
+                logger.debug(f"The error flag: {self._error}. Exit the function.")
+                return
+            url = f"{self._host}/{self._navigation_url}"
             payload = {
                 "coded": self._date,
                 "class_id": self.class_dict[i],
@@ -194,8 +199,9 @@ class Report:
         }
         self._get_captcha_code()
         self._login(uid, password)
-        self._get_project_url()
+        self._get_navigation_url("信息解析")
         self._get_class_info()
+        self._get_navigation_url("疫情登记情况")
         self._get_not_reported_stu()
         if self._errno != 0:
             return 2, self._errno, None
