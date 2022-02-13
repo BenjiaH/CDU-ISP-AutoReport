@@ -45,6 +45,7 @@ class Report:
         try:
             soup = BeautifulSoup(res.text, 'lxml')
             code = soup.find(id="code").parent.text.strip()
+            logger.debug(f"Verification code: {code}")
         except Exception as e:
             logger.error(f"Failed to get the captcha code. [{e}]")
             self._errno = 1
