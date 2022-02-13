@@ -1,6 +1,5 @@
 import random
 import requests
-import copy
 
 from common.logger import logger
 from fake_useragent import UserAgent
@@ -9,8 +8,7 @@ HOSTS = [
     "ispteacher/teacher_admin5"  # 教师入口
 ]
 ua = UserAgent(verify_ssl=False)
-# deep copy
-hosts = copy.deepcopy(HOSTS)
+available_host = []
 
 
 @logger.catch
@@ -38,19 +36,13 @@ def get_host_status(host):
 
 @logger.catch
 def refresh_hosts():
-    global hosts
-    unavailable_host = []
-    # deep copy
-    hosts = copy.deepcopy(HOSTS)
-    for i in hosts:
-        if not get_host_status(i):
-            hosts.remove(i)
-            unavailable_host.append(i)
+    available_host.clear()
+    for i in HOSTS:
+        if get_host_status(i):
+            available_host.append(i)
     logger.info("Successful to refresh hosts status.")
-    if len(hosts) != len(HOSTS):
-        logger.error(f"Unavailable host:{unavailable_host}.")
-    unavailable_host.clear()
-    return hosts
+    if len(available_host) != len(HOSTS):
+        logger.error(f"Available host:{available_host}.")
 
 
 @logger.catch
@@ -63,9 +55,9 @@ def get_random_useragent():
 @logger.catch
 def get_random_host():
     try:
-        ret_host = random.choice(hosts)
+        ret_host = random.choice(available_host)
         logger.debug(f'Random host:"{ret_host}".')
     except Exception as e:
-        logger.error(f"{e}.")
+        logger.error(e)
         return ""
     return ret_host
