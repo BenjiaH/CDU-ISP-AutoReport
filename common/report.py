@@ -116,7 +116,7 @@ class Report:
     def _report_default_method(self):
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
-            return
+            return ""
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
         url = f"{self._host}/project_addx.asp"
         payload = {
@@ -136,7 +136,7 @@ class Report:
     def _report(self):
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
-            return
+            return ""
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
         url = f"{self._host}/project_add.asp"
         payload = {
