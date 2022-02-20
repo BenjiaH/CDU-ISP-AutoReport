@@ -16,7 +16,6 @@ class Report:
         self._host = 0
         self._headers = 0
         self._navigation_url = 0
-        self._report_url = 0
         self._date = ""
         self._captcha_code = ""
 
@@ -28,13 +27,17 @@ class Report:
         logger.debug(f"Date:{self._date}")
 
     @logger.catch
+    def _set_error(self, no, flag):
+        self._errno = no
+        logger.debug(f"Set the error code: {self._errno}.")
+        self._error = flag
+        logger.debug(f"Set the error flag: {self._error}.")
+
+    @logger.catch
     def _get_captcha_code(self):
         if len(security.available_host) == 0:
             logger.error(f"Failed to establish a new connection.")
-            self._errno = 6
-            logger.debug(f"Set the error code: {self._errno}.")
-            self._error = 1
-            logger.debug(f"Set the error flag: {self._error}.")
+            self._set_error(6, 1)
             return
         url = f"{self._host}/weblogin.asp"
         res = self._session.get(url=url, headers=self._headers)
@@ -46,11 +49,8 @@ class Report:
             logger.debug(f"Verification code: {code}")
         except Exception as e:
             logger.error(f"Failed to get the captcha code. [{e}]")
-            self._errno = 1
-            logger.debug(f"Set the error code: {self._errno}.")
+            self._set_error(1, 1)
             code = 0
-            self._error = 1
-            logger.debug(f"Set the error flag: {self._error}.")
             logger.debug("{url} content:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
         self._captcha_code = code
 
@@ -71,21 +71,15 @@ class Report:
             "m5": "1",
         }
         res = self._session.post(url=url, headers=self._headers, data=payload)
-        res.encoding = "utf-8"
         logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
+        res.encoding = "utf-8"
         if res.status_code != 200:
             logger.error(f"Failed:POST request. URL:{url}. Status code:{res.status_code}")
-            self._errno = 2
-            logger.debug(f"Set the error code: {self._errno}.")
-            self._error = 1
-            logger.debug(f"Set the error flag: {self._error}.")
+            self._set_error(2, 1)
         elif "重新登陆" in res.text:
             logger.error("Failed to login the ISP.[Incorrect username, password or captcha code]")
             logger.debug("Failed to login the ISP.[Incorrect username, password or captcha code]")
-            self._errno = 2
-            logger.debug(f"Set the error code: {self._errno}.")
-            self._error = 1
-            logger.debug(f"Set the error flag: {self._error}.")
+            self._set_error(2, 1)
         else:
             logger.info("Successful to login the ISP.")
 
@@ -106,10 +100,7 @@ class Report:
             logger.debug(f'Navigation "{target}" url:{self._navigation_url}.')
         except Exception as e:
             logger.error(f"Failed to get the project url.[{e}]")
-            self._error = 1
-            logger.debug(f"Set the error flag: {self._error}.")
-            self._errno = 3
-            logger.debug(f"Set the error code: {self._errno}.")
+            self._set_error(3, 1)
             logger.debug("{url} content:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
 
     @logger.catch
