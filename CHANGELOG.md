@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.2.0.release](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/tag/1.1.3.release)
+## [1.2.0.release](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/tag/1.2.0.release)
 
 ### (2022-1-3)
 
