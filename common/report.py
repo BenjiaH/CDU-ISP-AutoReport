@@ -76,7 +76,7 @@ class Report:
         if res.status_code != 200:
             logger.error(f"Failed:POST request. URL:{url}. Status code:{res.status_code}")
             self._set_error(2, 1)
-        elif "重新登陆" in res.text:
+        elif "alert" in res.text:
             logger.error("Failed to login the ISP.[Incorrect username, password or captcha code]")
             logger.debug("Failed to login the ISP.[Incorrect username, password or captcha code]")
             self._set_error(2, 1)
