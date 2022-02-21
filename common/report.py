@@ -164,7 +164,7 @@ class Report:
         self._get_captcha_code()
         self._login(uid, password)
         self._get_navigation_url("疫情信息登记")
-        logger.info("Try to report in default the method.")
+        logger.info("Try to report in the default method.")
         ret = self._report_default_method()
         if "已存在" in ret:
             logger.info(f"The report is already existed. ID:{uid}")
