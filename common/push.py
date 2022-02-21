@@ -162,7 +162,7 @@ class Push:
             message = message + "[错误信息:" + errmsg + "]"
         logger.debug(f"Title:{title}#Message:{message}#Error code:{errno}")
         if self._global_wechat != "off":
-            if wechat_push == "1" or wechat_push == "on":
+            if wechat_push == "1":
                 try:
                     if str(wechat_type) == "1":
                         self.sct_wechat(uid, title, message, sendkey)
@@ -171,7 +171,7 @@ class Push:
                 except Exception as e:
                     logger.error(e)
         if self._global_email != "off":
-            if email_push == "1" or email_push == "on":
+            if email_push == "1":
                 try:
                     self.bot_email.send(uid, title, message, [email_rxer])
                 except Exception as e:
