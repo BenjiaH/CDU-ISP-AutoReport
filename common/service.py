@@ -14,11 +14,8 @@ class ReportService:
         self._str_now_time = "0.1"
         self._wechat_push = global_config.getRaw('config', 'wechat_enable')
         self._email_push = global_config.getRaw('config', 'email_enable')
-        self._sendkey = global_config.getRaw('messenger', 'sendkey')
-        self._email_rxer = global_config.getRaw('messenger', 'email')
         self._wechat_type = global_config.getRaw('config', 'wechat_type')
         self._api = global_config.getRaw('config', 'api')
-        self._userid = global_config.getRaw('messenger', 'userid')
         self._report = Report()
 
     @logger.catch
