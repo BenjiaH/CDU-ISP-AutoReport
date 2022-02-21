@@ -12,10 +12,6 @@ class ReportService:
     @logger.catch
     def __init__(self):
         self._str_now_time = "0.1"
-        self._global_wechat = global_config.getRaw('config', 'wechat_enable')
-        self._global_email = global_config.getRaw('config', 'email_enable')
-        self._uid = global_config.getRaw('account', 'studentID')
-        self._password = global_config.getRaw('account', 'password')
         self._wechat_push = global_config.getRaw('config', 'wechat_enable')
         self._email_push = global_config.getRaw('config', 'email_enable')
         self._sendkey = global_config.getRaw('messenger', 'sendkey')
