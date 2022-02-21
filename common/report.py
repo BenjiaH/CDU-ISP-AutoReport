@@ -36,7 +36,7 @@ class Report:
     @logger.catch
     def _get_captcha_code(self):
         if len(security.available_host) == 0:
-            logger.error(f"Failed to establish a new connection.")
+            logger.error(f"No available hosts.")
             self._set_error(6, 1)
             return
         url = f"{self._host}/weblogin.asp"
