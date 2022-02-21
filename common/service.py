@@ -32,26 +32,18 @@ class ReportService:
         return self._str_now_time
 
     @logger.catch
-    def _single_mode(self):
-        logger.info(f"Report ID:{self._uid}".center(46, '-'))
-        ret = self._report.main(uid=self._uid, password=self._password)
-        global_push.push(ret, uid=self._uid, wechat_push=self._wechat_push, email_push=self._email_push,
-                         sendkey=self._sendkey, email_rxer=self._email_rxer, wechat_type=self._wechat_type,
-                         api=self._api, userid=self._userid)
-
-    @logger.catch
-    def _multiple_mode(self):
+    def _task(self):
         global_account.refresh()
         n = global_account.row
         for i in range(n):
-            log_info = f"[{i + 1}/{n}] Report ID:{global_account.studentID[i]}".center(46, '-')
+            log_info = f"[{i + 1}/{n}] Report ID:{global_account.studentID(i)}".center(46, '-')
             logger.info(log_info)
-            ret = self._report.main(uid=global_account.studentID[i], password=global_account.password[i])
-            global_push.push(ret, uid=global_account.studentID[i], wechat_push=global_account.wechat_push[i],
-                             email_push=global_account.email_push[i], sendkey=global_account.sendkey[i],
-                             email_rxer=global_account.email[i], wechat_type=self._wechat_type,
-                             api=self._api, userid=global_account.userid[i])
-            sleep(1.5)
+            ret = self._report.main(uid=global_account.studentID(i), password=global_account.password(i))
+            global_push.push(ret, uid=global_account.studentID(i), wechat_push=global_account.wechat_push(i),
+                             email_push=global_account.email_push(i), sendkey=global_account.sendkey(i),
+                             email_rxer=global_account.email(i), wechat_type=self._wechat_type,
+                             api=self._api, userid=global_account.userid(i))
+            sleep(1)
 
     @logger.catch
     def _gen(self):
@@ -59,12 +51,7 @@ class ReportService:
         security.refresh_hosts()
         global_push.bot_email.login()
         self._report.update_date()
-        if global_config.getRaw('config', 'multiple_enable') == "off":
-            logger.info("Single account mode.")
-            self._single_mode()
-        else:
-            logger.info("Multiple account mode.")
-            self._multiple_mode()
+        self._task()
         end_time = time()
         logger.info("Reports are completed. Cost time:{:.2f}s".format(end_time - start_time).center(50, '-'))
 
