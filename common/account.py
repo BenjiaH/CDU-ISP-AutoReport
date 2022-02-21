@@ -2,83 +2,61 @@ import os
 import csv
 
 from common.logger import logger
-from common.config import global_config
 
 
 class Account(object):
     @logger.catch
     def __init__(self, csv_file="../config/account.csv"):
-        if global_config.getRaw('config', 'multiple_enable') == "off":
-            logger.debug("Multiple mode disabled")
-            return
-
         os.chdir(os.path.dirname(__file__))
         self._path = os.path.abspath(csv_file)
         if not os.path.exists(self._path):
             logger.error(f"No such file:{self._path}")
             raise FileNotFoundError(f"No such file:{self._path}")
-        self._csv_file = open(self._path, encoding='utf-8')
-        self._account = csv.reader(self._csv_file)
-        self._row = sum(1 for line in open(self._path, encoding='utf-8')) - 1
-        self._col = len(next(self._account))
-        self._all_info = self.get_info()
+        self._csv_file = None
+        self._raw = []
+        self._read_csv()
+
+    @logger.catch
+    def _read_csv(self):
+        self._csv_file = csv.reader(open(self._path, encoding='UTF-8-sig'))
+        for row in self._csv_file:
+            if row == [] or "#" in row[0]:
+                logger.debug(f"Del:{row}")
+            else:
+                self._raw.append(row)
+        self._raw = self._raw[1:]
         logger.debug(f"Loaded:{self._path}")
 
     @logger.catch
     def refresh(self):
-        self._csv_file = open(self._path, encoding='utf-8')
-        self._account = csv.reader(self._csv_file)
-        self._row = sum(1 for line in open(self._path, encoding='utf-8')) - 1
-        self._col = len(next(self._account))
-        self._all_info = self.get_info()
+        self._raw.clear()
+        self._read_csv()
         logger.debug(f"Refreshed:{self._path}")
 
-    @logger.catch
-    def get_info(self):
-        ret = [[] for i in range(self._col)]
-        for item in self._account:
-            for i in range(self._col):
-                ret[i].append(item[i])
-        # # need not to remove first row, don't know why....
-        # for i in range(self._row + 1):
-        #     ret[i][:] = ret[i][1:]
-        return ret
+    def studentID(self, i):
+        return self._raw[i][0]
 
-    @property
-    def studentID(self):
-        return self._all_info[0]
+    def password(self, i):
+        return self._raw[i][1]
 
-    @property
-    def password(self):
-        return self._all_info[1]
+    def wechat_push(self, i):
+        return self._raw[i][2]
 
-    @property
-    def wechat_push(self):
-        return self._all_info[2]
+    def email_push(self, i):
+        return self._raw[i][3]
 
-    @property
-    def email_push(self):
-        return self._all_info[3]
+    def sendkey(self, i):
+        return self._raw[i][4]
 
-    @property
-    def sendkey(self):
-        return self._all_info[4]
+    def userid(self, i):
+        return self._raw[i][5]
 
-    @property
-    def userid(self):
-        return self._all_info[5]
-
-    @property
-    def email(self):
-        return self._all_info[6]
+    def email(self, i):
+        return self._raw[i][6]
 
     @property
     def row(self):
-        return self._row
-
-    @property
-    def col(self):
-        return self._col
+        return len(self._raw)
 
 
 global_account = Account("../config/account.csv")
