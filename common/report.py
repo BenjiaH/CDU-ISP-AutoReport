@@ -108,6 +108,7 @@ class Report:
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return ""
+        logger.info("Try to report in the default method.")
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
         url = f"{self._host}/project_addx.asp"
         payload = {
@@ -128,6 +129,7 @@ class Report:
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return ""
+        logger.info("Try to report in the alternate method.")
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
         url = f"{self._host}/project_add.asp"
         payload = {
@@ -164,7 +166,6 @@ class Report:
         self._get_captcha_code()
         self._login(uid, password)
         self._get_navigation_url("疫情信息登记")
-        logger.info("Try to report in the default method.")
         ret = self._report_default_method()
         if "已存在" in ret:
             logger.info(f"The report is already existed. ID:{uid}")
@@ -173,7 +174,7 @@ class Report:
             logger.info(f"Successful to report. ID:{uid}")
             return 1, self._errno
         else:
-            logger.error("Failed to report in the default method.Try to report in the alternate method.")
+            logger.error("Failed to report in the default method.")
             ret = self._report()
             if "已存在" in ret:
                 logger.info(f"The report is already existed. ID:{uid}")
