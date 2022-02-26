@@ -185,6 +185,5 @@ class Report:
             else:
                 logger.error(f"Failed to report. ID:{uid}")
                 if self._errno == 0:
-                    self._errno = 7
-                    logger.debug(f"Set the error code: {self._errno}.")
+                    self._set_error(7, self._error)
                 return 2, self._errno
