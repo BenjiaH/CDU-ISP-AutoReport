@@ -112,7 +112,7 @@ class Report:
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
         url = f"{self._host}/project_addx.asp"
         payload = {
-            "id": param["id"],
+            "id": param["id"][0],
             "id2": self._date,
             "adds": "undefined",
             "addsxy": "undefined"
@@ -133,7 +133,7 @@ class Report:
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
         url = f"{self._host}/project_add.asp"
         payload = {
-            "id": param["id"],
+            "id": param["id"][0],
             "province": "四川省",
             "city": "成都市",
             "area": "龙泉驿区",
