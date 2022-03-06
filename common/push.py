@@ -52,6 +52,8 @@ class Email:
         logger.debug(f"Email receiver:{receiver[0]}.")
         if not self._is_login:
             logger.error("Failed to send the email.[Email not login]")
+            self.login()
+            raise Exception("Failed to send the email.")
         else:
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             mail_msg = self._mail_payload.format(uid=uid, msg=msg, mail_name=self._mail_name, time=now)
