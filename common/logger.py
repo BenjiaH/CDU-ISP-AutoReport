@@ -5,39 +5,37 @@ from loguru import logger
 
 
 class Logger:
-    def __init__(self, log_file: str, debug_file=""):
+    def __init__(self, log_file: str):
         os.chdir(os.path.dirname(__file__))
-        self._log_fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} [<level>{level:<5}</level>] {file}.{line}: {message}"
-        self._debug_fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} [<level>{level:}</level>] {name}:{function}:{line}: {message}"
         self._config_path = os.path.abspath(r"../config/config.ini")
-        logger.remove()
-        logger.add(sink=log_file, filter=self.log_filter, format=self._log_fmt, rotation="1 MB")
-        logger.add(sink=sys.stderr, filter=self.log_filter, format=self._log_fmt)
-        logger.info("The logger is started.")
-        if self._is_debug():
-            logger.add(sink=debug_file, filter=self.debug_filter, format=self._debug_fmt, rotation="1 MB")
-            logger.debug("The logger is started.")
-            logger.debug("The debug mode is enabled.")
+        self._logger_conf(log_file)
         self.logger = logger
 
-    def _is_debug(self):
-        try:
-            with open(self._config_path, "r", encoding="UTF-8") as f:
-                if "*DEBUG = ON*" in f.read():
-                    return True
-                else:
-                    return False
-        except Exception as e:
-            logger.error(e)
-            return False
+    def _logger_conf(self, log_file):
+        self._get_level()
+        logger.remove()
+        self._log_fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} [<level>{level:<5}</level>] {file}.{line}: {message}"
+        self._debug_fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} [<level>{level:<5}</level>] {name}:{function}:{line}: {message}"
+        logger.add(sink=sys.stderr, format=self._log_fmt, level=self._level)
+        if self._level == "INFO":
+            logger.add(sink=log_file, format=self._log_fmt, rotation="1 MB", level=self._level)
+        else:
+            logger.add(sink=log_file, format=self._debug_fmt, rotation="1 MB", level=self._level)
+        logger.info("The logger is started.")
+        if self._level == "DEBUG":
+            logger.debug("The debug mode is enabled.")
 
-    @staticmethod
-    def debug_filter(record):
-        return record["level"].name == "DEBUG"
-
-    @staticmethod
-    def log_filter(record):
-        return record["level"].name == "INFO" or record["level"].name == "ERROR"
+    def _get_level(self):
+        level_raw = "level = INFO"
+        with open(self._config_path, "r", encoding="UTF-8") as f:
+            lines = f.readlines()
+            for i in lines:
+                if "level" in i and ";" != i[0]:
+                    level_raw = i
+        if "INFO" in level_raw:
+            self._level = "INFO"
+        else:
+            self._level = "DEBUG"
 
     @staticmethod
     @logger.catch
@@ -49,9 +47,8 @@ class Logger:
             version += "."
         info = version + commit_id + "(" + stage + ")"
         logger.info(f"Version:{info}")
-        logger.debug(f"Version:{info}")
 
 
-handlers = Logger("../log/log/log.log", "../log/debug/debug.log")
+handlers = Logger("../log/log/log.log")
 logger = handlers.logger
 log_version = handlers.log_version
