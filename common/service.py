@@ -16,6 +16,7 @@ class ReportService:
         self._email_push = global_config.getRaw('config', 'email_enable')
         self._wechat_type = global_config.getRaw('config', 'wechat_type')
         self._api = global_config.getRaw('config', 'api')
+        self._account_cnt = global_account.row
         self._report = Report()
 
     @logger.catch
@@ -27,9 +28,8 @@ class ReportService:
     @logger.catch
     def _task(self):
         global_account.refresh()
-        n = global_account.row
-        for i in range(n):
-            log_info = f"[{i + 1}/{n}] Report ID:{global_account.studentID(i)}".center(46, '-')
+        for i in range(self._account_cnt):
+            log_info = f"[{i + 1}/{self._account_cnt}] Report ID:{global_account.studentID(i)}".center(46, '-')
             logger.info(log_info)
             ret = self._report.main(uid=global_account.studentID(i), password=global_account.password(i))
             global_push.push(ret, uid=global_account.studentID(i), wechat_push=global_account.wechat_push(i),
@@ -41,10 +41,13 @@ class ReportService:
     @logger.catch
     def _gen(self):
         start_time = time()
-        security.refresh_hosts()
-        global_push.bot_email.login()
-        self._report.update_date()
-        self._task()
+        if self._account_cnt == 0:
+            logger.error("Account does not exist.")
+        else:
+            security.refresh_hosts()
+            global_push.bot_email.login()
+            self._report.update_date()
+            self._task()
         end_time = time()
         logger.info("Reports are completed. Cost time:{:.2f}s".format(end_time - start_time).center(50, '-'))
 
