@@ -78,7 +78,6 @@ class Report:
             self._set_error(2, 1)
         elif "alert" in res.text:
             logger.error("Failed to login the ISP.[Incorrect username, password or captcha code]")
-            logger.debug("Failed to login the ISP.[Incorrect username, password or captcha code]")
             self._set_error(2, 1)
         else:
             logger.info("Successful to login the ISP.")

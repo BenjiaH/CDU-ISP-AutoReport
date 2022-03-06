@@ -29,17 +29,14 @@ def get_host_status(host):
         res = requests.get(url=url, timeout=10)
         logger.debug(f"URL:{url}. Status code:{res.status_code}")
     except Exception as e:
-        logger.error(f'Failed to connect to the server "{host}".')
-        logger.debug(f'Failed to connect to the server "{host}". [{e}]')
+        logger.error(f'Failed to connect to the server "{host}". [{e}]')
         return False
     res.encoding = "utf-8"
     if "updatenow.asp" in res.text:
-        logger.error(f'Failed to connect to the server "{host}".')
-        logger.debug(f'Failed to connect to the server "{host}". [updating]')
+        logger.error(f'Failed to connect to the server "{host}". [updating]')
         return False
     elif res.status_code != 200:
-        logger.error(f'Failed to connect to the server "{host}".')
-        logger.debug(f'Failed to connect to the server "{host}". [Status code:{res.status_code}]')
+        logger.error(f'Failed to connect to the server "{host}". [Status code:{res.status_code}]')
         return False
     else:
         return True
