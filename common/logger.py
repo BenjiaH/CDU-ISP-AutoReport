@@ -49,6 +49,6 @@ class Logger:
         logger.info(f"Version:{info}")
 
 
-handlers = Logger("../log/log/log.log")
+handlers = Logger("../log/log.log")
 logger = handlers.logger
 log_version = handlers.log_version
