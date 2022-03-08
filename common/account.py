@@ -4,7 +4,7 @@ import csv
 from common.logger import logger
 
 
-class Account(object):
+class Account:
     @logger.catch
     def __init__(self, csv_file="../config/account.csv"):
         os.chdir(os.path.dirname(__file__))
