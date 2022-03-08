@@ -2,8 +2,7 @@ test/
 __pycache__/
 data/
 .idea/
-monitor/
-env/
-*.log
+log/
+tools/
 config.ini
 account.csv
