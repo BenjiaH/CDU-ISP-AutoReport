@@ -136,22 +136,16 @@ chmod 777 scripts/run.sh
 │      config.ini       <---配置文件
 │
 ├─log
-│  ├─debug
-│  │      debug.log     <---debug级日志
-│  │
-│  └─log
-│         log.log       <---info级日志
+│      log.log          <---日志文件
 │
 ├─res
 │      email_tmpl.html  <---Email模板文件
 │      error.json       <---错误码及错误信息文件
 │
-├─scripts
-│      run.bat          <---Windows下运行文件
-│      run.sh           <---GNU/Linux下运行文件
-│
-└─tools
-       messenger.py     <---群发推送程序
+└─scripts
+       run.bat          <---Windows下运行文件
+       run.sh           <---GNU/Linux下运行文件
+ 
 ```
 
 ## 7.致谢
