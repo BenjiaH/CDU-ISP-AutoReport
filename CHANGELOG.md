@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.3.0.release](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/tag/1.3.0.release)
+
+### (2022-3-9)
+
+- **Incompatible changed:[remove single account mode settings segments](../../commit/60093c15c98f1ed23193ac03150aa67a9290fa36)**
+- Added:[teacher version](../../tree/teacher)
+- Changed:optimized the report process
+- Changed:log mode in different levels
+- Changed:log file location(move to "CDU-ISP-AutoReport/log/log.log")
+- Fixed:check hosts status
+
+---
+
 ## [1.2.0.release](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/tag/1.2.0.release)
 
 ### (2022-1-3)
