@@ -18,6 +18,7 @@ class Report:
         self._navigation_url = 0
         self._date = ""
         self._captcha_code = ""
+        a = 0
 
     @logger.catch
     def update_date(self):
