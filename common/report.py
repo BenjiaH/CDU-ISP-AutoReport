@@ -193,8 +193,7 @@ class Report:
         self._get_captcha_code()
         self._login(uid, password)
         self._get_navigation_url("健康日报登记")
-        # ret = self._report_default_method()
-        ret = ""
+        ret = self._report_default_method()
         if "已存在" in ret:
             logger.info(f"The report is already existed. ID:{uid}")
             return 0, self._errno
@@ -213,5 +212,5 @@ class Report:
             else:
                 logger.error(f"Failed to report. ID:{uid}")
                 if self._errno == 0:
-                    self._set_error(999, self._error)
+                    self._set_error(-1, self._error)
                 return 2, self._errno
