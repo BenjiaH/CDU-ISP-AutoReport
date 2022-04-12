@@ -125,12 +125,12 @@ class Report:
 
     @logger.catch
     def _report(self):
+        latest_location = self._fetch_location()
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return ""
         logger.info("Try to report in the alternate method.")
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
-        latest_location = self._fetch_location()
         url = f"{self._host}/projecthealth_add.asp"
         payload = {
             "id": param["id"][0],
