@@ -27,7 +27,6 @@ class ReportService:
 
     @logger.catch
     def _task(self):
-        global_account.refresh()
         for i in range(self._account_cnt):
             log_info = f"[{i + 1}/{self._account_cnt}] Report ID:{global_account.studentID(i)}".center(46, '-')
             logger.info(log_info)
@@ -75,6 +74,7 @@ class ReportService:
                         sleep(1)
                     else:
                         logger.info("Time arrived. Start to report.")
+                        global_account.refresh()
                         self._gen()
                         # avoid running twice in 1 minute
                         logger.info("Cleaning... Estimated:1 min")
