@@ -109,7 +109,7 @@ class Report:
             return ""
         logger.info("Try to report in the default method.")
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
-        url = f"{self._host}/project_addx.asp"
+        url = f"{self._host}/projecthealth_addx.asp"
         payload = {
             "id": param["id"][0],
             "id2": self._date,
@@ -130,12 +130,14 @@ class Report:
             return ""
         logger.info("Try to report in the alternate method.")
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
-        url = f"{self._host}/project_add.asp"
+        latest_location = self._fetch_location()
+        url = f"{self._host}/projecthealth_add.asp"
         payload = {
             "id": param["id"][0],
-            "province": "四川省",
-            "city": "成都市",
-            "area": "龙泉驿区",
+            "id2": self._date,
+            "province": latest_location[0],
+            "city": latest_location[1],
+            "area": latest_location[2],
             "wuhan": "否",
             "fare": "否",
             "wls": "否",
@@ -154,6 +156,32 @@ class Report:
         return res.text
 
     @logger.catch
+    def _fetch_location(self):
+        if self._error == 1:
+            logger.debug(f"The error flag: {self._error}. Exit the function.")
+            return ""
+        for i in range(2):
+            url = f"{self._host}/{self._navigation_url}&page={i + 1}"
+            res = self._session.get(url=url, headers=self._headers)
+            logger.debug(f"URL:{url}. Status code:{res.status_code}")
+            if res.status_code != 200:
+                logger.error(f"Failed:GET request. URL:{url}. Status code:{res.status_code}")
+            res.encoding = "utf-8"
+            try:
+                soup = BeautifulSoup(res.text, 'lxml')
+                location = soup.find("table", class_="table table-hover").find_all("tr")[3].find_all("td")[
+                    1].text.strip()
+                logger.debug(f'location: "{location}"')
+                return location.split("|")
+            except Exception as e:
+                if i != 2:
+                    logger.error(f"Failed to get the location. Try next page.[{e}]")
+                else:
+                    logger.error(f"Failed to get the location.[{e}]")
+                    self._set_error(7, 1)
+                logger.debug("{url} content:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
+
+    @logger.catch
     def main(self, uid, password):
         self._error = 0
         self._errno = 0
@@ -164,7 +192,7 @@ class Report:
         }
         self._get_captcha_code()
         self._login(uid, password)
-        self._get_navigation_url("疫情信息登记")
+        self._get_navigation_url("健康日报登记")
         ret = self._report_default_method()
         if "已存在" in ret:
             logger.info(f"The report is already existed. ID:{uid}")
@@ -184,5 +212,5 @@ class Report:
             else:
                 logger.error(f"Failed to report. ID:{uid}")
                 if self._errno == 0:
-                    self._set_error(7, self._error)
+                    self._set_error(999, self._error)
                 return 2, self._errno
