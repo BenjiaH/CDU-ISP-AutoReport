@@ -126,7 +126,7 @@ class Report:
     @logger.catch
     def _report(self):
         logger.info("Try to report in the alternate method.")
-        latest_location = self._fetch_location()
+        [province, city, area] = self._fetch_location()
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return ""
@@ -135,9 +135,9 @@ class Report:
         payload = {
             "id": param["id"][0],
             "id2": self._date,
-            "province": latest_location[0],
-            "city": latest_location[1],
-            "area": latest_location[2],
+            "province": province,
+            "city": city,
+            "area": area,
             "wuhan": "否",
             "fare": "否",
             "wls": "否",
@@ -193,7 +193,8 @@ class Report:
         self._get_captcha_code()
         self._login(uid, password)
         self._get_navigation_url("健康日报登记")
-        ret = self._report_default_method()
+        # ret = self._report_default_method()
+        ret = ""
         if "已存在" in ret:
             logger.info(f"The report is already existed. ID:{uid}")
             return 0, self._errno
