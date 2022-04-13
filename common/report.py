@@ -124,12 +124,12 @@ class Report:
         return res.text
 
     @logger.catch
-    def _report(self):
-        logger.info("Try to report in the alternate method.")
-        [province, city, area] = self._fetch_location()
+    def _report(self, location):
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return ""
+        logger.info("Try to report in the alternate method.")
+        [province, city, area] = location
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
         url = f"{self._host}/projecthealth_add.asp"
         payload = {
@@ -159,7 +159,7 @@ class Report:
     def _fetch_location(self):
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
-            return ""
+            return ["", "", ""]
         for i in range(2):
             url = f"{self._host}/{self._navigation_url}&page={i + 1}"
             res = self._session.get(url=url, headers=self._headers)
@@ -202,7 +202,7 @@ class Report:
             return 1, self._errno
         else:
             logger.error("Failed to report in the default method.")
-            ret = self._report()
+            ret = self._report(self._fetch_location())
             if "已存在" in ret:
                 logger.info(f"The report is already existed. ID:{uid}")
                 return 0, self._errno
@@ -210,6 +210,7 @@ class Report:
                 logger.info(f"Successful to report. ID:{uid}")
                 return 1, self._errno
             else:
+                logger.error("Failed to report in the alternate method.")
                 logger.error(f"Failed to report. ID:{uid}")
                 if self._errno == 0:
                     self._set_error(-1, self._error)
