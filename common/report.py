@@ -71,6 +71,7 @@ class Report:
             "m5": "1",
         }
         res = self._session.post(url=url, headers=self._headers, data=payload)
+        payload["userpwd"] = "*******"
         logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
         res.encoding = "utf-8"
         if res.status_code != 200:
@@ -117,6 +118,7 @@ class Report:
             "addsxy": "undefined"
         }
         res = self._session.get(url=url, headers=self._headers, data=payload)
+        payload["id"] = "*******"
         logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
         if res.status_code != 200:
             logger.error(f"Failed:GET request. URL:{url}. Status code:{res.status_code}")
@@ -149,6 +151,7 @@ class Report:
             "addsxy": "undefined"
         }
         res = self._session.post(url=url, headers=self._headers, data=payload)
+        payload["id"] = "*******"
         logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
         if res.status_code != 200:
             logger.error(f"Failed:GET request. URL:{url}. Status code:{res.status_code}")

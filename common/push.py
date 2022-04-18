@@ -126,9 +126,11 @@ class Push:
             "msg": msg,
             "to_user": userid
         }
-        # go_scf post请求body必须为json,详见文档
+        # go_scf post请求body必须为json
+        # 详见文档:https://github.com/riba2534/wecomchan/tree/main/go-scf#%E4%BD%BF%E7%94%A8-post-%E8%BF%9B%E8%A1%8C%E8%AF%B7%E6%B1%82
         res = requests.post(url=url, data=json.dumps(payload))
-        logger.debug(f"URL:{url}. Status code:{res.status_code}")
+        payload["sendkey"] = "*******"
+        logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
         res.encoding = "utf-8"
         logger.debug(f"Response:{res.text}")
         dict_res = json.loads(res.text)

@@ -23,7 +23,7 @@ available_host = []
 
 
 @logger.catch
-def get_host_status(host):
+def check_host_status(host):
     url = f"https://xsswzx.cdu.edu.cn/{host}/com_user/weblogin.asp"
     try:
         res = requests.get(url=url, timeout=10)
@@ -46,7 +46,7 @@ def get_host_status(host):
 def refresh_hosts():
     available_host.clear()
     for i in HOSTS:
-        if get_host_status(i):
+        if check_host_status(i):
             available_host.append(i)
     logger.info("Successful to refresh hosts status.")
     if len(available_host) == 0:

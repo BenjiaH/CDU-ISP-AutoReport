@@ -26,12 +26,15 @@ class Logger:
             logger.debug("The debug mode is enabled.")
 
     def _get_level(self):
-        level_raw = "level = INFO"
-        with open(self._config_path, "r", encoding="UTF-8") as f:
-            lines = f.readlines()
-            for i in lines:
-                if "level" in i and ";" != i[0]:
-                    level_raw = i
+        level_raw = ""
+        try:
+            with open(self._config_path, "r", encoding="UTF-8") as f:
+                lines = f.readlines()
+                for i in lines:
+                    if "level" in i and ";" != i[0]:
+                        level_raw = i
+        except Exception as e:
+            level_raw = "level = INFO"
         if "DEBUG" in level_raw:
             self._level = "DEBUG"
         else:

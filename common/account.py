@@ -26,6 +26,7 @@ class Account:
                 self._raw.append(row)
         self._raw = self._raw[1:]
         logger.debug(f"Loaded:{self._path}")
+        logger.debug(f"Rows in [{self._path}]:{len(self._raw)}")
 
     @logger.catch
     def refresh(self):
