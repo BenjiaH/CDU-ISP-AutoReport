@@ -189,7 +189,7 @@ class Report:
         self._error = 0
         self._errno = 0
         self._session = requests.Session()
-        self._host = "https://xsswzx.cdu.edu.cn/" + security.get_random_host() + "/com_user"
+        self._host = f"https://xsswzx.cdu.edu.cn/{security.get_random_host()}/com_user"
         self._headers = {
             "User-Agent": security.get_random_useragent()
         }

@@ -33,7 +33,7 @@ class Logger:
                 for i in lines:
                     if "level" in i and ";" != i[0]:
                         level_raw = i
-        except Exception as e:
+        except:
             level_raw = "level = INFO"
         if "DEBUG" in level_raw:
             self._level = "DEBUG"
@@ -48,7 +48,7 @@ class Logger:
             logger.debug(f'Founded:{os.path.abspath("../.git")}.')
             commit_id = (os.popen("git rev-parse --short HEAD").read()).replace("\n", "")
             version += "."
-        info = version + commit_id + "(" + stage + ")"
+        info = f"{version}{commit_id}({stage})"
         logger.info(f"Version:{info}")
 
 

@@ -97,7 +97,7 @@ class Push:
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         url = f'https://sctapi.ftqq.com/{sendkey}.send'
         ps = ""
-        msg = " " * 10 + title + "\n\n" + uid + ":\n" + " " * 4 + message + f"\n{ps}\n\n{now}"
+        msg = f'{" " * 10}{title}\n\n{uid}:\n{" " * 4}{message}\n{ps}\n\n{now}'
         payload = {
             "title": title,
             "desp": parse.quote(msg)
@@ -119,7 +119,7 @@ class Push:
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         url = f'{api}/{sendkey}'
         ps = ""
-        msg = " " * 10 + title + "\n\n" + uid + ":\n" + " " * 4 + message + f"\n{ps}\n\n{now}"
+        msg = f'{" " * 10}{title}\n\n{uid}:\n{" " * 4}{message}\n{ps}\n\n{now}'
         payload = {
             "sendkey": sendkey,
             "msg_type": "text",
@@ -163,7 +163,7 @@ class Push:
             message = "ERROR!"
         if errno != 0:
             errmsg = [i["msg"] for i in self._errno_msg["content"] if errno == i["errno"]][0]
-            message = message + "[错误信息:" + errmsg + "]"
+            message = f'{message}[错误信息:"{errmsg}"]'
         logger.debug(f"Title:{title}#Message:{message}#Error code:{errno}")
         if self._global_wechat != "off":
             if wechat_push == "1":
