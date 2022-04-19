@@ -41,26 +41,18 @@ A tool which helps you to report your physical condition on CDU-ISP during COVID
 
 - 本项目遵循[`GPL-3.0 License`](LICENSE)协议，如果本特别声明与`GPL-3.0 License`协议有冲突之处，以本特别声明为准。
 
-## 0.托管
+## 1.托管
 
 - 如果您为小白或新手且需要在我的服务器上为您进行自动化打卡服务，请填写[信息采集表](https://benjiah.gitee.io/redirect/cdu-isp-wjx)，我将每日为您定时打卡。
 
-## 1.Features
+## 2.Features/TODO
 
-- 自动打卡
-- WeChat、邮件双通道推送结果
-- 定时执行
-- 多账户
-- 实时刷新配置文件
-- 高安全性：随机主机、随机`User-Agent`、SSL加密
-
-## 2.TODO
-
-- [X] ~~Wechat推送更多内容~~
-- [X] ~~定时执行~~
-- [X] ~~多账户~~
-- [X] ~~邮件推送~~
-- [X] ~~增加安全性：随机主机、随机`User-Agent`~~
+- [X] 自动打卡
+- [X] WeChat、邮件双通道推送结果
+- [X] 定时执行
+- [X] 多账户
+- [X] 实时刷新配置文件
+- [X] 高安全性：随机主机、随机`User-Agent`、HTTPS加密、SSL加密
 
 ## 3.安装依赖
 
@@ -151,3 +143,10 @@ chmod 777 scripts/run.sh
 ## 7.致谢
 
 - [easychen/wecomchan](https://github.com/easychen/wecomchan/blob/main/LICENSE)
+- [riba2534/wecomchan](https://github.com/riba2534/wecomchan/blob/main/LICENSE)
+- [fake_useragent](https://github.com/hellysmile/fake-useragent/blob/master/LICENSE)
+- [lxml](https://github.com/lxml/lxml/blob/master/LICENSES.txt)
+- [requests](https://github.com/psf/requests/blob/main/LICENSE)
+- [beautifulsoup4](https://www.crummy.com/software/BeautifulSoup/)
+- [loguru](https://github.com/Delgan/loguru/blob/master/LICENSE)
+- [retrying](https://github.com/rholder/retrying/blob/master/LICENSE)
