@@ -15,9 +15,9 @@ class Email:
     @logger.catch
     def __init__(self, mail_user, mail_host, mail_pwd):
         if global_config.getRaw('config', 'email_enable') == "off":
-            logger.debug("Email disabled")
+            logger.debug("Email is disabled")
             return
-
+        logger.debug("Email is enabled")
         self._mail_host = mail_host
         self._mail_user = mail_user
         self._mail_name = self._mail_user.split("@")[0]
