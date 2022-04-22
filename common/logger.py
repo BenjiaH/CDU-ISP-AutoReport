@@ -45,7 +45,7 @@ class Logger:
     def log_version(stage: str, version=""):
         commit_id = ""
         if os.path.exists("../.git"):
-            logger.debug(f'Founded:{os.path.abspath("../.git")}.')
+            logger.debug(f'Founded [{os.path.abspath("../.git")}]')
             commit_id = (os.popen("git rev-parse --short HEAD").read()).replace("\n", "")
             version += "."
         info = f"{version}{commit_id}({stage})"

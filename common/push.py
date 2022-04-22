@@ -31,7 +31,7 @@ class Email:
         os.chdir(os.path.dirname(__file__))
         with open(r"../res/email_tmpl.html", "r", encoding="UTF-8") as f:
             self._mail_payload = f.read()
-            logger.debug(f'Loaded:{os.path.abspath(r"../res/email_tmpl.html")}.')
+            logger.debug(f'Loaded [{os.path.abspath(r"../res/email_tmpl.html")}]')
 
     @logger.catch
     def login(self):
@@ -88,7 +88,7 @@ class Push:
     def _load_errno(self):
         with open(self._errno_msg_path, "r", encoding="UTF-8") as f:
             self._raw = f.read()
-            logger.debug(f'Loaded:{os.path.abspath(self._errno_msg_path)}.')
+            logger.debug(f'Loaded [{os.path.abspath(self._errno_msg_path)}]')
             return json.loads(self._raw)
 
     @staticmethod

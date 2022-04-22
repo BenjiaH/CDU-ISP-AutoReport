@@ -48,7 +48,7 @@ def refresh_hosts():
     for i in HOSTS:
         if check_host_status(i):
             available_host.append(i)
-    logger.info("Successful to refresh hosts status.")
+    logger.info("Successful to check hosts status.")
     if len(available_host) == 0:
         logger.error("Available host:[None].")
     elif len(available_host) != len(HOSTS):
