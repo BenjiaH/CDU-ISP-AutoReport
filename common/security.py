@@ -2,29 +2,21 @@ import random
 import requests
 
 from common.logger import logger
+from common.config import global_config as gc
 from fake_useragent import UserAgent
 
-HOSTS = [
-    "ispstu",  # 富强
-    "ispstu1-1",  # 民主
-    "ispstu1-2",  # 文明
-    "ispstu2",  # 和谐
-    "ispstu2-1",  # 自由
-    "ispstu2-2",  # 平等
-    "ispstu3",  # 公正
-    "ispstu3-1",  # 法治
-    "ispstu3-2",  # 爱国
-    "ispstu4",  # 敬业
-    "ispstu4-1",  # 诚信
-    "ispstu4-3"  # 友善
-]
+HOSTS = list(gc.config['config']['all_hosts'].keys())
 ua = UserAgent(verify_ssl=False)
 available_host = []
 
 
 @logger.catch
 def check_host_status(host):
-    url = f"https://xsswzx.cdu.edu.cn/{host}/com_user/weblogin.asp"
+    url_0 = gc.config['config']['url']['host_head']
+    url_1 = host
+    url_2 = gc.config['config']['url']['host_foot']
+    url_3 = gc.config['config']['url']['login']
+    url = f"{url_0}/{url_1}/{url_2}/{url_3}"
     try:
         res = requests.get(url=url, timeout=10)
         logger.debug(f"URL:{url}. Status code:{res.status_code}")

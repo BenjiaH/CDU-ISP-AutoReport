@@ -7,7 +7,7 @@ from loguru import logger
 class Logger:
     def __init__(self, log_file: str):
         os.chdir(os.path.dirname(__file__))
-        self._config_path = os.path.abspath(r"../config/config.ini")
+        self._config_path = os.path.abspath(r"../config/config.json")
         self._log_fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} [<level>{level:<5}</level>] {file}.{line}: {message}"
         self._debug_fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} [<level>{level:<5}</level>] {name}:{function}:{line}: {message}"
         self._logger_conf(log_file)
@@ -28,13 +28,13 @@ class Logger:
     def _get_level(self):
         level_raw = ""
         try:
-            with open(self._config_path, "r", encoding="UTF-8") as f:
+            with open(self._config_path, "r", encoding="utf-8") as f:
                 lines = f.readlines()
                 for i in lines:
                     if "level" in i and ";" != i[0]:
                         level_raw = i
         except:
-            level_raw = "level = INFO"
+            level_raw = '"level": "DEBUG",'
         if "DEBUG" in level_raw:
             self._level = "DEBUG"
         else:

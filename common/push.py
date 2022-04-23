@@ -7,14 +7,14 @@ from retrying import retry
 from urllib import parse
 from datetime import datetime
 from email.mime.text import MIMEText
-from common.config import global_config
+from common.config import global_config as gc
 from common.logger import logger
 
 
 class Email:
     @logger.catch
     def __init__(self, mail_user, mail_host, mail_pwd):
-        if global_config.getRaw('config', 'email_enable') == "off":
+        if gc.config['setting']['push']['email']['enable'] == "off":
             logger.debug("Email is disabled")
             return
         logger.debug("Email is enabled")
@@ -25,17 +25,18 @@ class Email:
         self._is_login = False
         self.smtp = 0
         self._mail_payload = ""
+        self._email_tmpl_path = gc.config['config']['path']['email_tmpl']
 
     @logger.catch
     def _load_tmpl(self):
         os.chdir(os.path.dirname(__file__))
-        with open(r"../res/email_tmpl.html", "r", encoding="UTF-8") as f:
+        with open(self._email_tmpl_path, "r", encoding="utf-8") as f:
             self._mail_payload = f.read()
             logger.debug(f'Loaded [{os.path.abspath(r"../res/email_tmpl.html")}]')
 
     @logger.catch
     def login(self):
-        if global_config.getRaw('config', 'email_enable') == "off":
+        if gc.config['setting']['push']['email']['enable'] == "off":
             return
         self._load_tmpl()
         try:
@@ -75,18 +76,19 @@ class Email:
 class Push:
     @logger.catch
     def __init__(self):
-        self._global_wechat = global_config.getRaw('config', 'wechat_enable')
-        self._global_email = global_config.getRaw('config', 'email_enable')
-        self._bot_email_user = global_config.getRaw('bot_email', 'email_user')
-        self._bot_email_host = global_config.getRaw('bot_email', 'email_host')
-        self._bot_email_pwd = global_config.getRaw('bot_email', 'email_pwd')
+        self._global_wechat = gc.config['setting']['push']['wechat']['enable']
+        self._global_email = gc.config['setting']['push']['email']['enable']
+        self._bot_email_user = gc.config['bot_email']['email_user']
+        self._bot_email_host = gc.config['bot_email']['email_host']
+        self._bot_email_pwd = gc.config['bot_email']['email_pwd']
         self.bot_email = Email(self._bot_email_user, self._bot_email_host, self._bot_email_pwd)
-        self._errno_msg_path = r"../res/error.json"
-        self._errno_msg = self._load_errno()
+        self._errno_msg_path = gc.config['config']['path']['errno_msg']
+        # self._errno_msg = self._load_errno()
+        self._errno_msg = gc.config['config']['errmsg']
 
     @logger.catch
     def _load_errno(self):
-        with open(self._errno_msg_path, "r", encoding="UTF-8") as f:
+        with open(self._errno_msg_path, "r", encoding="utf-8") as f:
             self._raw = f.read()
             logger.debug(f'Loaded [{os.path.abspath(self._errno_msg_path)}]')
             return json.loads(self._raw)
@@ -95,7 +97,7 @@ class Push:
     @logger.catch
     def sct_wechat(uid, title, message, sendkey):
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        url = f'https://sctapi.ftqq.com/{sendkey}.send'
+        url = f"{gc.config['config']['url']['sct']}/{sendkey}.send"
         ps = ""
         msg = f'{" " * 10}{title}\n\n{uid}:\n{" " * 4}{message}\n{ps}\n\n{now}'
         payload = {
@@ -162,7 +164,7 @@ class Push:
             title = "[ERROR]"
             message = "ERROR!"
         if errno != 0:
-            errmsg = [i["msg"] for i in self._errno_msg["content"] if errno == i["errno"]][0]
+            errmsg = [i["msg"] for i in self._errno_msg if errno == i["errno"]][0]
             message = f'{message}[错误信息:"{errmsg}"]'
         logger.debug(f"Title:{title}#Message:{message}#Error code:{errno}")
         if self._global_wechat != "off":

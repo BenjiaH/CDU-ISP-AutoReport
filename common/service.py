@@ -2,7 +2,7 @@ from datetime import datetime
 from time import sleep, time
 from common import security
 from common.logger import logger
-from common.config import global_config
+from common.config import global_config as gc
 from common.account import global_account
 from common.report import Report
 from common.push import global_push
@@ -12,10 +12,10 @@ class ReportService:
     @logger.catch
     def __init__(self):
         self._str_now_time = "0.1"
-        self._wechat_push = global_config.getRaw('config', 'wechat_enable')
-        self._email_push = global_config.getRaw('config', 'email_enable')
-        self._wechat_type = global_config.getRaw('config', 'wechat_type')
-        self._api = global_config.getRaw('config', 'api')
+        self._wechat_push = gc.config['setting']['push']['wechat']['enable']
+        self._wechat_type = gc.config['setting']['push']['wechat']['type']
+        self._api = gc.config['setting']['push']['wechat']['api']
+        self._email_push = gc.config['setting']['push']['email']['enable']
         self._account_cnt = global_account.row
         self._report = Report()
 
@@ -52,21 +52,21 @@ class ReportService:
 
     @logger.catch
     def start(self):
-        if global_config.getRaw('config', 'timer_enable') == "off":
+        if gc.config['setting']['timer']['enable'] == "off":
             logger.info("Timer is disabled.")
             logger.info("Start to report.")
             self._gen()
         else:
             logger.info("Timer is enabled.")
             while True:
-                global_config.refresh()
-                str_set_time = global_config.getRaw('config', 'set_time')
+                gc.refresh()
+                str_set_time = str(gc.config['setting']['timer']['set_time'])
                 str_now_time = self._get_now_time()
                 logger.info(f"Now time:{str_now_time}. Set time:{str_set_time}.")
                 while True:
-                    global_config.refresh()
-                    if str_set_time != global_config.getRaw('config', 'set_time'):
-                        str_set_time = global_config.getRaw('config', 'set_time')
+                    gc.refresh()
+                    if str_set_time != str(gc.config['setting']['timer']['set_time']):
+                        str_set_time = str(gc.config['setting']['timer']['set_time'])
                         logger.info(f"New set time:{str_set_time}.")
                     str_now_time = self._get_now_time()
                     if str_now_time != str_set_time:

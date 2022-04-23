@@ -2,6 +2,7 @@ import os
 import csv
 
 from common.logger import logger
+from common.config import global_config as gc
 
 
 class Account:
@@ -18,7 +19,7 @@ class Account:
 
     @logger.catch
     def _read_csv(self):
-        self._csv_file = csv.reader(open(self._path, encoding='UTF-8-sig'))
+        self._csv_file = csv.reader(open(self._path, encoding='utf-8-sig'))
         for row in self._csv_file:
             if row == [] or "#" in row[0]:
                 logger.debug(f"Del:{row}")
@@ -60,4 +61,4 @@ class Account:
         return len(self._raw)
 
 
-global_account = Account("../config/account.csv")
+global_account = Account(gc.config['config']['path']['account_file'])

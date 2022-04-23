@@ -6,6 +6,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 from common import security
 from common.logger import logger
+from common.config import global_config as gc
 
 
 class Report:
@@ -18,6 +19,8 @@ class Report:
         self._navigation_url = 0
         self._date = ""
         self._captcha_code = ""
+        self._success = gc.config['config']['response']['success']
+        self._existed = gc.config['config']['response']['existed']
 
     @logger.catch
     def update_date(self):
@@ -39,7 +42,7 @@ class Report:
             logger.error(f"No available hosts.")
             self._set_error(6, 1)
             return
-        url = f"{self._host}/weblogin.asp"
+        url = f"{self._host}/{gc.config['config']['url']['login']}"
         res = self._session.get(url=url, headers=self._headers)
         logger.debug(f"URL:{url}. Status code:{res.status_code}")
         res.encoding = "utf-8"
@@ -59,7 +62,7 @@ class Report:
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return
-        url = f"{self._host}/weblogin.asp"
+        url = f"{self._host}/{gc.config['config']['url']['login']}"
         payload = {
             "username": uid,
             "userpwd": password,
@@ -88,7 +91,7 @@ class Report:
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return
-        url = f"{self._host}/left.asp"
+        url = f"{self._host}/{gc.config['config']['url']['left']}"
         res = self._session.get(url=url, headers=self._headers)
         logger.debug(f"URL:{url}. Status code:{res.status_code}")
         if res.status_code != 200:
@@ -110,7 +113,7 @@ class Report:
             return ""
         logger.info("Try to report in the default method.")
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
-        url = f"{self._host}/projecthealth_addx.asp"
+        url = f"{self._host}/{gc.config['config']['url']['report_default']}"
         payload = {
             "id": param["id"][0],
             "id2": self._date,
@@ -133,7 +136,7 @@ class Report:
         logger.info("Try to report in the alternate method.")
         [province, city, area] = location
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
-        url = f"{self._host}/projecthealth_add.asp"
+        url = f"{self._host}/{gc.config['config']['url']['report']}"
         payload = {
             "id": param["id"][0],
             "id2": self._date,
@@ -189,27 +192,30 @@ class Report:
         self._error = 0
         self._errno = 0
         self._session = requests.Session()
-        self._host = f"https://xsswzx.cdu.edu.cn/{security.get_random_host()}/com_user"
+        _host_0 = gc.config['config']['url']['host_head']
+        _host_1 = security.get_random_host()
+        _host_2 = gc.config['config']['url']['host_foot']
+        self._host = f"{_host_0}/{_host_1}/{_host_2}"
         self._headers = {
             "User-Agent": security.get_random_useragent()
         }
         self._get_captcha_code()
         self._login(uid, password)
-        self._get_navigation_url("健康日报登记")
+        self._get_navigation_url(gc.config['config']['url']['navigation'])
         ret = self._report_default_method()
-        if "已存在" in ret:
+        if self._existed in ret:
             logger.info(f"The report is already existed. ID:{uid}")
             return 0, self._errno
-        elif "提交成功" in ret:
+        elif self._success in ret:
             logger.info(f"Successful to report. ID:{uid}")
             return 1, self._errno
         else:
             logger.error("Failed to report in the default method.")
             ret = self._report(self._fetch_location())
-            if "已存在" in ret:
+            if self._existed in ret:
                 logger.info(f"The report is already existed. ID:{uid}")
                 return 0, self._errno
-            elif "提交成功" in ret:
+            elif self._success in ret:
                 logger.info(f"Successful to report. ID:{uid}")
                 return 1, self._errno
             else:

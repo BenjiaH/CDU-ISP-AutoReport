@@ -67,10 +67,10 @@ pip install -r requirements.txt
 - 打开[Server酱](https://benjiah.gitee.io/redirect/serversauce)。
 - 申请一个`sendkey`，并记录下来。
 
-### 4.2.填写[`config/config.ini`](config/config_example.ini)
+### 4.2.填写[`config/config.json`](config/config_example.json)
 
-- 重命名`config_example.ini`文件为`config.ini`。
-- 参照[`config.ini`文件](config/config_example.ini)内说明填写其余内容。
+- 重命名`config_example.json`文件为`config.json`。
+- 参照[`config.json`文件](config/config_example.json)内说明填写其余内容。
 
 ### 4.3.填写[`config/account.csv`](config/account_example.csv)(可选)
 
@@ -125,14 +125,11 @@ chmod 777 scripts/run.sh
 │
 ├─config
 │      account.csv      <---多账户管理文件
-│      config.ini       <---配置文件
+│      config.json      <---配置文件
+│      email_tmpl.html  <---Email模板文件
 │
 ├─log
 │      log.log          <---日志文件
-│
-├─res
-│      email_tmpl.html  <---Email模板文件
-│      error.json       <---错误码及错误信息文件
 │
 └─scripts
        run.bat          <---Windows下运行文件
