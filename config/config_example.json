@@ -10,7 +10,16 @@
             "//email": "邮件推送配置",
             "email": {
                 "//enable": "[必填]如果需要邮件推送打卡结果,则将 enable 设置为 on,默认为 off 不开启",
-                "enable": "off"
+                "enable": "off",
+                "//bot_email": "[选填]负责推送服务的邮箱",
+                "bot_email": {
+                    "//email_user": "邮箱地址 xxxxxxxx@xx.com",
+                    "email_user": "",
+                    "//email_host": "邮箱域名 smtp.xx.com",
+                    "email_host": "",
+                    "//email_pwd": "邮箱授权码（并不一定是邮箱密码）",
+                    "email_pwd": ""
+                }
             },
             "//wechat": "微信推送配置,使用了Server酱的推送服务",
             "wechat": {
@@ -22,15 +31,6 @@
                 "api": "https://xxxxxxxxxx"
             }
         }
-    },
-    "//bot_email": "[选填]负责推送服务的邮箱",
-    "bot_email": {
-        "//email_user": "邮箱地址 xxxxxxxx@xx.com",
-        "email_user": "",
-        "//email_host": "邮箱域名 smtp.xx.com",
-        "email_host": "",
-        "//email_pwd": "邮箱授权码（并不一定是邮箱密码）",
-        "email_pwd": ""
     },
     "//config": "！！程序配置,请勿修改！！",
     "config": {

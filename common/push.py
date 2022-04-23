@@ -78,9 +78,9 @@ class Push:
     def __init__(self):
         self._global_wechat = gc.config['setting']['push']['wechat']['enable']
         self._global_email = gc.config['setting']['push']['email']['enable']
-        self._bot_email_user = gc.config['bot_email']['email_user']
-        self._bot_email_host = gc.config['bot_email']['email_host']
-        self._bot_email_pwd = gc.config['bot_email']['email_pwd']
+        self._bot_email_user = gc.config['setting']['push']['email']['bot_email']['email_user']
+        self._bot_email_host = gc.config['setting']['push']['email']['bot_email']['email_host']
+        self._bot_email_pwd = gc.config['setting']['push']['email']['bot_email']['email_pwd']
         self.bot_email = Email(self._bot_email_user, self._bot_email_host, self._bot_email_pwd)
         self._errno_msg = gc.config['config']['errmsg']
 
