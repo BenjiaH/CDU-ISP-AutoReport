@@ -15,3 +15,4 @@ print(LOGO)
 log_version("alpha", "1.4.0")
 report_service = ReportService()
 report_service.start()
+
