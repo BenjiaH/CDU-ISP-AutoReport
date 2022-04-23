@@ -4,5 +4,5 @@ data/
 .idea/
 log/
 tools/
-config.ini
+config.json
 account.csv
