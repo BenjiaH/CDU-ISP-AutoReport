@@ -82,16 +82,7 @@ class Push:
         self._bot_email_host = gc.config['bot_email']['email_host']
         self._bot_email_pwd = gc.config['bot_email']['email_pwd']
         self.bot_email = Email(self._bot_email_user, self._bot_email_host, self._bot_email_pwd)
-        self._errno_msg_path = gc.config['config']['path']['errno_msg']
-        # self._errno_msg = self._load_errno()
         self._errno_msg = gc.config['config']['errmsg']
-
-    @logger.catch
-    def _load_errno(self):
-        with open(self._errno_msg_path, "r", encoding="utf-8") as f:
-            self._raw = f.read()
-            logger.debug(f'Loaded [{os.path.abspath(self._errno_msg_path)}]')
-            return json.loads(self._raw)
 
     @staticmethod
     @logger.catch
