@@ -4,12 +4,16 @@ from common.logger import logger
 
 
 class Config:
+    @logger.catch
     def __init__(self, config_file=r"../config/config.json"):
+        example = os.path.abspath("../config/config_example.json")
         os.chdir(os.path.dirname(__file__))
         self._path = os.path.abspath(config_file)
         if not os.path.exists(self._path):
-            logger.error(f"No such file:{self._path}")
-            raise FileNotFoundError(f"No such file:{self._path}")
+            logger.error(f"No such file [{self._path}]")
+            if os.path.exists(example):
+                logger.error(f"Please rename [{example}] to [{self._path}]")
+            raise FileNotFoundError(f"No such file [{self._path}]")
         self.raw = {}
         self._json_read()
 

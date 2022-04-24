@@ -8,11 +8,14 @@ from common.config import global_config as gc
 class Account:
     @logger.catch
     def __init__(self, csv_file="../config/account.csv"):
+        example = os.path.abspath("../config/account_example.csv")
         os.chdir(os.path.dirname(__file__))
         self._path = os.path.abspath(csv_file)
         if not os.path.exists(self._path):
-            logger.error(f"No such file:{self._path}")
-            raise FileNotFoundError(f"No such file:{self._path}")
+            logger.error(f"No such file [{self._path}]")
+            if os.path.exists(example):
+                logger.error(f"Please rename [{example}] to [{self._path}]")
+            raise FileNotFoundError(f"No such file [{self._path}]")
         self._csv_file = None
         self._raw = []
         self._read_csv()
