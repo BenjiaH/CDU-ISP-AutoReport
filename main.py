@@ -12,6 +12,6 @@ LOGO = """\033[33m
                                                                                      |_|                   
 \033[97m"""
 print(LOGO)
-log_version("alpha", "1.4.0")
+log_version("beta", "1.4.0")
 report_service = ReportService()
 report_service.start()
