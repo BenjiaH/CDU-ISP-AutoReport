@@ -113,6 +113,8 @@ chmod 777 scripts/run.sh
 │  LICENSE
 │  main.py              <---入口程序
 │  README.md
+│  run.bat              <---Windows下运行文件
+│  run.sh               <---GNU/Linux下运行文件
 │
 ├─common
 │      account.py       <---多账户读取模块
@@ -128,13 +130,9 @@ chmod 777 scripts/run.sh
 │      config.json      <---配置文件
 │      email_tmpl.html  <---Email模板文件
 │
-├─log
-│      log.log          <---日志文件
-│
-└─scripts
-       run.bat          <---Windows下运行文件
-       run.sh           <---GNU/Linux下运行文件
- 
+└─log
+       log.log          <---日志文件
+
 ```
 
 ## 7.致谢
