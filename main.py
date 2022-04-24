@@ -1,7 +1,7 @@
 from common.logger import log_version
 from common.service import ReportService
 
-LOGO = r"""
+LOGO = """\033[33m
    _____ _____  _    _      _____  _____ _____                    _        _____                       _   
   / ____|  __ \| |  | |    |_   _|/ ____|  __ \        /\        | |      |  __ \                     | |  
  | |    | |  | | |  | |______| | | (___ | |__) ______ /  \  _   _| |_ ___ | |__) |___ _ __   ___  _ __| |_ 
@@ -10,7 +10,7 @@ LOGO = r"""
   \_____|_____/ \____/     |_____|_____/|_|        /_/    \_\__,_|\__\___/|_|  \_\___| .__/ \___/|_|   \__|
                                                                                      | |                   
                                                                                      |_|                   
-"""
+\033[97m"""
 print(LOGO)
 log_version("alpha", "1.4.0")
 report_service = ReportService()
