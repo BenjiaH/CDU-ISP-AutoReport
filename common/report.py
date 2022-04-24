@@ -19,8 +19,8 @@ class Report:
         self._navigation_url = 0
         self._date = ""
         self._captcha_code = ""
-        self._success = gc.config['config']['response']['success']
-        self._existed = gc.config['config']['response']['existed']
+        self._success = gc.config('/config/response/success')
+        self._existed = gc.config('/config/response/existed')
 
     @logger.catch
     def update_date(self):
@@ -42,7 +42,7 @@ class Report:
             logger.error(f"No available hosts.")
             self._set_error(6, 1)
             return
-        url = f"{self._host}/{gc.config['config']['url']['login']}"
+        url = f"{self._host}/{gc.config('/config/url/login')}"
         res = self._session.get(url=url, headers=self._headers)
         logger.debug(f"URL:{url}. Status code:{res.status_code}")
         res.encoding = "utf-8"
@@ -62,7 +62,7 @@ class Report:
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return
-        url = f"{self._host}/{gc.config['config']['url']['login']}"
+        url = f"{self._host}/{gc.config('/config/url/login')}"
         payload = {
             "username": uid,
             "userpwd": password,
@@ -91,7 +91,7 @@ class Report:
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return
-        url = f"{self._host}/{gc.config['config']['url']['left']}"
+        url = f"{self._host}/{gc.config('/config/url/left')}"
         res = self._session.get(url=url, headers=self._headers)
         logger.debug(f"URL:{url}. Status code:{res.status_code}")
         if res.status_code != 200:
@@ -113,7 +113,7 @@ class Report:
             return ""
         logger.info("Try to report in the default method.")
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
-        url = f"{self._host}/{gc.config['config']['url']['report_default']}"
+        url = f"{self._host}/{gc.config('/config/url/report_default')}"
         payload = {
             "id": param["id"][0],
             "id2": self._date,
@@ -136,7 +136,7 @@ class Report:
         logger.info("Try to report in the alternate method.")
         [province, city, area] = location
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
-        url = f"{self._host}/{gc.config['config']['url']['report']}"
+        url = f"{self._host}/{gc.config('/config/url/report')}"
         payload = {
             "id": param["id"][0],
             "id2": self._date,
@@ -192,16 +192,16 @@ class Report:
         self._error = 0
         self._errno = 0
         self._session = requests.Session()
-        _host_0 = gc.config['config']['url']['host_head']
+        _host_0 = gc.config('/config/url/host_head')
         _host_1 = security.get_random_host()
-        _host_2 = gc.config['config']['url']['host_foot']
+        _host_2 = gc.config('/config/url/host_foot')
         self._host = f"{_host_0}/{_host_1}/{_host_2}"
         self._headers = {
             "User-Agent": security.get_random_useragent()
         }
         self._get_captcha_code()
         self._login(uid, password)
-        self._get_navigation_url(gc.config['config']['url']['navigation'])
+        self._get_navigation_url(gc.config('/config/url/navigation'))
         ret = self._report_default_method()
         if self._existed in ret:
             logger.info(f"The report is already existed. ID:{uid}")

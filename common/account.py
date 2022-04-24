@@ -61,4 +61,4 @@ class Account:
         return len(self._raw)
 
 
-global_account = Account(gc.config['config']['path']['account_file'])
+global_account = Account(gc.config('/config/path/account_file'))

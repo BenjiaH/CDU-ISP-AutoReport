@@ -5,17 +5,17 @@ from common.logger import logger
 from common.config import global_config as gc
 from fake_useragent import UserAgent
 
-HOSTS = list(gc.config['config']['all_hosts'].keys())
+HOSTS = list(gc.config('/config/all_hosts').keys())
 ua = UserAgent(verify_ssl=False)
 available_host = []
 
 
 @logger.catch
 def check_host_status(host):
-    url_0 = gc.config['config']['url']['host_head']
+    url_0 = gc.config('/config/url/host_head')
     url_1 = host
-    url_2 = gc.config['config']['url']['host_foot']
-    url_3 = gc.config['config']['url']['login']
+    url_2 = gc.config('/config/url/host_foot')
+    url_3 = gc.config('/config/url/login')
     url = f"{url_0}/{url_1}/{url_2}/{url_3}"
     try:
         res = requests.get(url=url, timeout=10)

@@ -12,10 +12,10 @@ class ReportService:
     @logger.catch
     def __init__(self):
         self._str_now_time = "0.1"
-        self._wechat_push = gc.config['setting']['push']['wechat']['enable']
-        self._wechat_type = gc.config['setting']['push']['wechat']['type']
-        self._api = gc.config['setting']['push']['wechat']['api']
-        self._email_push = gc.config['setting']['push']['email']['enable']
+        self._wechat_push = gc.config('/setting/push/wechat/enable')
+        self._wechat_type = gc.config('/setting/push/wechat/type')
+        self._api = gc.config('/setting/push/wechat/api')
+        self._email_push = gc.config('/setting/push/email/enable')
         self._account_cnt = global_account.row
         self._report = Report()
 
@@ -52,7 +52,7 @@ class ReportService:
 
     @logger.catch
     def start(self):
-        if gc.config['setting']['timer']['enable'] == "off":
+        if gc.config('/setting/timer/enable') == "off":
             logger.info("Timer is disabled.")
             logger.info("Start to report.")
             self._gen()
@@ -60,13 +60,13 @@ class ReportService:
             logger.info("Timer is enabled.")
             while True:
                 gc.refresh()
-                str_set_time = str(gc.config['setting']['timer']['set_time'])
+                str_set_time = str(gc.config('/setting/timer/set_time'))
                 str_now_time = self._get_now_time()
                 logger.info(f"Now time:{str_now_time}. Set time:{str_set_time}.")
                 while True:
                     gc.refresh()
-                    if str_set_time != str(gc.config['setting']['timer']['set_time']):
-                        str_set_time = str(gc.config['setting']['timer']['set_time'])
+                    if str_set_time != str(gc.config('/setting/timer/set_time')):
+                        str_set_time = str(gc.config('/setting/timer/set_time'))
                         logger.info(f"New set time:{str_set_time}.")
                     str_now_time = self._get_now_time()
                     if str_now_time != str_set_time:
