@@ -40,7 +40,7 @@ class Report:
     def _get_captcha_code(self):
         if len(security.available_host) == 0:
             logger.error(f"No available hosts.")
-            self._set_error(6, 1)
+            self._set_error(4, 1)
             return
         url = f"{self._host}/{gc.config('/config/url/login')}"
         res = self._session.get(url=url, headers=self._headers)
@@ -184,7 +184,7 @@ class Report:
                     logger.error(f"Failed to get the location. Try next page.[{e}]")
                 else:
                     logger.error(f"Failed to get the location.[{e}]")
-                    self._set_error(7, 1)
+                    self._set_error(5, 1)
                 logger.debug("{url} content:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
 
     @logger.catch
