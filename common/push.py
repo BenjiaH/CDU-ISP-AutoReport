@@ -14,7 +14,7 @@ from common.logger import logger
 class Email:
     @logger.catch
     def __init__(self, mail_user, mail_host, mail_pwd):
-        if gc.config('/setting/push/email/enable') == "off":
+        if gc.config('/setting/push/email/switch') == "off":
             logger.debug("Email is disabled")
             return
         logger.debug("Email is enabled")
@@ -36,7 +36,7 @@ class Email:
 
     @logger.catch
     def login(self):
-        if gc.config('/setting/push/email/enable') == "off":
+        if gc.config('/setting/push/email/switch') == "off":
             return
         self._load_tmpl()
         try:
@@ -76,8 +76,8 @@ class Email:
 class Push:
     @logger.catch
     def __init__(self):
-        self._global_wechat = gc.config('/setting/push/wechat/enable')
-        self._global_email = gc.config('/setting/push/email/enable')
+        self._global_wechat = gc.config('/setting/push/wechat/switch')
+        self._global_email = gc.config('/setting/push/email/switch')
         self._bot_email_user = gc.config('/setting/push/email/bot_email/email_user')
         self._bot_email_host = gc.config('/setting/push/email/bot_email/email_host')
         self._bot_email_pwd = gc.config('/setting/push/email/bot_email/email_pwd')
