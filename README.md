@@ -86,19 +86,17 @@ pip install -r requirements.txt
 python main.py
 ```
 
-- 在`Windows`平台下，你可以运行[`scripts/run.bat`](scripts/run.bat)
+- 在`Windows`平台下，你可以运行[`run.bat`](run.bat)
 
 ```bash
-cd .\CDU-ISP-AutoReport\
-.\scripts\run.bat 
+.\CDU-ISP-AutoReport\run.bat 
 ```
 
-- 在`GNU/Linux`平台下，你可以运行[`scripts/run.sh`](scripts/run.sh)
+- 在`GNU/Linux`平台下，你可以运行[`run.sh`](run.sh)
 
 ```bash
-cd CDU-ISP-AutoReport\
-chmod 777 scripts/run.sh
-./scripts/run.sh
+chmod +x CDU-ISP-AutoReport/run.sh
+./CDU-ISP-AutoReport/run.sh
 ```
 
 ## 5.CHANGE LOG
