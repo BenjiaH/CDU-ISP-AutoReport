@@ -1,4 +1,5 @@
 {
+    "//setting": "用户设置",
     "setting": {
         "timer": {
             "//enable": "[必填]如果想开启定时打卡,则将 enable 设置为 on,默认为 off 不开启",
