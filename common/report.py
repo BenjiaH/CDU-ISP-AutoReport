@@ -2,7 +2,6 @@ import re
 import requests
 
 from urllib import parse
-from datetime import datetime
 from bs4 import BeautifulSoup
 from common.utils import utils
 from common.logger import logger
@@ -17,17 +16,9 @@ class Report:
         self._host = 0
         self._headers = 0
         self._navigation_url = 0
-        self._date = ""
         self._captcha_code = ""
         self._success = gc.config('/config/response/success', utils.get_call_loc())
         self._existed = gc.config('/config/response/existed', utils.get_call_loc())
-
-    @logger.catch
-    def update_date(self):
-        today = datetime.now()
-        today = f"{today.year}年{today.month}月{today.day}日"
-        self._date = today
-        logger.debug(f"Date:{self._date}")
 
     @logger.catch
     def _set_error(self, no, flag, func):
@@ -116,7 +107,7 @@ class Report:
         url = f"{self._host}/{gc.config('/config/url/report_default', utils.get_call_loc())}"
         payload = {
             "id": param["id"][0],
-            "id2": self._date,
+            "id2": utils.date,
             "adds": "undefined",
             "addsxy": "undefined"
         }
@@ -139,7 +130,7 @@ class Report:
         url = f"{self._host}/{gc.config('/config/url/report', utils.get_call_loc())}"
         payload = {
             "id": param["id"][0],
-            "id2": self._date,
+            "id2": utils.date,
             "province": province,
             "city": city,
             "area": area,

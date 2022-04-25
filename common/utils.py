@@ -6,6 +6,7 @@ import sys
 from common.logger import logger
 from common.config import global_config as gc
 from fake_useragent import UserAgent
+from datetime import datetime
 
 
 class Utils:
@@ -16,6 +17,7 @@ class Utils:
         self._url_0 = gc.config('/config/url/host_head', self.get_call_loc())
         self._url_2 = gc.config('/config/url/host_foot', self.get_call_loc())
         self._url_3 = gc.config('/config/url/login', self.get_call_loc())
+        self.date = ""
 
     @logger.catch
     def _check_host_status(self, host):
@@ -84,6 +86,13 @@ class Utils:
             return f"{file_name}:{func_name}:{line}"
         else:
             return f"{file_name}:{line}"
+
+    @logger.catch
+    def update_date(self):
+        today = datetime.now()
+        today = f"{today.year}年{today.month}月{today.day}日"
+        self.date = today
+        logger.debug(f"Date:{self.date}")
 
 
 utils = Utils()

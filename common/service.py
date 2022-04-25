@@ -45,7 +45,7 @@ class ReportService:
         else:
             utils.refresh_hosts()
             global_push.bot_email.login()
-            self._report.update_date()
+            utils.update_date()
             self._task()
         end_time = time()
         logger.info("Reports are completed. Cost time:{:.2f}s".format(end_time - start_time).center(50, '-'))
