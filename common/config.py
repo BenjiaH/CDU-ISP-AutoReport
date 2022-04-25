@@ -36,9 +36,9 @@ class Config:
             logger.error(e)
             ret = ""
         if keys[-1] in ["email_pwd", "api"]:
-            logger.debug(f'Pointer[{pointer}]:"*******"')
+            logger.debug(f'Json pointer [{pointer}]:"*******"')
         else:
-            logger.debug(f'Pointer[{pointer}]:"{ret}"')
+            logger.debug(f'Json pointer [{pointer}]:"{ret}"')
         return ret
 
     @logger.catch
