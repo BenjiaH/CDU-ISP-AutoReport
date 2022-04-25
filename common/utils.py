@@ -13,14 +13,13 @@ class Utils:
         self._HOSTS = list(gc.config('/config/all_hosts', self.get_call_loc()).keys())
         self._ua = UserAgent(verify_ssl=False)
         self.available_host = []
+        self._url_0 = gc.config('/config/url/host_head', self.get_call_loc())
+        self._url_2 = gc.config('/config/url/host_foot', self.get_call_loc())
+        self._url_3 = gc.config('/config/url/login', self.get_call_loc())
 
     @logger.catch
     def _check_host_status(self, host):
-        url_0 = gc.config('/config/url/host_head', self.get_call_loc())
-        url_1 = host
-        url_2 = gc.config('/config/url/host_foot', self.get_call_loc())
-        url_3 = gc.config('/config/url/login', self.get_call_loc())
-        url = f"{url_0}/{url_1}/{url_2}/{url_3}"
+        url = f"{self._url_0}/{host}/{self._url_2}/{self._url_3}"
         try:
             res = requests.get(url=url, timeout=10)
             logger.debug(f"URL:{url}. Status code:{res.status_code}")
