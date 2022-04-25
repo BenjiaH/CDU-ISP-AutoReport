@@ -24,7 +24,7 @@ class Config:
         logger.debug(f"Loaded [{self._path}]")
 
     @logger.catch
-    def config(self, pointer):
+    def config(self, pointer, func):
         if pointer[0] != "/":
             pointer = f"/{pointer}"
         keys = pointer.split("/")[1:]
@@ -36,9 +36,9 @@ class Config:
             logger.error(e)
             ret = ""
         if keys[-1] in ["email_pwd", "api"]:
-            logger.debug(f'Json pointer [{pointer}]:"*******"')
+            logger.debug(f'[{func}] Json pointer [{pointer}]:"*******"')
         else:
-            logger.debug(f'Json pointer [{pointer}]:"{ret}"')
+            logger.debug(f'[{func}] Json pointer [{pointer}]:"{ret}"')
         return ret
 
     @logger.catch

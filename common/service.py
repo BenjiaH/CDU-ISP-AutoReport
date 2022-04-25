@@ -1,6 +1,6 @@
 from datetime import datetime
 from time import sleep, time
-from common import security
+from common.utils import utils
 from common.logger import logger
 from common.config import global_config as gc
 from common.account import global_account
@@ -12,10 +12,10 @@ class ReportService:
     @logger.catch
     def __init__(self):
         self._str_now_time = "0.1"
-        self._wechat_push = gc.config('/setting/push/wechat/switch')
-        self._wechat_type = gc.config('/setting/push/wechat/type')
-        self._api = gc.config('/setting/push/wechat/api')
-        self._email_push = gc.config('/setting/push/email/switch')
+        self._wechat_push = gc.config('/setting/push/wechat/switch', utils.get_call_loc())
+        self._wechat_type = gc.config('/setting/push/wechat/type', utils.get_call_loc())
+        self._api = gc.config('/setting/push/wechat/api', utils.get_call_loc())
+        self._email_push = gc.config('/setting/push/email/switch', utils.get_call_loc())
         self._account_cnt = global_account.row
         self._report = Report()
 
@@ -43,7 +43,7 @@ class ReportService:
         if self._account_cnt == 0:
             logger.error("Account does not exist.")
         else:
-            security.refresh_hosts()
+            utils.refresh_hosts()
             global_push.bot_email.login()
             self._report.update_date()
             self._task()
@@ -52,7 +52,7 @@ class ReportService:
 
     @logger.catch
     def start(self):
-        if gc.config('/setting/timer/switch') == "off":
+        if gc.config('/setting/timer/switch', utils.get_call_loc()) == "off":
             logger.info("Timer is disabled.")
             logger.info("Start to report.")
             self._gen()
@@ -60,13 +60,13 @@ class ReportService:
             logger.info("Timer is enabled.")
             while True:
                 gc.refresh()
-                str_set_time = str(gc.config('/setting/timer/set_time'))
+                str_set_time = str(gc.config('/setting/timer/set_time', utils.get_call_loc()))
                 str_now_time = self._get_now_time()
                 logger.info(f"Now time:{str_now_time}. Set time:{str_set_time}.")
                 while True:
                     gc.refresh()
-                    if str_set_time != str(gc.config('/setting/timer/set_time')):
-                        str_set_time = str(gc.config('/setting/timer/set_time'))
+                    if str_set_time != str(gc.config('/setting/timer/set_time', utils.get_call_loc())):
+                        str_set_time = str(gc.config('/setting/timer/set_time', utils.get_call_loc()))
                         logger.info(f"New set time:{str_set_time}.")
                     str_now_time = self._get_now_time()
                     if str_now_time != str_set_time:

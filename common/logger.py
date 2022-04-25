@@ -40,18 +40,6 @@ class Logger:
         else:
             self._level = "INFO"
 
-    @staticmethod
-    @logger.catch
-    def log_version(stage: str, version=""):
-        commit_id = ""
-        if os.path.exists("../.git"):
-            logger.debug(f'Founded [{os.path.abspath("../.git")}]')
-            commit_id = (os.popen("git rev-parse --short HEAD").read()).replace("\n", "")
-            version += "."
-        info = f"{version}{commit_id}({stage})"
-        logger.info(f"Version:{info}")
-
 
 handlers = Logger("../log/log.log")
 logger = handlers.logger
-log_version = handlers.log_version

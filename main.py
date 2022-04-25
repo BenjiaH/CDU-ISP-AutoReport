@@ -1,5 +1,5 @@
-from common.logger import log_version
 from common.service import ReportService
+from common.utils import utils
 
 LOGO = """\033[33m
    _____ _____  _    _      _____  _____ _____                    _        _____                       _   
@@ -12,6 +12,6 @@ LOGO = """\033[33m
                                                                                      |_|                   
 \033[97m"""
 print(LOGO)
-log_version("beta", "1.4.0")
+utils.version("beta", "1.4.0")
 report_service = ReportService()
 report_service.start()

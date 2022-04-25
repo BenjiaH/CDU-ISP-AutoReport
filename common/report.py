@@ -4,7 +4,7 @@ import requests
 from urllib import parse
 from datetime import datetime
 from bs4 import BeautifulSoup
-from common import security
+from common.utils import utils
 from common.logger import logger
 from common.config import global_config as gc
 
@@ -19,8 +19,8 @@ class Report:
         self._navigation_url = 0
         self._date = ""
         self._captcha_code = ""
-        self._success = gc.config('/config/response/success')
-        self._existed = gc.config('/config/response/existed')
+        self._success = gc.config('/config/response/success', utils.get_call_loc())
+        self._existed = gc.config('/config/response/existed', utils.get_call_loc())
 
     @logger.catch
     def update_date(self):
@@ -30,19 +30,19 @@ class Report:
         logger.debug(f"Date:{self._date}")
 
     @logger.catch
-    def _set_error(self, no, flag):
+    def _set_error(self, no, flag, func):
         self._errno = no
-        logger.debug(f"Set the error code: {self._errno}.")
+        logger.debug(f"[{func}] Set the error code: {self._errno}.")
         self._error = flag
-        logger.debug(f"Set the error flag: {self._error}.")
+        logger.debug(f"[{func}] Set the error flag: {self._error}.")
 
     @logger.catch
     def _get_captcha_code(self):
-        if len(security.available_host) == 0:
+        if len(utils.available_host) == 0:
             logger.error(f"No available hosts.")
-            self._set_error(4, 1)
+            self._set_error(4, 1, utils.get_call_loc(True))
             return
-        url = f"{self._host}/{gc.config('/config/url/login')}"
+        url = f"{self._host}/{gc.config('/config/url/login', utils.get_call_loc())}"
         res = self._session.get(url=url, headers=self._headers)
         logger.debug(f"URL:{url}. Status code:{res.status_code}")
         res.encoding = "utf-8"
@@ -52,7 +52,7 @@ class Report:
             logger.debug(f"Verification code: {code}")
         except Exception as e:
             logger.error(f"Failed to get the captcha code. [{e}]")
-            self._set_error(1, 1)
+            self._set_error(1, 1, utils.get_call_loc(True))
             code = 0
             logger.debug("{url} content:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
         self._captcha_code = code
@@ -62,7 +62,7 @@ class Report:
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return
-        url = f"{self._host}/{gc.config('/config/url/login')}"
+        url = f"{self._host}/{gc.config('/config/url/login', utils.get_call_loc())}"
         payload = {
             "username": uid,
             "userpwd": password,
@@ -79,10 +79,10 @@ class Report:
         res.encoding = "utf-8"
         if res.status_code != 200:
             logger.error(f"Failed:POST request. URL:{url}. Status code:{res.status_code}")
-            self._set_error(2, 1)
+            self._set_error(2, 1, utils.get_call_loc(True))
         elif "alert" in res.text:
             logger.error("Failed to login the ISP.[Incorrect username, password or captcha code]")
-            self._set_error(2, 1)
+            self._set_error(2, 1, utils.get_call_loc(True))
         else:
             logger.info("Successful to login the ISP.")
 
@@ -91,7 +91,7 @@ class Report:
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return
-        url = f"{self._host}/{gc.config('/config/url/left')}"
+        url = f"{self._host}/{gc.config('/config/url/left', utils.get_call_loc())}"
         res = self._session.get(url=url, headers=self._headers)
         logger.debug(f"URL:{url}. Status code:{res.status_code}")
         if res.status_code != 200:
@@ -103,7 +103,7 @@ class Report:
             logger.debug(f'Navigation "{target}" url:{self._navigation_url}.')
         except Exception as e:
             logger.error(f"Failed to get the project url.[{e}]")
-            self._set_error(3, 1)
+            self._set_error(3, 1, utils.get_call_loc(True))
             logger.debug("{url} content:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
 
     @logger.catch
@@ -113,7 +113,7 @@ class Report:
             return ""
         logger.info("Try to report in the default method.")
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
-        url = f"{self._host}/{gc.config('/config/url/report_default')}"
+        url = f"{self._host}/{gc.config('/config/url/report_default', utils.get_call_loc())}"
         payload = {
             "id": param["id"][0],
             "id2": self._date,
@@ -136,7 +136,7 @@ class Report:
         logger.info("Try to report in the alternate method.")
         [province, city, area] = location
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
-        url = f"{self._host}/{gc.config('/config/url/report')}"
+        url = f"{self._host}/{gc.config('/config/url/report', utils.get_call_loc())}"
         payload = {
             "id": param["id"][0],
             "id2": self._date,
@@ -184,7 +184,7 @@ class Report:
                     logger.error(f"Failed to get the location. Try next page.[{e}]")
                 else:
                     logger.error(f"Failed to get the location.[{e}]")
-                    self._set_error(5, 1)
+                    self._set_error(5, 1, utils.get_call_loc(True))
                 logger.debug("{url} content:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
 
     @logger.catch
@@ -192,16 +192,16 @@ class Report:
         self._error = 0
         self._errno = 0
         self._session = requests.Session()
-        _host_0 = gc.config('/config/url/host_head')
-        _host_1 = security.get_random_host()
-        _host_2 = gc.config('/config/url/host_foot')
+        _host_0 = gc.config('/config/url/host_head', utils.get_call_loc())
+        _host_1 = utils.get_random_host()
+        _host_2 = gc.config('/config/url/host_foot', utils.get_call_loc())
         self._host = f"{_host_0}/{_host_1}/{_host_2}"
         self._headers = {
-            "User-Agent": security.get_random_useragent()
+            "User-Agent": utils.get_random_useragent()
         }
         self._get_captcha_code()
         self._login(uid, password)
-        self._get_navigation_url(gc.config('/config/url/navigation'))
+        self._get_navigation_url(gc.config('/config/url/navigation', utils.get_call_loc()))
         ret = self._report_default_method()
         if self._existed in ret:
             logger.info(f"The report is already existed. ID:{uid}")
@@ -222,5 +222,5 @@ class Report:
                 logger.error("Failed to report in the alternate method.")
                 logger.error(f"Failed to report. ID:{uid}")
                 if self._errno == 0:
-                    self._set_error(-1, self._error)
+                    self._set_error(-1, self._error, utils.get_call_loc(True))
                 return 2, self._errno
