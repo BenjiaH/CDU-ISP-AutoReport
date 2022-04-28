@@ -120,8 +120,8 @@ chmod +x CDU-ISP-AutoReport/run.sh
 │      logger.py        <---日志模块
 │      push.py          <---推送模块
 │      report.py        <---自动化报告模块
-│      security.py      <---安全及运行检查模块
 │      service.py       <---服务管理模块
+│      utils.py         <---工具模块
 │
 ├─config
 │      account.csv      <---多账户管理文件
