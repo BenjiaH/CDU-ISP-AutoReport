@@ -2,7 +2,7 @@ import os
 import csv
 
 from common.logger import logger
-from common.config import global_config as gc
+from common.config import config
 from common.utils import utils
 
 
@@ -65,4 +65,4 @@ class Account:
         return len(self._raw)
 
 
-global_account = Account(gc.config('/config/path/account_file', utils.get_call_loc()))
+global_account = Account(config.config('/config/path/account_file', utils.get_call_loc()))

@@ -5,7 +5,7 @@ from urllib import parse
 from bs4 import BeautifulSoup
 from common.utils import utils
 from common.logger import logger
-from common.config import global_config as gc
+from common.config import config
 
 
 class Report:
@@ -17,8 +17,29 @@ class Report:
         self._headers = 0
         self._navigation_url = 0
         self._captcha_code = ""
-        self._success = gc.config('/config/response/success', utils.get_call_loc())
-        self._existed = gc.config('/config/response/existed', utils.get_call_loc())
+        self._login_url = None
+        self._left_url = None
+        self._navigation_target = None
+        self._default_report_url = None
+        self._report_url = None
+        self._host_0 = None
+        self._host_1 = None
+        self._success = None
+        self._existed = None
+        self.fetch_param()
+
+    @logger.catch
+    def fetch_param(self):
+        self._login_url = config.config('/config/url/login', utils.get_call_loc())
+        self._left_url = config.config('/config/url/left', utils.get_call_loc())
+        self._navigation_target = config.config('/config/url/navigation', utils.get_call_loc())
+        self._default_report_url = config.config('/config/url/report_default', utils.get_call_loc())
+        self._report_url = config.config('/config/url/report', utils.get_call_loc())
+        self._host_0 = config.config('/config/url/host_head', utils.get_call_loc())
+        self._host_1 = config.config('/config/url/host_foot', utils.get_call_loc())
+        self._success = config.config('/config/response/success', utils.get_call_loc())
+        self._existed = config.config('/config/response/existed', utils.get_call_loc())
+        logger.debug("Fetched [Report] params.")
 
     @logger.catch
     def _set_error(self, no, flag, func):
@@ -33,7 +54,7 @@ class Report:
             logger.error(f"No available hosts.")
             self._set_error(4, 1, utils.get_call_loc(True))
             return
-        url = f"{self._host}/{gc.config('/config/url/login', utils.get_call_loc())}"
+        url = f"{self._host}/{self._login_url}"
         res = self._session.get(url=url, headers=self._headers)
         logger.debug(f"URL:{url}. Status code:{res.status_code}")
         res.encoding = "utf-8"
@@ -53,7 +74,7 @@ class Report:
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return
-        url = f"{self._host}/{gc.config('/config/url/login', utils.get_call_loc())}"
+        url = f"{self._host}/{self._login_url}"
         payload = {
             "username": uid,
             "userpwd": password,
@@ -72,17 +93,17 @@ class Report:
             logger.error(f"Failed:POST request. URL:{url}. Status code:{res.status_code}")
             self._set_error(2, 1, utils.get_call_loc(True))
         elif "alert" in res.text:
-            logger.error("Failed to login the ISP.[Incorrect username, password or captcha code]")
+            logger.error("Failed to login the CDU-ISP.[Incorrect username, password or captcha code]")
             self._set_error(2, 1, utils.get_call_loc(True))
         else:
-            logger.info("Successful to login the ISP.")
+            logger.info("Successful to login the CDU-ISP.")
 
     @logger.catch
     def _get_navigation_url(self, target):
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return
-        url = f"{self._host}/{gc.config('/config/url/left', utils.get_call_loc())}"
+        url = f"{self._host}/{self._left_url}"
         res = self._session.get(url=url, headers=self._headers)
         logger.debug(f"URL:{url}. Status code:{res.status_code}")
         if res.status_code != 200:
@@ -104,7 +125,7 @@ class Report:
             return ""
         logger.info("Try to report in the default method.")
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
-        url = f"{self._host}/{gc.config('/config/url/report_default', utils.get_call_loc())}"
+        url = f"{self._host}/{self._default_report_url}"
         payload = {
             "id": param["id"][0],
             "id2": utils.date,
@@ -127,7 +148,7 @@ class Report:
         logger.info("Try to report in the alternate method.")
         [province, city, area] = location
         param = parse.parse_qs(parse.urlparse(str(self._navigation_url)).query)
-        url = f"{self._host}/{gc.config('/config/url/report', utils.get_call_loc())}"
+        url = f"{self._host}/{self._report_url}"
         payload = {
             "id": param["id"][0],
             "id2": utils.date,
@@ -183,16 +204,13 @@ class Report:
         self._error = 0
         self._errno = 0
         self._session = requests.Session()
-        _host_0 = gc.config('/config/url/host_head', utils.get_call_loc())
-        _host_1 = utils.get_random_host()
-        _host_2 = gc.config('/config/url/host_foot', utils.get_call_loc())
-        self._host = f"{_host_0}/{_host_1}/{_host_2}"
+        self._host = f"{self._host_0}/{utils.get_random_host()}/{self._host_1}"
         self._headers = {
             "User-Agent": utils.get_random_useragent()
         }
         self._get_captcha_code()
         self._login(uid, password)
-        self._get_navigation_url(gc.config('/config/url/navigation', utils.get_call_loc()))
+        self._get_navigation_url(self._navigation_target)
         ret = self._report_default_method()
         if self._existed in ret:
             logger.info(f"The report is already existed. ID:{uid}")
@@ -215,3 +233,6 @@ class Report:
                 if self._errno == 0:
                     self._set_error(-1, self._error, utils.get_call_loc(True))
                 return 2, self._errno
+
+
+report = Report()

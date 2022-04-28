@@ -47,4 +47,4 @@ class Config:
         logger.debug(f"Refreshed [{self._path}]")
 
 
-global_config = Config(r"../config/config.json")
+config = Config(r"../config/config.json")

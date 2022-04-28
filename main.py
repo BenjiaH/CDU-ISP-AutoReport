@@ -1,4 +1,4 @@
-from common.service import ReportService
+from common.service import report_service
 from common.utils import utils
 
 LOGO = """\033[33m
@@ -13,5 +13,4 @@ LOGO = """\033[33m
 \033[97m"""
 print(LOGO)
 utils.version("beta", "1.4.0")
-report_service = ReportService()
 report_service.start()

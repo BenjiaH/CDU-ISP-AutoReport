@@ -7,7 +7,7 @@ from retrying import retry
 from urllib import parse
 from datetime import datetime
 from email.mime.text import MIMEText
-from common.config import global_config as gc
+from common.config import config
 from common.logger import logger
 from common.utils import utils
 
@@ -15,7 +15,10 @@ from common.utils import utils
 class Email:
     @logger.catch
     def __init__(self, mail_user, mail_host, mail_pwd):
-        if gc.config('/setting/push/email/switch', utils.get_call_loc()) == "off":
+        self._email_switch = None
+        self._email_tmpl_path = None
+        self.fetch_param()
+        if self._email_switch == "off":
             logger.debug("Email is disabled")
             return
         logger.debug("Email is enabled")
@@ -26,7 +29,12 @@ class Email:
         self._is_login = False
         self.smtp = 0
         self._mail_payload = ""
-        self._email_tmpl_path = gc.config('/config/path/email_tmpl', utils.get_call_loc())
+
+    @logger.catch
+    def fetch_param(self):
+        self._email_switch = config.config('/setting/push/email/switch', utils.get_call_loc())
+        self._email_tmpl_path = config.config('/config/path/email_tmpl', utils.get_call_loc())
+        logger.debug("Fetched [Push.Email] params.")
 
     @logger.catch
     def _load_tmpl(self):
@@ -37,7 +45,7 @@ class Email:
 
     @logger.catch
     def login(self):
-        if gc.config('/setting/push/email/switch', utils.get_call_loc()) == "off":
+        if self._email_switch == "off":
             return
         self._load_tmpl()
         try:
@@ -77,19 +85,31 @@ class Email:
 class Push:
     @logger.catch
     def __init__(self):
-        self._global_wechat = gc.config('/setting/push/wechat/switch', utils.get_call_loc())
-        self._global_email = gc.config('/setting/push/email/switch', utils.get_call_loc())
-        self._bot_email_user = gc.config('/setting/push/email/bot_email/email_user', utils.get_call_loc())
-        self._bot_email_host = gc.config('/setting/push/email/bot_email/email_host', utils.get_call_loc())
-        self._bot_email_pwd = gc.config('/setting/push/email/bot_email/email_pwd', utils.get_call_loc())
+        self._global_wechat = None
+        self._global_email = None
+        self._bot_email_user = None
+        self._bot_email_host = None
+        self._bot_email_pwd = None
+        self._errno_msg = None
+        self._sct_wechat_url = None
+        self.fetch_param()
         self.bot_email = Email(self._bot_email_user, self._bot_email_host, self._bot_email_pwd)
-        self._errno_msg = gc.config('/config/errmsg', utils.get_call_loc())
 
-    @staticmethod
     @logger.catch
-    def sct_wechat(uid, title, message, sendkey):
+    def fetch_param(self):
+        self._errno_msg = config.config('/config/errmsg', utils.get_call_loc())
+        self._sct_wechat_url = config.config('/config/url/sct', utils.get_call_loc())
+        self._global_wechat = config.config('/setting/push/wechat/switch', utils.get_call_loc())
+        self._global_email = config.config('/setting/push/email/switch', utils.get_call_loc())
+        self._bot_email_user = config.config('/setting/push/email/bot_email/email_user', utils.get_call_loc())
+        self._bot_email_host = config.config('/setting/push/email/bot_email/email_host', utils.get_call_loc())
+        self._bot_email_pwd = config.config('/setting/push/email/bot_email/email_pwd', utils.get_call_loc())
+        logger.debug("Fetched [Push] params.")
+
+    @logger.catch
+    def sct_wechat(self, uid, title, message, sendkey):
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        url = f"{gc.config('/config/url/sct', utils.get_call_loc())}/{sendkey}.send"
+        url = f"{self._sct_wechat_url}/{sendkey}.send"
         ps = ""
         msg = f'{" " * 10}{title}\n\n{uid}:\n{" " * 4}{message}\n{ps}\n\n{now}'
         payload = {
@@ -176,4 +196,4 @@ class Push:
                     logger.error(e)
 
 
-global_push = Push()
+push = Push()

@@ -4,20 +4,29 @@ import requests
 import sys
 
 from common.logger import logger
-from common.config import global_config as gc
+from common.config import config
 from fake_useragent import UserAgent
 from datetime import datetime
 
 
 class Utils:
     def __init__(self):
-        self._HOSTS = list(gc.config('/config/all_hosts', self.get_call_loc()).keys())
+        self._HOSTS = None
+        self._url_0 = None
+        self._url_2 = None
+        self._url_3 = None
+        self.fetch_param()
         self._ua = UserAgent(verify_ssl=False)
         self.available_host = []
-        self._url_0 = gc.config('/config/url/host_head', self.get_call_loc())
-        self._url_2 = gc.config('/config/url/host_foot', self.get_call_loc())
-        self._url_3 = gc.config('/config/url/login', self.get_call_loc())
         self.date = ""
+
+    @logger.catch
+    def fetch_param(self):
+        self._HOSTS = list(config.config('/config/all_hosts', self.get_call_loc()).keys())
+        self._url_0 = config.config('/config/url/host_head', self.get_call_loc())
+        self._url_2 = config.config('/config/url/host_foot', self.get_call_loc())
+        self._url_3 = config.config('/config/url/login', self.get_call_loc())
+        logger.debug("Fetched [Utils] params.")
 
     @logger.catch
     def _check_host_status(self, host):
@@ -93,6 +102,17 @@ class Utils:
         today = f"{today.year}年{today.month}月{today.day}日"
         self.date = today
         logger.debug(f"Date:{self.date}")
+
+    @logger.catch
+    def refresh_param(self):
+        from common.service import report_service
+        report_service.fetch_param()
+        from common.report import report
+        report.fetch_param()
+        from common.push import push
+        push.fetch_param()
+        push.bot_email.fetch_param()
+        self.fetch_param()
 
 
 utils = Utils()
