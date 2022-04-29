@@ -92,6 +92,10 @@ class Push:
         self._bot_email_pwd = None
         self._errno_msg = None
         self._sct_wechat_url = None
+        self._push_content_existed = None
+        self._push_content_success = None
+        self._push_content_failed = None
+        self._push_content_error = None
         self.fetch_param()
         self.bot_email = Email(self._bot_email_user, self._bot_email_host, self._bot_email_pwd)
 
@@ -104,6 +108,10 @@ class Push:
         self._bot_email_user = config.config('/setting/push/email/bot_email/email_user', utils.get_call_loc())
         self._bot_email_host = config.config('/setting/push/email/bot_email/email_host', utils.get_call_loc())
         self._bot_email_pwd = config.config('/setting/push/email/bot_email/email_pwd', utils.get_call_loc())
+        self._push_content = config.config('/config/push_content/existed', utils.get_call_loc())
+        self._push_content_success = config.config('/config/push_content/success', utils.get_call_loc())
+        self._push_content_failed = config.config('/config/push_content/failed', utils.get_call_loc())
+        self._push_content_error = config.config('/config/push_content/error', utils.get_call_loc())
         logger.debug("Fetched [Push] params.")
 
     @logger.catch
@@ -164,17 +172,17 @@ class Push:
         status = result[0]
         errno = result[1]
         if status == 0:
-            title = "[打卡已存在]"
-            message = "当日打卡已存在!"
+            title = self._push_content_existed["title"]
+            message = self._push_content_existed["message"]
         elif status == 1:
-            title = "[打卡成功]"
-            message = "打卡成功!"
+            title = self._push_content_success["title"]
+            message = self._push_content_success["message"]
         elif status == 2:
-            title = "[打卡失败]"
-            message = "打卡可能失败,请手动打卡!"
+            title = self._push_content_failed["title"]
+            message = self._push_content_failed["message"]
         else:
-            title = "[ERROR]"
-            message = "ERROR!"
+            title = self._push_content_error["title"]
+            message = self._push_content_error["message"]
         if errno != 0:
             errmsg = [i["msg"] for i in self._errno_msg if errno == i["errno"]][0]
             message = f'{message}[错误信息:"{errmsg}"]'

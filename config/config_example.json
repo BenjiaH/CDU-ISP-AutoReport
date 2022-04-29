@@ -53,6 +53,24 @@
             "success": "提交成功",
             "existed": "已存在"
         },
+        "push_content":{
+            "existed": {
+                "title": "[打卡已存在]",
+                "message":"当日打卡已存在!"
+            },
+            "success": {
+                "title": "[打卡成功]",
+                "message":"打卡成功!"
+            },
+            "failed":{
+                "title": "[打卡失败]",
+                "message":"打卡可能失败,请手动打卡!"
+            },
+            "error":{
+                "title": "[ERROR]",
+                "message": "ERROR!"
+            }
+        },
         "all_hosts": {
             "ispstu": "富强",
             "ispstu1-1": "民主",
