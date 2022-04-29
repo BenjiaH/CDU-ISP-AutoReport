@@ -32,7 +32,7 @@ class Utils:
     def _check_host_status(self, host):
         url = f"{self._url_0}/{host}/{self._url_2}/{self._url_3}"
         try:
-            res = requests.get(url=url, timeout=10)
+            res = requests.get(url=url, timeout=5)
             logger.debug(f"URL:{url}. Status code:{res.status_code}")
         except Exception as e:
             logger.error(f'Failed to connect to the server "{host}". [{e}]')
@@ -77,13 +77,16 @@ class Utils:
 
     @staticmethod
     @logger.catch
-    def version(stage: str, version=""):
-        commit_id = ""
+    def version(version="", stage=""):
         if os.path.exists("../.git"):
             logger.debug(f'Founded [{os.path.abspath("../.git")}]')
             commit_id = (os.popen("git rev-parse --short HEAD").read()).replace("\n", "")
-            version += "."
-        info = f"{version}{commit_id}({stage})"
+            commit_id = "." + commit_id
+        else:
+            commit_id = ""
+        if stage != "":
+            stage = f"({stage})"
+        info = f"{version}{commit_id}{stage}"
         logger.info(f"Version:{info}")
 
     @staticmethod
