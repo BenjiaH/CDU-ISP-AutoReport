@@ -3,7 +3,7 @@ from time import sleep, time
 from common.utils import utils
 from common.logger import logger
 from common.config import config
-from common.account import global_account
+from common.account import account
 from common.report import report
 from common.push import push
 
@@ -12,7 +12,7 @@ class ReportService:
     @logger.catch
     def __init__(self):
         self._str_now_time = "0.1"
-        self._account_cnt = global_account.row
+        self._account_cnt = account.row
         self._wechat_push = None
         self._wechat_type = None
         self._api = None
@@ -38,13 +38,13 @@ class ReportService:
     @logger.catch
     def _task(self):
         for i in range(self._account_cnt):
-            log_info = f"[{i + 1}/{self._account_cnt}] Report ID:{global_account.studentID(i)}".center(46, '-')
+            log_info = f"[{i + 1}/{self._account_cnt}] Report ID:{account.studentID(i)}".center(46, '-')
             logger.info(log_info)
-            ret = report.main(uid=global_account.studentID(i), password=global_account.password(i))
-            push.push(ret, uid=global_account.studentID(i), wechat_push=global_account.wechat_push(i),
-                             email_push=global_account.email_push(i), sendkey=global_account.sendkey(i),
-                             email_rxer=global_account.email(i), wechat_type=self._wechat_type,
-                             api=self._api, userid=global_account.userid(i))
+            ret = report.main(uid=account.studentID(i), password=account.password(i))
+            push.push(ret, uid=account.studentID(i), wechat_push=account.wechat_push(i),
+                             email_push=account.email_push(i), sendkey=account.sendkey(i),
+                             email_rxer=account.email(i), wechat_type=self._wechat_type,
+                             api=self._api, userid=account.userid(i))
             sleep(1)
 
     @logger.catch
@@ -86,7 +86,7 @@ class ReportService:
                         sleep(1)
                     else:
                         logger.info("Time arrived. Start to report.")
-                        global_account.refresh()
+                        account.refresh()
                         utils.refresh_param()
                         self._gen()
                         # avoid running twice in 1 minute

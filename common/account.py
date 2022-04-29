@@ -24,14 +24,14 @@ class Account:
     @logger.catch
     def _read_csv(self):
         self._csv_file = csv.reader(open(self._path, encoding='utf-8-sig'))
-        for row in self._csv_file:
+        for i, row in enumerate(self._csv_file):
             if row == [] or "#" in row[0]:
-                logger.debug(f"Del:{row}")
+                logger.debug(f"Del line {i+1}.")
             else:
                 self._raw.append(row)
         self._raw = self._raw[1:]
         logger.debug(f"Loaded [{self._path}]")
-        logger.debug(f"Rows in [{self._path}]:{len(self._raw)}")
+        logger.debug(f"Total {len(self._raw)} account(s) in [{self._path}]")
 
     @logger.catch
     def refresh(self):
@@ -65,4 +65,4 @@ class Account:
         return len(self._raw)
 
 
-global_account = Account(config.config('/config/path/account_file', utils.get_call_loc()))
+account = Account(config.config('/config/path/account_file', utils.get_call_loc()))
