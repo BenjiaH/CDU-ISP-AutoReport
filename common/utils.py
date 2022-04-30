@@ -10,6 +10,7 @@ from datetime import datetime
 
 
 class Utils:
+    @logger.catch
     def __init__(self):
         self._HOSTS = None
         self._url_0 = None

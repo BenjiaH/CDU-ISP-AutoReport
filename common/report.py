@@ -9,6 +9,7 @@ from common.config import config
 
 
 class Report:
+    @logger.catch
     def __init__(self):
         self._error = 0
         self._errno = 0
