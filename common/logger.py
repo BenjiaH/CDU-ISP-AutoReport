@@ -21,7 +21,9 @@ class Logger:
             logger.add(sink=log_file, format=self._log_fmt, rotation="1 MB", level=self._level)
         else:
             logger.add(sink=log_file, format=self._debug_fmt, rotation="1 MB", level=self._level)
+        logger.info("".center(50, '-'))
         logger.info("The logger is started".center(50, '-'))
+        logger.info("".center(50, '-'))
         if self._level == "DEBUG":
             logger.debug("The debug mode is enabled.")
 
