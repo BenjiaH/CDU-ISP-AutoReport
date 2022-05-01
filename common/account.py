@@ -26,7 +26,7 @@ class Account:
         self._csv_file = csv.reader(open(self._path, encoding='utf-8-sig'))
         for i, row in enumerate(self._csv_file):
             if row == [] or "#" in row[0]:
-                logger.debug(f"Del line {i+1}.")
+                logger.debug(f"Del line {i + 1}.")
             else:
                 self._raw.append(row)
         self._raw = self._raw[1:]
