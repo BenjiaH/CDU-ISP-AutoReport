@@ -108,7 +108,7 @@ class Push:
         self._bot_email_user = config.config('/setting/push/email/bot_email/email_user', utils.get_call_loc())
         self._bot_email_host = config.config('/setting/push/email/bot_email/email_host', utils.get_call_loc())
         self._bot_email_pwd = config.config('/setting/push/email/bot_email/email_pwd', utils.get_call_loc())
-        self._push_content = config.config('/config/push_content/existed', utils.get_call_loc())
+        self._push_content_existed = config.config('/config/push_content/existed', utils.get_call_loc())
         self._push_content_success = config.config('/config/push_content/success', utils.get_call_loc())
         self._push_content_failed = config.config('/config/push_content/failed', utils.get_call_loc())
         self._push_content_error = config.config('/config/push_content/error', utils.get_call_loc())
