@@ -12,5 +12,5 @@ LOGO = """\033[33m
                                                                                      |_|                   
 \033[97m"""
 print(LOGO)
-utils.version("1.4.0", "beta")
+utils.version("1.4.0", "rc")
 report_service.start()
