@@ -49,7 +49,6 @@ class ReportService:
 
     @logger.catch
     def _gen(self):
-
         start_time = time()
         if self._account_cnt == 0:
             logger.error("Account does not exist.")
