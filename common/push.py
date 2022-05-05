@@ -157,8 +157,8 @@ class Push:
         url = f"{self._wechat_v1_url}/*******.send"
         logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
         res.encoding = "utf-8"
+        logger.debug(f"Response:{res.text}")
         dict_res = json.loads(res.text)
-        logger.debug("Response:{res}".format(res=dict_res))
         if res.status_code != 200 or dict_res["errno"] != 0:
             logger.error(f"Failed to push the WeChat message. Status code:{res.status_code}.")
             logger.error("Retry to push the WeChat message.")
@@ -173,7 +173,8 @@ class Push:
         logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
         res.encoding = "utf-8"
         logger.debug(f"Response:{res.text}")
-        if res.status_code != 200:
+        dict_res = json.loads(res.text)
+        if res.status_code != 200 or dict_res["code"] != 0:
             logger.error(f"Failed to push the WeChat message. Status code:{res.status_code}.")
             logger.error("Retry to push the WeChat message.")
             raise Exception("Failed to push the WeChat message.")
@@ -183,7 +184,7 @@ class Push:
     @staticmethod
     @retry(stop_max_attempt_number=3, wait_fixed=500)
     def _wechat_v3(url, payload):
-        # go_scf post请求body必须为json
+        # go_scf V2.0 post请求body必须为json
         # 详见文档:https://github.com/riba2534/wecomchan/tree/main/go-scf#%E4%BD%BF%E7%94%A8-post-%E8%BF%9B%E8%A1%8C%E8%AF%B7%E6%B1%82
         res = requests.post(url=url, data=json.dumps(payload))
         payload["sendkey"] = "*******"
