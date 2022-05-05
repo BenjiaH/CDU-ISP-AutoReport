@@ -43,7 +43,8 @@
             "navigation": "健康日报登记",
             "report_default": "projecthealth_addx.asp",
             "report": "projecthealth_add.asp",
-            "sct": "https://sctapi.ftqq.com"
+            "wechat_v1": "http://sc.ftqq.com",
+            "wechat_v2": "https://sctapi.ftqq.com"
         },
         "path": {
             "account_file": "../config/account.csv",
