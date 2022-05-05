@@ -122,10 +122,9 @@ class Push:
 
     def _wechat(self, uid, title, message, sendkey, userid=""):
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        ps = ""
+        ps = "psps"
         msg = f'{" " * 10}{title}\n\n{uid}:\n{" " * 4}{message}\n{ps}\n\n{now}'
         msg_no_title = f'{uid}:\n{" " * 4}{message}\n{ps}\n\n{now}'
-        # v1_msg = uid + ":\n\n" + message + "\n\n`{time}`".format(time=now)
         if self._wechat_v == 1:
             url = f'{self._wechat_v1_url}/{sendkey}.send'
             payload = {
