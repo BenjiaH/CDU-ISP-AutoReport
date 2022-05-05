@@ -14,8 +14,6 @@ class ReportService:
         self._str_now_time = "0.1"
         self._account_cnt = account.row
         self._wechat_push = None
-        self._wechat_type = None
-        self._api = None
         self._email_push = None
         self._timer_switch = None
         self.fetch_param()
@@ -23,8 +21,6 @@ class ReportService:
     @logger.catch
     def fetch_param(self):
         self._wechat_push = config.config('/setting/push/wechat/switch', utils.get_call_loc())
-        self._wechat_type = config.config('/setting/push/wechat/type', utils.get_call_loc())
-        self._api = config.config('/setting/push/wechat/api', utils.get_call_loc())
         self._email_push = config.config('/setting/push/email/switch', utils.get_call_loc())
         self._timer_switch = config.config('/setting/timer/switch', utils.get_call_loc())
         logger.debug("Fetched [ReportService] params.")
@@ -43,8 +39,7 @@ class ReportService:
             ret = report.main(uid=account.studentID(i), password=account.password(i))
             push.push(ret, uid=account.studentID(i), wechat_push=account.wechat_push(i),
                              email_push=account.email_push(i), sendkey=account.sendkey(i),
-                             email_rxer=account.email(i), wechat_type=self._wechat_type,
-                             api=self._api, userid=account.userid(i))
+                             email_rxer=account.email(i), userid=account.userid(i))
             sleep(1)
 
     @logger.catch

@@ -91,63 +91,99 @@ class Push:
         self._bot_email_host = None
         self._bot_email_pwd = None
         self._errno_msg = None
-        self._sct_wechat_url = None
+        self._wechat_v1_url = None
+        self._wechat_v2_url = None
+        self._wechat_v3_url = None
         self._push_content_existed = None
         self._push_content_success = None
         self._push_content_failed = None
         self._push_content_error = None
+        self._wechat_v = None
         self.fetch_param()
         self.bot_email = Email(self._bot_email_user, self._bot_email_host, self._bot_email_pwd)
 
     @logger.catch
     def fetch_param(self):
-        self._errno_msg = config.config('/config/errmsg', utils.get_call_loc())
-        self._sct_wechat_url = config.config('/config/url/sct', utils.get_call_loc())
         self._global_wechat = config.config('/setting/push/wechat/switch', utils.get_call_loc())
         self._global_email = config.config('/setting/push/email/switch', utils.get_call_loc())
         self._bot_email_user = config.config('/setting/push/email/bot_email/email_user', utils.get_call_loc())
         self._bot_email_host = config.config('/setting/push/email/bot_email/email_host', utils.get_call_loc())
         self._bot_email_pwd = config.config('/setting/push/email/bot_email/email_pwd', utils.get_call_loc())
+        self._errno_msg = config.config('/config/errmsg', utils.get_call_loc())
+        self._wechat_v1_url = config.config('/config/url/wechat_v1', utils.get_call_loc())
+        self._wechat_v2_url = config.config('/config/url/wechat_v2', utils.get_call_loc())
+        self._wechat_v3_url = config.config('/setting/push/wechat/api', utils.get_call_loc())
         self._push_content_existed = config.config('/config/push_content/existed', utils.get_call_loc())
         self._push_content_success = config.config('/config/push_content/success', utils.get_call_loc())
         self._push_content_failed = config.config('/config/push_content/failed', utils.get_call_loc())
         self._push_content_error = config.config('/config/push_content/error', utils.get_call_loc())
+        self._wechat_v = config.config('/setting/push/wechat/version', utils.get_call_loc())
         logger.debug("Fetched [Push] params.")
 
-    @logger.catch
-    def sct_wechat(self, uid, title, message, sendkey):
+    def _wechat(self, uid, title, message, sendkey, userid=""):
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        url = f"{self._sct_wechat_url}/{sendkey}.send"
         ps = ""
         msg = f'{" " * 10}{title}\n\n{uid}:\n{" " * 4}{message}\n{ps}\n\n{now}'
-        payload = {
-            "title": title,
-            "desp": parse.quote(msg)
-        }
+        msg_no_title = f'{uid}:\n{" " * 4}{message}\n{ps}\n\n{now}'
+        # v1_msg = uid + ":\n\n" + message + "\n\n`{time}`".format(time=now)
+        if self._wechat_v == 1:
+            url = f'{self._wechat_v1_url}/{sendkey}.send'
+            payload = {
+                "text": title,
+                "desp": msg_no_title
+            }
+            self._wechat_v1(url, payload)
+        elif self._wechat_v == 2:
+            url = f'{self._wechat_v2_url}/{sendkey}.send'
+            payload = {
+                "title": title,
+                "desp": msg_no_title
+            }
+            self._wechat_v2(url, payload)
+        elif self._wechat_v == 3:
+            url = self._wechat_v3_url
+            payload = {
+                "sendkey": sendkey,
+                "msg_type": "text",
+                "msg": msg,
+                "to_user": userid
+            }
+            self._wechat_v3(url, payload)
+        else:
+            logger.error(f"Failed to push the WeChat message. [Version error]")
+
+    @retry(stop_max_attempt_number=3, wait_fixed=500)
+    def _wechat_v1(self, url, payload):
         res = requests.get(url=url, params=payload)
-        logger.debug(f"URL:{url}. Status code:{res.status_code}")
+        url = f"{self._wechat_v1_url}/*******.send"
+        logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
+        res.encoding = "utf-8"
+        dict_res = json.loads(res.text)
+        logger.debug("Response:{res}".format(res=dict_res))
+        if res.status_code != 200 or dict_res["errno"] != 0:
+            logger.error(f"Failed to push the WeChat message. Status code:{res.status_code}.")
+            logger.error("Retry to push the WeChat message.")
+            raise Exception("Failed to push the WeChat message.")
+        else:
+            logger.info("Successful to push the WeChat message.")
+
+    @retry(stop_max_attempt_number=3, wait_fixed=500)
+    def _wechat_v2(self, url, payload):
+        res = requests.post(url=url, params=payload)
+        url = f'{self._wechat_v2_url}/*******.send'
+        logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
         res.encoding = "utf-8"
         logger.debug(f"Response:{res.text}")
         if res.status_code != 200:
             logger.error(f"Failed to push the WeChat message. Status code:{res.status_code}.")
-            return False
+            logger.error("Retry to push the WeChat message.")
+            raise Exception("Failed to push the WeChat message.")
         else:
             logger.info("Successful to push the WeChat message.")
-            return True
 
     @staticmethod
     @retry(stop_max_attempt_number=3, wait_fixed=500)
-    def go_scf_wechat(uid, title, message, api, sendkey, userid):
-        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        url = f'{api}/{sendkey}'
-        ps = ""
-        msg = f'{" " * 10}{title}\n\n{uid}:\n{" " * 4}{message}\n{ps}\n\n{now}'
-        payload = {
-            "sendkey": sendkey,
-            "msg_type": "text",
-            "msg": msg,
-            "to_user": userid
-        }
+    def _wechat_v3(url, payload):
         # go_scf post请求body必须为json
         # 详见文档:https://github.com/riba2534/wecomchan/tree/main/go-scf#%E4%BD%BF%E7%94%A8-post-%E8%BF%9B%E8%A1%8C%E8%AF%B7%E6%B1%82
         res = requests.post(url=url, data=json.dumps(payload))
@@ -156,19 +192,15 @@ class Push:
         res.encoding = "utf-8"
         logger.debug(f"Response:{res.text}")
         dict_res = json.loads(res.text)
-        if res.status_code != 200:
+        if res.status_code != 200 or dict_res["code"] != 0:
             logger.error(f"Failed to push the WeChat message. Status code:{res.status_code}.")
-            logger.error("Retry to push the WeChat message.")
-            raise Exception("Failed to push the WeChat message.")
-        elif dict_res["code"] != 0:
-            logger.error(f'Failed to push the WeChat message. [{dict_res["msg"]}].')
             logger.error("Retry to push the WeChat message.")
             raise Exception("Failed to push the WeChat message.")
         else:
             logger.info("Successful to push the WeChat message.")
 
     @logger.catch
-    def push(self, result, uid, wechat_push, email_push, wechat_type, api, userid, sendkey="", email_rxer=""):
+    def push(self, result, uid, wechat_push, email_push, sendkey="", userid="", email_rxer=""):
         status = result[0]
         errno = result[1]
         if status == 0:
@@ -190,10 +222,7 @@ class Push:
         if self._global_wechat != "off":
             if wechat_push == "1":
                 try:
-                    if str(wechat_type) == "1":
-                        self.sct_wechat(uid, title, message, sendkey)
-                    else:
-                        self.go_scf_wechat(uid, title, message, api, sendkey, userid)
+                    self._wechat(uid, title, message, sendkey, userid)
                 except Exception as e:
                     logger.error(e)
         if self._global_email != "off":
