@@ -153,7 +153,8 @@ class Push:
 
     @retry(stop_max_attempt_number=3, wait_fixed=500)
     def _wechat_v1(self, url, payload):
-        res = requests.get(url=url, params=payload)
+        static_url = url
+        res = requests.get(url=static_url, params=payload)
         url = f"{self._wechat_v1_url}/*******.send"
         logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
         res.encoding = "utf-8"
@@ -168,7 +169,8 @@ class Push:
 
     @retry(stop_max_attempt_number=3, wait_fixed=500)
     def _wechat_v2(self, url, payload):
-        res = requests.post(url=url, params=payload)
+        static_url = url
+        res = requests.post(url=static_url, params=payload)
         url = f'{self._wechat_v2_url}/*******.send'
         logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
         res.encoding = "utf-8"
@@ -186,7 +188,8 @@ class Push:
     def _wechat_v3(url, payload):
         # go_scf V2.0 post请求body必须为json
         # 详见文档:https://github.com/riba2534/wecomchan/tree/main/go-scf#%E4%BD%BF%E7%94%A8-post-%E8%BF%9B%E8%A1%8C%E8%AF%B7%E6%B1%82
-        res = requests.post(url=url, data=json.dumps(payload))
+        static_payload = payload
+        res = requests.post(url=url, data=json.dumps(static_payload))
         payload["sendkey"] = "*******"
         logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
         res.encoding = "utf-8"

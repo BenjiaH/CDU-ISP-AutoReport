@@ -113,7 +113,9 @@ class Report:
         try:
             soup = BeautifulSoup(res.text, 'lxml')
             self._navigation_url = soup.find('a', string=target)['href']
-            logger.debug(f'Navigation "{target}" url:{self._navigation_url}.')
+            t = self._navigation_url
+            t = t.replace(t[t.index("=") + 1:], "*******")
+            logger.debug(f'Navigation "{target}" URL:{t}.')
         except Exception as e:
             logger.error(f"Failed to get the project url.[{e}]")
             self._set_error(3, 1, utils.get_call_loc(True))
