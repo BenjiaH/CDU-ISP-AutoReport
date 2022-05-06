@@ -122,29 +122,32 @@ class Push:
 
     def _wechat(self, uid, title, message, sendkey, userid=""):
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        ps = "psps"
-        msg = f'{" " * 10}{title}\n\n{uid}:\n{" " * 4}{message}\n{ps}\n\n{now}'
-        msg_no_title = f'{uid}:\n{" " * 4}{message}\n{ps}\n\n{now}'
+        ps = ""
+        msg_title = f'{" " * 10}{title}\n\n'
+        msg_content = f'{uid}:\n{" " * 4}{message}\n{ps}\n\n{now}'
         if self._wechat_v == 1:
+            logger.debug("Use WeChat V1 push method")
             url = f'{self._wechat_v1_url}/{sendkey}.send'
             payload = {
                 "text": title,
-                "desp": msg_no_title
+                "desp": msg_content
             }
             self._wechat_v1(url, payload)
         elif self._wechat_v == 2:
+            logger.debug("Use WeChat V2 push method")
             url = f'{self._wechat_v2_url}/{sendkey}.send'
             payload = {
                 "title": title,
-                "desp": msg_no_title
+                "desp": msg_content
             }
             self._wechat_v2(url, payload)
         elif self._wechat_v == 3:
+            logger.debug("Use WeChat V3 push method")
             url = self._wechat_v3_url
             payload = {
                 "sendkey": sendkey,
                 "msg_type": "text",
-                "msg": msg,
+                "msg": msg_title + msg_content,
                 "to_user": userid
             }
             self._wechat_v3(url, payload)
@@ -158,9 +161,11 @@ class Push:
         url = f"{self._wechat_v1_url}/*******.send"
         logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
         res.encoding = "utf-8"
-        logger.debug(f"Response:{res.text}")
+        logger.debug(f"Response:{res.text.rstrip()}")
         dict_res = json.loads(res.text)
-        if res.status_code != 200 or dict_res["errno"] != 0:
+        if "errno" in dict_res.keys():
+            dict_res["code"] = dict_res.pop("errno")
+        if res.status_code != 200 or dict_res["code"] != 0:
             logger.error(f"Failed to push the WeChat message. Status code:{res.status_code}.")
             logger.error("Retry to push the WeChat message.")
             raise Exception("Failed to push the WeChat message.")
@@ -174,7 +179,7 @@ class Push:
         url = f'{self._wechat_v2_url}/*******.send'
         logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
         res.encoding = "utf-8"
-        logger.debug(f"Response:{res.text}")
+        logger.debug(f"Response:{res.text.rstrip()}")
         dict_res = json.loads(res.text)
         if res.status_code != 200 or dict_res["code"] != 0:
             logger.error(f"Failed to push the WeChat message. Status code:{res.status_code}.")
@@ -186,7 +191,7 @@ class Push:
     @staticmethod
     @retry(stop_max_attempt_number=3, wait_fixed=500)
     def _wechat_v3(url, payload):
-        # go_scf V2.0 post请求body必须为json
+        # go_scf V2.0 请求必须为post，且body必须为json
         # 详见文档:https://github.com/riba2534/wecomchan/tree/main/go-scf#%E4%BD%BF%E7%94%A8-post-%E8%BF%9B%E8%A1%8C%E8%AF%B7%E6%B1%82
         static_payload = payload
         res = requests.post(url=url, data=json.dumps(static_payload))
