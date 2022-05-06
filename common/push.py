@@ -123,8 +123,8 @@ class Push:
     def _wechat(self, uid, title, message, sendkey, userid=""):
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         ps = ""
-        msg_title = f'{" " * 10}{title}\n\n'
-        msg_content = f'{uid}:\n{" " * 4}{message}\n{ps}\n\n{now}'
+        msg_title = f'{" " * 18}{title}'
+        msg_content = f'\n\n{uid}:\n\n{" " * 8}{message}\n{ps}\n\n{now}'
         if self._wechat_v == 1:
             logger.debug("Use WeChat V1 push method")
             url = f'{self._wechat_v1_url}/{sendkey}.send'
