@@ -4,7 +4,6 @@ import requests
 import os
 
 from retrying import retry
-from urllib import parse
 from datetime import datetime
 from email.mime.text import MIMEText
 from common.config import config
@@ -15,13 +14,8 @@ from common.utils import utils
 class Email:
     @logger.catch
     def __init__(self, mail_user, mail_host, mail_pwd):
-        self._email_switch = None
         self._email_tmpl_path = None
         self.fetch_param()
-        if self._email_switch == "off":
-            logger.debug("Email is disabled")
-            return
-        logger.debug("Email is enabled")
         self._mail_host = mail_host
         self._mail_user = mail_user
         self._mail_name = self._mail_user.split("@")[0]
@@ -32,7 +26,6 @@ class Email:
 
     @logger.catch
     def fetch_param(self):
-        self._email_switch = config.config('/setting/push/email/switch', utils.get_call_loc())
         self._email_tmpl_path = config.config('/config/path/email_tmpl', utils.get_call_loc())
         logger.debug("Fetched [Push.Email] params.")
 
@@ -45,8 +38,6 @@ class Email:
 
     @logger.catch
     def login(self):
-        if self._email_switch == "off":
-            return
         self._load_tmpl()
         try:
             smtp = smtplib.SMTP_SSL(self._mail_host, 465, timeout=20)
@@ -85,8 +76,8 @@ class Email:
 class Push:
     @logger.catch
     def __init__(self):
-        self._global_wechat = None
-        self._global_email = None
+        self._wechat_switch = None
+        self._email_switch = None
         self._bot_email_user = None
         self._bot_email_host = None
         self._bot_email_pwd = None
@@ -100,12 +91,16 @@ class Push:
         self._push_content_error = None
         self._wechat_v = None
         self.fetch_param()
-        self.bot_email = Email(self._bot_email_user, self._bot_email_host, self._bot_email_pwd)
+        if self._email_switch == "on":
+            self.bot_email = Email(self._bot_email_user, self._bot_email_host, self._bot_email_pwd)
+            logger.debug("Email is enabled")
+        else:
+            logger.debug("Email is disabled")
 
     @logger.catch
     def fetch_param(self):
-        self._global_wechat = config.config('/setting/push/wechat/switch', utils.get_call_loc())
-        self._global_email = config.config('/setting/push/email/switch', utils.get_call_loc())
+        self._wechat_switch = config.config('/setting/push/wechat/switch', utils.get_call_loc())
+        self._email_switch = config.config('/setting/push/email/switch', utils.get_call_loc())
         self._bot_email_user = config.config('/setting/push/email/bot_email/email_user', utils.get_call_loc())
         self._bot_email_host = config.config('/setting/push/email/bot_email/email_host', utils.get_call_loc())
         self._bot_email_pwd = config.config('/setting/push/email/bot_email/email_pwd', utils.get_call_loc())
@@ -126,7 +121,7 @@ class Push:
         msg_title = f'{" " * 18}{title}'
         msg_content = f'\n\n{uid}:\n\n{" " * 8}{message}\n{ps}\n\n{now}'
         if self._wechat_v == 1:
-            logger.debug("Use WeChat V1 push method")
+            logger.debug("Use WeChat V1 push method.")
             url = f'{self._wechat_v1_url}/{sendkey}.send'
             payload = {
                 "text": title,
@@ -134,7 +129,7 @@ class Push:
             }
             self._wechat_v1(url, payload)
         elif self._wechat_v == 2:
-            logger.debug("Use WeChat V2 push method")
+            logger.debug("Use WeChat V2 push method.")
             url = f'{self._wechat_v2_url}/{sendkey}.send'
             payload = {
                 "title": title,
@@ -142,7 +137,7 @@ class Push:
             }
             self._wechat_v2(url, payload)
         elif self._wechat_v == 3:
-            logger.debug("Use WeChat V3 push method")
+            logger.debug("Use WeChat V3 push method.")
             url = self._wechat_v3_url
             payload = {
                 "sendkey": sendkey,
@@ -208,7 +203,7 @@ class Push:
             logger.info("Successful to push the WeChat message.")
 
     @logger.catch
-    def push(self, result, uid, wechat_push, email_push, sendkey="", userid="", email_rxer=""):
+    def push(self, result, uid, user_wechat_push, user_email_push, sendkey="", userid="", email_rxer=""):
         status = result[0]
         errno = result[1]
         if status == 0:
@@ -227,14 +222,14 @@ class Push:
             errmsg = [i["msg"] for i in self._errno_msg if errno == i["errno"]][0]
             message = f'{message}[错误信息:"{errmsg}"]'
         logger.debug(f"Title:{title}#Message:{message}#Error code:{errno}")
-        if self._global_wechat != "off":
-            if wechat_push == "1":
+        if self._wechat_switch == "on":
+            if user_wechat_push == "1":
                 try:
                     self._wechat(uid, title, message, sendkey, userid)
                 except Exception as e:
                     logger.error(e)
-        if self._global_email != "off":
-            if email_push == "1":
+        if self._email_switch == "on":
+            if user_email_push == "1":
                 try:
                     self.bot_email.send(uid, title, message, [email_rxer])
                 except Exception as e:

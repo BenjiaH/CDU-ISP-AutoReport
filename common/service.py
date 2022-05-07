@@ -13,15 +13,13 @@ class ReportService:
     def __init__(self):
         self._str_now_time = "0.1"
         self._account_cnt = account.row
-        self._wechat_push = None
-        self._email_push = None
+        self._email_switch = None
         self._timer_switch = None
         self.fetch_param()
 
     @logger.catch
     def fetch_param(self):
-        self._wechat_push = config.config('/setting/push/wechat/switch', utils.get_call_loc())
-        self._email_push = config.config('/setting/push/email/switch', utils.get_call_loc())
+        self._email_switch = config.config('/setting/push/email/switch', utils.get_call_loc())
         self._timer_switch = config.config('/setting/timer/switch', utils.get_call_loc())
         logger.debug("Fetched [ReportService] params.")
 
@@ -37,9 +35,8 @@ class ReportService:
             log_info = f"[{i + 1}/{self._account_cnt}] Report ID:{account.studentID(i)}".center(46, '-')
             logger.info(log_info)
             ret = report.main(uid=account.studentID(i), password=account.password(i))
-            push.push(ret, uid=account.studentID(i), wechat_push=account.wechat_push(i),
-                             email_push=account.email_push(i), sendkey=account.sendkey(i),
-                             email_rxer=account.email(i), userid=account.userid(i))
+            push.push(ret, account.studentID(i), account.wechat_push(i), account.email_push(i), account.sendkey(i),
+                      account.userid(i), account.email(i))
             sleep(1)
 
     @logger.catch
@@ -49,7 +46,8 @@ class ReportService:
             logger.error("Account does not exist.")
         else:
             utils.refresh_hosts()
-            push.bot_email.login()
+            if self._email_switch == "on":
+                push.bot_email.login()
             utils.update_date()
             self._task()
         end_time = time()
@@ -58,11 +56,7 @@ class ReportService:
 
     @logger.catch
     def start(self):
-        if self._timer_switch == "off":
-            logger.info("Timer is disabled.")
-            logger.info("Start to report.")
-            self._gen()
-        else:
+        if self._timer_switch == "on":
             logger.info("Timer is enabled.")
             while True:
                 config.refresh()
@@ -76,7 +70,6 @@ class ReportService:
                         logger.info(f"New set time:{str_set_time}.")
                     str_now_time = self._get_now_time()
                     if str_now_time != str_set_time:
-                        # print(str_now_time)
                         sleep(1)
                     else:
                         logger.info("Time arrived. Start to report.")
@@ -87,6 +80,10 @@ class ReportService:
                         logger.info("Cleaning... Estimated:1 min")
                         sleep(60)
                         break
+        else:
+            logger.info("Timer is disabled.")
+            logger.info("Start to report.")
+            self._gen()
 
 
 report_service = ReportService()
