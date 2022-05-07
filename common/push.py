@@ -3,6 +3,7 @@ import smtplib
 import requests
 import os
 
+from copy import deepcopy
 from retrying import retry
 from datetime import datetime
 from email.mime.text import MIMEText
@@ -151,10 +152,9 @@ class Push:
 
     @retry(stop_max_attempt_number=3, wait_fixed=500)
     def _wechat_v1(self, url, payload):
-        static_url = url
-        res = requests.get(url=static_url, params=payload)
-        url = f"{self._wechat_v1_url}/*******.send"
-        logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
+        res = requests.get(url=url, params=payload)
+        log_url = f"{self._wechat_v1_url}/*******.send"
+        logger.debug(f"URL:{log_url}. Payload:{payload}. Status code:{res.status_code}")
         res.encoding = "utf-8"
         logger.debug(f"Response:{res.text.rstrip()}")
         dict_res = json.loads(res.text)
@@ -169,10 +169,10 @@ class Push:
 
     @retry(stop_max_attempt_number=3, wait_fixed=500)
     def _wechat_v2(self, url, payload):
-        static_url = url
-        res = requests.post(url=static_url, params=payload)
-        url = f'{self._wechat_v2_url}/*******.send'
-        logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
+        res = requests.post(url=url, params=payload)
+        logger.debug(f'real url :{url}')
+        log_url = f'{self._wechat_v2_url}/*******.send'
+        logger.debug(f"URL:{log_url}. Payload:{payload}. Status code:{res.status_code}")
         res.encoding = "utf-8"
         logger.debug(f"Response:{res.text.rstrip()}")
         dict_res = json.loads(res.text)
@@ -188,10 +188,10 @@ class Push:
     def _wechat_v3(url, payload):
         # go_scf V2.0 请求必须为post，且body必须为json
         # 详见文档:https://github.com/riba2534/wecomchan/tree/main/go-scf#%E4%BD%BF%E7%94%A8-post-%E8%BF%9B%E8%A1%8C%E8%AF%B7%E6%B1%82
-        static_payload = payload
-        res = requests.post(url=url, data=json.dumps(static_payload))
-        payload["sendkey"] = "*******"
-        logger.debug(f"URL:{url}. Payload:{payload}. Status code:{res.status_code}")
+        log_payload = deepcopy(payload)
+        res = requests.post(url=url, data=json.dumps(payload))
+        log_payload["sendkey"] = "*******"
+        logger.debug(f"URL:{url}. Payload:{log_payload}. Status code:{res.status_code}")
         res.encoding = "utf-8"
         logger.debug(f"Response:{res.text}")
         dict_res = json.loads(res.text)
