@@ -119,7 +119,11 @@ class Push:
     def _wechat(self, uid, title, message, sendkey, userid=""):
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         ps = ""
-        msg_title = f'{" " * 18}{title}'
+        if title == self._push_content_failed["title"]:
+            space = " " * 18
+        else:
+            space = " " * 8
+        msg_title = f'{space}{title}'
         msg_content = f'\n\n{uid}:\n\n{" " * 8}{message}\n{ps}\n\n{now}'
         if self._wechat_v == 1:
             logger.debug("Use WeChat V1 push method.")
