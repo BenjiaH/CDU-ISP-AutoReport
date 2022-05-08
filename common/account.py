@@ -23,12 +23,14 @@ class Account:
 
     @logger.catch
     def _read_csv(self):
+        del_rows = []
         self._csv_file = csv.reader(open(self._path, encoding='utf-8-sig'))
         for i, row in enumerate(self._csv_file):
             if row == [] or "#" in row[0]:
-                logger.debug(f"Del line {i + 1}.")
+                del_rows.append(i + 1)
             else:
                 self._raw.append(row)
+        logger.debug(f"Del line: {del_rows}.")
         self._raw = self._raw[1:]
         logger.debug(f"Loaded [{self._path}]")
         logger.debug(f"Total {len(self._raw)} account(s) in [{self._path}]")
