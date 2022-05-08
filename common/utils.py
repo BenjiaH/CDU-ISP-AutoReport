@@ -78,7 +78,8 @@ class Utils:
 
     @staticmethod
     @logger.catch
-    def version(version="", stage=""):
+    def version(version):
+        num, stage = version.split("|")
         if os.path.exists("../.git"):
             logger.debug(f'Founded [{os.path.abspath("../.git")}]')
             commit_id = (os.popen("git rev-parse --short HEAD").read()).replace("\n", "")
@@ -87,7 +88,7 @@ class Utils:
             commit_id = ""
         if stage != "":
             stage = f"({stage})"
-        info = f"{version}{commit_id}{stage}"
+        info = f"{num}{commit_id}{stage}"
         logger.info(f"Version:{info}")
 
     @staticmethod

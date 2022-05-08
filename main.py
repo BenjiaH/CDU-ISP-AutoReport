@@ -1,6 +1,7 @@
 from common.service import report_service
 from common.utils import utils
 
+VERSION = "1.4.0|rc"
 LOGO = """\033[33m
    _____ _____  _    _      _____  _____ _____                    _        _____                       _   
   / ____|  __ \| |  | |    |_   _|/ ____|  __ \        /\        | |      |  __ \                     | |  
@@ -11,6 +12,7 @@ LOGO = """\033[33m
                                                                                      | |                   
                                                                                      |_|                   
 \033[97m"""
+
 print(LOGO)
-utils.version("1.4.0", "rc")
+utils.version(VERSION)
 report_service.start()
