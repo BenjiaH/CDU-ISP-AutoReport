@@ -52,7 +52,7 @@ class ReportService:
             self._task()
         end_time = time()
         cost = f"{(end_time - start_time):.2f}"
-        logger.info(f"Reports are completed. Cost time:{cost}s".center(50, '-'))
+        logger.info(f"Reports are completed. Cost time:{cost}(s)".center(50, '-'))
 
     @logger.catch
     def start(self):
