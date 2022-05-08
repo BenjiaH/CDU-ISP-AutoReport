@@ -30,7 +30,7 @@ class Account:
                 del_rows.append(i + 1)
             else:
                 self._raw.append(row)
-        logger.debug(f"Del line: {del_rows}.")
+        logger.debug(f"Del line(s): {del_rows}.")
         self._raw = self._raw[1:]
         logger.debug(f"Loaded [{self._path}]")
         logger.debug(f"Total {len(self._raw)} account(s) in [{self._path}]")
