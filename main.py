@@ -1,7 +1,6 @@
 from common.utils import utils
 from common.service import report_service
 
-VERSION = "1.4.0|rc"
 LOGO = """\033[33m
    _____ _____  _    _      _____  _____ _____                    _        _____                       _   
   / ____|  __ \| |  | |    |_   _|/ ____|  __ \        /\        | |      |  __ \                     | |  
@@ -12,6 +11,7 @@ LOGO = """\033[33m
                                                                                      | |                   
                                                                                      |_|                   
 \033[97m"""
+VERSION = "1.4.0|rc"
 
 print(LOGO)
 utils.version(VERSION)
