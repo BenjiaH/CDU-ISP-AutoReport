@@ -113,9 +113,9 @@ class Report:
         try:
             soup = BeautifulSoup(res.text, 'lxml')
             self._navigation_url = soup.find('a', string=target)['href']
-            t = self._navigation_url
-            t = t.replace(t[t.index("=") + 1:], "*******")
-            logger.debug(f'Navigation "{target}" URL:{t}.')
+            hidden_id = self._navigation_url
+            hidden_id = hidden_id.replace(hidden_id[hidden_id.index("id=") + 3:], "*******")
+            logger.debug(f'Navigation "{target}" URL:{hidden_id}.')
         except Exception as e:
             logger.error(f"Failed to get the project url.[{e}]")
             self._set_error(3, 1, utils.get_call_loc(True))
@@ -177,28 +177,30 @@ class Report:
         return res.text
 
     @logger.catch
-    def _fetch_location(self):
+    def _fetch_address(self):
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return ["", "", ""]
         for i in range(2):
             url = f"{self._host}/{self._navigation_url}&page={i + 1}"
             res = self._session.get(url=url, headers=self._headers)
-            logger.debug(f"URL:{url}. Status code:{res.status_code}")
+            hidden_id = url
+            hidden_id = hidden_id.replace(hidden_id[hidden_id.index("id=") + 3:hidden_id.index("&page")], "*******")
+            logger.debug(f"URL:{hidden_id}. Status code:{res.status_code}")
             if res.status_code != 200:
                 logger.error(f"Failed:GET request. URL:{url}. Status code:{res.status_code}")
             res.encoding = "utf-8"
             try:
                 soup = BeautifulSoup(res.text, 'lxml')
-                location = soup.find("table", class_="table table-hover").find_all("tr")[3].find_all("td")[
+                address = soup.find("table", class_="table table-hover").find_all("tr")[3].find_all("td")[
                     1].text.strip()
-                logger.debug(f'location: "{location}"')
-                return location.split("|")
+                logger.debug(f'Latest address: "{address}"')
+                return address.split("|")
             except Exception as e:
                 if i != 2:
-                    logger.error(f"Failed to get the location. Try next page.[{e}]")
+                    logger.error(f"Failed to get the latest address. Try next page.[{e}]")
                 else:
-                    logger.error(f"Failed to get the location.[{e}]")
+                    logger.error(f"Failed to get the latest address.[{e}]")
                     self._set_error(5, 1, utils.get_call_loc(True))
                 logger.debug("{url} content:\n{res}".format(url=url, res=re.sub(r"\n|\r|\t|\s", "", res.text)))
 
@@ -223,7 +225,7 @@ class Report:
             return 1, self._errno
         else:
             logger.error("Failed to report in the default method.")
-            ret = self._report(self._fetch_location())
+            ret = self._report(self._fetch_address())
             if self._existed in ret:
                 logger.info(f"The report is already existed. ID:{uid}")
                 return 0, self._errno
