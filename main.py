@@ -11,7 +11,7 @@ LOGO = """\033[33m
                                                                                      | |                   
                                                                                      |_|                   
 \033[97m"""
-VERSION = "1.4.0|rc"
+VERSION = "1.4.0|release"
 
 print(LOGO)
 utils.version(VERSION)

@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.4.0.release](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/tag/1.4.0.release)
+
+### (2022-5-10)
+
+- **Incompatible added:[supported json in config file](../../commit/634e5c6538d0da4e175bd803b19cd8c817868f96)**
+- Removed:`config/config.ini`
+- Changed:adapt to the latest CDU-ISP
+- Added:hide personal info and private api in log files
+- Added:3 versions of WeChat push code
+- Changed:report process
+- Changed:moved `res/email_tmpl.html` to `config/email_tmpl.html`
+- Changed:moved `scripts/run.sh` to `./run.sh`
+- Changed:moved `scripts/run.bat` to `./run.bat`
+- Fixed:bugs
+
+---
+
 ## [1.3.0.release](https://github.com/BenjiaH/CDU-ISP-AutoReport/releases/tag/1.3.0.release)
 
 ### (2022-3-9)
