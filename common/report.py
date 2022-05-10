@@ -177,7 +177,7 @@ class Report:
         return res.text
 
     @logger.catch
-    def _fetch_address(self):
+    def _fetch_add(self):
         if self._error == 1:
             logger.debug(f"The error flag: {self._error}. Exit the function.")
             return ["", "", ""]
@@ -192,10 +192,9 @@ class Report:
             res.encoding = "utf-8"
             try:
                 soup = BeautifulSoup(res.text, 'lxml')
-                address = soup.find("table", class_="table table-hover").find_all("tr")[3].find_all("td")[
-                    1].text.strip()
-                logger.debug(f'Latest address: "{address}"')
-                return address.split("|")
+                add = soup.find("table", class_="table table-hover").find_all("tr")[3].find_all("td")[1].text.strip()
+                logger.debug(f'Latest address: "{add}"')
+                return add.split("|")
             except Exception as e:
                 if i != 2:
                     logger.error(f"Failed to get the latest address. Try next page.[{e}]")
@@ -225,7 +224,7 @@ class Report:
             return 1, self._errno
         else:
             logger.error("Failed to report in the default method.")
-            ret = self._report(self._fetch_address())
+            ret = self._report(self._fetch_add())
             if self._existed in ret:
                 logger.info(f"The report is already existed. ID:{uid}")
                 return 0, self._errno
